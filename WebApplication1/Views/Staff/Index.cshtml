@@ -1,0 +1,31 @@
+@{
+    ViewData["Title"] = "Dashboard Staff";
+}
+
+<div class="container mt-5">
+    <h1>Dashboard - Nhân Viên Quỹ</h1>
+    <p>Xin chào @ViewData["FullName"]</p>
+    
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Tiếp Nhận Quyên Góp</h5>
+                    <p class="card-text">Ghi nhận các khoản quyên góp mới</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Lập Hồ Sơ Hỗ Trợ</h5>
+                    <p class="card-text">Tạo hồ sơ đề nghị hỗ trợ cho đối tượng</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a href="/Account/Logout" class="btn btn-danger">Đăng Xuất</a>
+    </div>
+</div>

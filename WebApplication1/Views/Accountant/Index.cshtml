@@ -1,0 +1,31 @@
+@{
+    ViewData["Title"] = "Dashboard Accountant";
+}
+
+<div class="container mt-5">
+    <h1>Dashboard - Kế Toán</h1>
+    <p>Xin chào @ViewData["FullName"]</p>
+    
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Quản Lý Thu Chi</h5>
+                    <p class="card-text">Theo dõi và quản lý thu chi của quỹ</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Báo Cáo Tài Chính</h5>
+                    <p class="card-text">Lập và xuất báo cáo tài chính</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a href="/Account/Logout" class="btn btn-danger">Đăng Xuất</a>
+    </div>
+</div>
