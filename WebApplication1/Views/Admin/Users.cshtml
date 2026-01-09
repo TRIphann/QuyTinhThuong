@@ -1,0 +1,71 @@
+﻿@model List<QLDuLichRBAC_Upgrade.Models.ViewModels.AdminUserVm>
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+    var fullName = ViewData["FullName"]?.ToString() ?? "Admin";
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    @await Html.PartialAsync("_AdminSidebar")
+
+    <main class="main">
+        <header class="topbar">
+            <div class="page-title">
+                <div class="title">Quản lý người dùng</div>
+                <div class="subtitle">Xin chào <strong>@fullName</strong></div>
+            </div>
+        </header>
+
+        <section class="content">
+            <div class="card panel">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-title">Danh sách người dùng</div>
+                        <div class="panel-sub">Dữ liệu lấy trực tiếp từ bảng Users</div>
+                    </div>
+                    <div class="chip">Users</div>
+                </div>
+
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Họ tên</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var u in Model)
+                            {
+                                <tr>
+                                    <td>@u.UserId</td>
+                                    <td>@u.FullName</td>
+                                    <td>@u.Username</td>
+                                    <td>@u.Email</td>
+                                    <td>
+                                        <span class="status info">@u.Role</span>
+                                    </td>
+                                    <td>
+                                        @if (u.Status == "Hoạt động")
+                                        {
+                                            <span class="status ok">Hoạt động</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="status warn">@u.Status</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>

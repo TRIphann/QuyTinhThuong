@@ -467,3 +467,52 @@ a:hover {
     border-color: rgba(40, 167, 69, 0.3) !important;
     color: #51cf66 !important;
 }
+
+
+/* Login UX polish */
+.content .form-control {
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    transition: 180ms ease;
+}
+
+    .content .form-control::placeholder {
+        color: rgba(255,255,255,0.55);
+    }
+
+    .content .form-control:focus {
+        box-shadow: 0 0 0 0.25rem rgba(255, 60, 172, 0.18);
+        border-color: rgba(255, 60, 172, 0.55);
+        background: rgba(255,255,255,0.10);
+        color: #fff;
+    }
+
+.content .btn {
+    border-radius: 14px;
+    background: linear-gradient(135deg, #ff3cac, #784ba0, #2b86c5);
+    border: none;
+    transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
+}
+
+    .content .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 16px 30px rgba(0,0,0,0.25);
+        opacity: 0.98;
+    }
+
+    .content .btn:active {
+        transform: translateY(0);
+        box-shadow: none;
+    }
+
+.content .input-group .btn-outline-light {
+    border-radius: 0 14px 14px 0;
+    border-color: rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.06);
+}
+
+    .content .input-group .btn-outline-light:hover {
+        background: rgba(255,255,255,0.10);
+    }

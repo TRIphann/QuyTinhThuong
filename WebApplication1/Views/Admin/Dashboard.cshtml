@@ -1,0 +1,296 @@
+﻿@model QLDuLichRBAC_Upgrade.Models.ViewModels.AdminDashboardVm
+@{
+    ViewData["Title"] = "Dashboard Admin";
+    var fullName = string.IsNullOrWhiteSpace(Model.FullName) ? "Admin" : Model.FullName;
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-logo">A</div>
+            <div class="brand-text">
+                <div class="brand-name">Admin Panel</div>
+                <div class="brand-sub">QL Quỹ Tình Thương</div>
+            </div>
+        </div>
+
+        <nav class="menu">
+            <a class="menu-item active" asp-controller="Admin" asp-action="Index">
+                <span class="mi-ico">🏠</span>
+                <span class="mi-text">Dashboard</span>
+            </a>
+
+            <a class="menu-item" asp-controller="Admin" asp-action="Users">
+                <span class="mi-ico">👤</span>
+                <span class="mi-text">Quản lý người dùng</span>
+            </a>
+
+            <a class="menu-item" asp-controller="Admin" asp-action="Data">
+                <span class="mi-ico">🗂️</span>
+                <span class="mi-text">Quản lý dữ liệu</span>
+            </a>
+
+            <div class="menu-divider"></div>
+
+            <form asp-controller="Account" asp-action="Logout" method="post" style="margin:0;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="menu-item danger" style="width:100%; text-align:left;">
+                    <span class="mi-ico">⎋</span>
+                    <span class="mi-text">Đăng xuất</span>
+                </button>
+            </form>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="badge">
+                <div class="dot"></div>
+                <span>Hệ thống đang hoạt động</span>
+            </div>
+            <div class="tiny">© @DateTime.Now.Year</div>
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn" type="button" id="toggleSidebar" title="Thu gọn sidebar">☰</button>
+
+                <div class="page-title">
+                    <div class="title">Dashboard</div>
+                    <div class="subtitle">
+                        Xin chào, <strong>@fullName</strong>. Chúc bạn một ngày làm việc hiệu quả.
+                    </div>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <div class="search">
+                    <span class="search-ico">⌕</span>
+                    <input type="text" placeholder="Tìm kiếm nhanh..." />
+                </div>
+
+                <button class="icon-btn" type="button" title="Thông báo">
+                    🔔
+                    <span class="pill">3</span>
+                </button>
+
+                <div class="user-chip">
+                    <div class="avatar">@fullName.Substring(0, 1).ToUpper()</div>
+                    <div class="user-meta">
+                        <div class="user-name">@fullName</div>
+                        <div class="user-role">Administrator</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <section class="content">
+
+            <!-- Stat cards (DỮ LIỆU ĐỘNG) -->
+            <div class="grid stats">
+                <div class="card stat glow">
+                    <div class="stat-head">
+                        <div class="stat-ico">👥</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Người dùng</div>
+                            <div class="kpi-value">@Model.TotalUsers</div>
+                        </div>
+                    </div>
+                    <div class="stat-foot">
+                        <span class="trend up">▲</span>
+                        <span class="muted">Tổng số tài khoản trong hệ thống</span>
+                    </div>
+                </div>
+
+                <div class="card stat">
+                    <div class="stat-head">
+                        <div class="stat-ico">🧾</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Yêu cầu hỗ trợ</div>
+                            <div class="kpi-value">@Model.TotalSupportRequests</div>
+                        </div>
+                    </div>
+                    <div class="stat-foot">
+                        <span class="trend info">•</span>
+                        <span class="muted">Tổng số yêu cầu đã tạo</span>
+                    </div>
+                </div>
+
+                <div class="card stat">
+                    <div class="stat-head">
+                        <div class="stat-ico">💰</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Quỹ hiện tại</div>
+                            <div class="kpi-value">@Model.FundBalance.ToString("N0")</div>
+                        </div>
+                    </div>
+                    <div class="stat-foot">
+                        <span class="trend up">▲</span>
+                        <span class="muted">Số dư theo Funds (mới nhất)</span>
+                    </div>
+                </div>
+
+                <div class="card stat">
+                    <div class="stat-head">
+                        <div class="stat-ico">✅</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Duyệt hôm nay</div>
+                            <div class="kpi-value">@Model.ApprovalsToday</div>
+                        </div>
+                    </div>
+                    <div class="stat-foot">
+                        <span class="muted">Tính đến</span>
+                        <span class="muted">@DateTime.Now.ToString("HH:mm dd/MM/yyyy")</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick actions + Logs -->
+            <div class="grid two-col">
+                <div class="card panel">
+                    <div class="panel-head">
+                        <div>
+                            <div class="panel-title">Chức năng chính</div>
+                            <div class="panel-sub">Truy cập nhanh các phân hệ quản trị</div>
+                        </div>
+                        <div class="chip">Quick Actions</div>
+                    </div>
+
+                    <div class="actions">
+                        <a class="action-card" asp-controller="Admin" asp-action="Users">
+                            <div class="action-ico">👤</div>
+                            <div class="action-body">
+                                <div class="action-title">Quản lý người dùng</div>
+                                <div class="action-desc">Tạo/sửa/xóa tài khoản, phân quyền Role</div>
+                            </div>
+                            <div class="action-go">→</div>
+                        </a>
+
+                        <a class="action-card" asp-controller="Admin" asp-action="Data">
+                            <div class="action-ico">🗂️</div>
+                            <div class="action-body">
+                                <div class="action-title">Quản lý dữ liệu</div>
+                                <div class="action-desc">Quản trị các bảng dữ liệu & nghiệp vụ hệ thống</div>
+                            </div>
+                            <div class="action-go">→</div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card panel">
+                    <div class="panel-head">
+                        <div>
+                            <div class="panel-title">Hoạt động gần đây</div>
+                            <div class="panel-sub">Lấy từ bảng Logs (mới nhất)</div>
+                        </div>
+                        <div class="chip">Logs</div>
+                    </div>
+
+                    <div class="timeline">
+                        @if (Model.RecentLogs != null && Model.RecentLogs.Count > 0)
+                        {
+                            foreach (var log in Model.RecentLogs)
+                            {
+                                <div class="tl-item">
+                                    <div class="tl-dot"></div>
+                                    <div class="tl-content">
+                                        <div class="tl-title">@log.Action</div>
+                                        <div class="tl-meta">
+                                            @log.ActionTime.ToString("HH:mm dd/MM/yyyy")
+                                            @if (!string.IsNullOrWhiteSpace(log.TableName))
+                                            {
+                                                <text> • @log.TableName</text>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="tl-tag info">LOG</div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="muted">Chưa có log gần đây.</div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overview table (bạn có thể thay bằng dữ liệu thật sau) -->
+            <div class="card panel">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-title">Tổng quan hệ thống</div>
+                        <div class="panel-sub">Bảng tóm tắt trạng thái (có thể thay bằng dữ liệu thật)</div>
+                    </div>
+                    <div class="chip">Overview</div>
+                </div>
+
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Hạng mục</th>
+                                <th>Mô tả</th>
+                                <th>Giá trị</th>
+                                <th>Cập nhật</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Người dùng</td>
+                                <td>Tổng số tài khoản trong hệ thống</td>
+                                <td><span class="status info">@Model.TotalUsers</span></td>
+                                <td>Realtime</td>
+                            </tr>
+                            <tr>
+                                <td>Yêu cầu hỗ trợ</td>
+                                <td>Tổng số yêu cầu đã tạo</td>
+                                <td><span class="status info">@Model.TotalSupportRequests</span></td>
+                                <td>Realtime</td>
+                            </tr>
+                            <tr>
+                                <td>Quỹ</td>
+                                <td>Số dư quỹ mới nhất</td>
+                                <td><span class="status ok">@Model.FundBalance.ToString("N0")</span></td>
+                                <td>Realtime</td>
+                            </tr>
+                            <tr>
+                                <td>Duyệt hôm nay</td>
+                                <td>Số lượt duyệt (Approvals) theo ngày</td>
+                                <td><span class="status warn">@Model.ApprovalsToday</span></td>
+                                <td>@DateTime.Now.ToString("dd/MM/yyyy")</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <footer class="footer">
+                <div class="muted">
+                    Gợi ý: Nếu bạn muốn số liệu cập nhật không cần reload, hãy dùng endpoint JSON + fetch định kỳ.
+                </div>
+            </footer>
+        </section>
+    </main>
+
+    <!-- Background effects -->
+    <div class="bg-orb orb1"></div>
+    <div class="bg-orb orb2"></div>
+    <div class="bg-grid"></div>
+</div>
+
+<script>
+    (function () {
+        const btn = document.getElementById('toggleSidebar');
+        const root = document.documentElement;
+        btn?.addEventListener('click', () => {
+            root.classList.toggle('sidebar-collapsed');
+        });
+    })();
+</script>

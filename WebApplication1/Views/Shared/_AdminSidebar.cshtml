@@ -1,0 +1,45 @@
+﻿@{
+    var current = (ViewContext.RouteData.Values["action"]?.ToString() ?? "").ToLower();
+}
+
+<aside class="sidebar">
+    <div class="brand">
+        <div class="brand-logo">A</div>
+        <div class="brand-text">
+            <div class="brand-name">Admin Panel</div>
+            <div class="brand-sub">QL Quỹ Tình Thương</div>
+        </div>
+    </div>
+
+    <nav class="menu">
+        <a class="menu-item @(current == "index" ? "active" : "")" asp-controller="Admin" asp-action="Index">
+            <span class="mi-ico">🏠</span>
+            <span class="mi-text">Dashboard</span>
+        </a>
+
+        <a class="menu-item @(current == "users" ? "active" : "")" asp-controller="Admin" asp-action="Users">
+            <span class="mi-ico">👤</span>
+            <span class="mi-text">Quản lý người dùng</span>
+        </a>
+
+        <a class="menu-item @(current == "data" ? "active" : "")" asp-controller="Admin" asp-action="Data">
+            <span class="mi-ico">🗂️</span>
+            <span class="mi-text">Quản lý dữ liệu</span>
+        </a>
+
+        <div class="menu-divider"></div>
+
+        <a class="menu-item danger" asp-controller="Account" asp-action="Logout">
+            <span class="mi-ico">⎋</span>
+            <span class="mi-text">Đăng xuất</span>
+        </a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="badge">
+            <div class="dot"></div>
+            <span>Hệ thống đang hoạt động</span>
+        </div>
+        <div class="tiny">© @DateTime.Now.Year</div>
+    </div>
+</aside>

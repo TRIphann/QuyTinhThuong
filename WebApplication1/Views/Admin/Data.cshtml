@@ -1,0 +1,33 @@
+﻿@model QLDuLichRBAC_Upgrade.Models.ViewModels.AdminDataVm
+@{
+    ViewData["Title"] = "Quản lý dữ liệu";
+    var fullName = ViewData["FullName"]?.ToString() ?? "Admin";
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    @await Html.PartialAsync("_AdminSidebar")
+
+    <main class="main">
+        <header class="topbar">
+            <div class="page-title">
+                <div class="title">Quản lý dữ liệu</div>
+                <div class="subtitle">Tổng quan các bảng dữ liệu hệ thống</div>
+            </div>
+        </header>
+
+        <section class="content">
+            <div class="grid stats">
+                <div class="card stat"><div class="kpi-label">Beneficiaries</div><div class="kpi-value">@Model.Beneficiaries</div></div>
+                <div class="card stat"><div class="kpi-label">Support Requests</div><div class="kpi-value">@Model.SupportRequests</div></div>
+                <div class="card stat"><div class="kpi-label">Approvals</div><div class="kpi-value">@Model.Approvals</div></div>
+                <div class="card stat"><div class="kpi-label">Expenses</div><div class="kpi-value">@Model.Expenses</div></div>
+                <div class="card stat"><div class="kpi-label">Donors</div><div class="kpi-value">@Model.Donors</div></div>
+                <div class="card stat"><div class="kpi-label">Donations</div><div class="kpi-value">@Model.Donations</div></div>
+                <div class="card stat"><div class="kpi-label">Funds</div><div class="kpi-value">@Model.Funds</div></div>
+                <div class="card stat"><div class="kpi-label">Logs</div><div class="kpi-value">@Model.Logs</div></div>
+            </div>
+        </section>
+    </main>
+</div>

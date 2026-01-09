@@ -1,7 +1,136 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\vscodetim\\btl\\cuoiky\\WebApplication1\\",
-  "Documents": [],
+  "WorkspaceRootPath": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\views\\admin\\data.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\views\\admin\\data.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\models\\models\\viewmodels\\admindatavm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\models\\models\\viewmodels\\admindatavm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\views\\admin\\users.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\views\\admin\\users.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\models\\models\\viewmodels\\adminuservm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\models\\models\\viewmodels\\adminuservm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\views\\admin\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\views\\admin\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\views\\admin\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\views\\admin\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\controllers\\accountantcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\controllers\\accountantcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\views\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\views\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\views\\views\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\views\\views\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\views\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\views\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\wwwroot\\css\\style.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\wwwroot\\css\\style.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\models\\models\\viewmodels\\loginvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\models\\models\\viewmodels\\loginvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\models\\models\\entities\\beneficiary.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\models\\models\\entities\\beneficiary.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\models\\models\\entities\\userrole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\models\\models\\entities\\userrole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\models\\models\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\models\\models\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\models\\models\\entities\\supportrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\models\\models\\entities\\supportrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\models\\models\\entities\\role.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\models\\models\\entities\\role.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\models\\models\\entities\\log.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\models\\models\\entities\\log.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\models\\models\\entities\\fund.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\models\\models\\entities\\fund.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\models\\models\\entities\\expense.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\models\\models\\entities\\expense.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\models\\models\\entities\\donor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\models\\models\\entities\\donor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\models\\models\\entities\\donation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\models\\models\\entities\\donation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\models\\models\\entities\\approval.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\models\\models\\entities\\approval.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\models\\models\\viewmodels\\paymentviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\models\\models\\viewmodels\\paymentviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\views\\staff\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\views\\staff\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|d:\\utc2\\phantichthietkeyeucau\\baitapcuoiky\\quytinhthuong\\quytinhthuong\\webapplication1\\migrations\\20260101140056_initdb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A66288A2-CCE4-435E-9636-7437DC97DF16}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\migrations\\20260101140056_initdb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,7 +138,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 191,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -18,6 +147,430 @@
             {
               "$type": "Bookmark",
               "Name": "ST:131:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{74946827-37a0-11d2-a273-00c04f8ef4ff}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "AdminDataVm.cs",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\ViewModels\\AdminDataVm.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Models\\Models\\ViewModels\\AdminDataVm.cs",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\ViewModels\\AdminDataVm.cs",
+              "RelativeToolTip": "WebApplication1\\Models\\Models\\ViewModels\\AdminDataVm.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T06:52:22.036Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "AdminUserVm.cs",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\ViewModels\\AdminUserVm.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Models\\Models\\ViewModels\\AdminUserVm.cs",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\ViewModels\\AdminUserVm.cs",
+              "RelativeToolTip": "WebApplication1\\Models\\Models\\ViewModels\\AdminUserVm.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T06:50:47.749Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AdminController.cs",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Controllers\\AdminController.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Controllers\\AdminController.cs",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Controllers\\AdminController.cs",
+              "RelativeToolTip": "WebApplication1\\Controllers\\AdminController.cs",
+              "ViewState": "AgIAAD8AAAAAAAAAAAAqwGUAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T05:35:52.578Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Data.cshtml",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Views\\Admin\\Data.cshtml",
+              "RelativeDocumentMoniker": "WebApplication1\\Views\\Admin\\Data.cshtml",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Views\\Admin\\Data.cshtml",
+              "RelativeToolTip": "WebApplication1\\Views\\Admin\\Data.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwCEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-09T05:40:41.207Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Views\\Admin\\Index.cshtml",
+              "RelativeDocumentMoniker": "WebApplication1\\Views\\Admin\\Index.cshtml",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Views\\Admin\\Index.cshtml",
+              "RelativeToolTip": "WebApplication1\\Views\\Admin\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-09T04:11:54.233Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Users.cshtml",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Views\\Admin\\Users.cshtml",
+              "RelativeDocumentMoniker": "WebApplication1\\Views\\Admin\\Users.cshtml",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Views\\Admin\\Users.cshtml",
+              "RelativeToolTip": "WebApplication1\\Views\\Admin\\Users.cshtml",
+              "ViewState": "AgIAACEAAAAAAAAAAAAqwEcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-09T05:40:19.111Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "AccountController.cs",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Controllers\\AccountController.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Controllers\\AccountController.cs",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Controllers\\AccountController.cs",
+              "RelativeToolTip": "WebApplication1\\Controllers\\AccountController.cs",
+              "ViewState": "AgIAACUAAAAAAAAAAAAqwGMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T04:16:39.815Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Dashboard.cshtml",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Views\\Admin\\Dashboard.cshtml",
+              "RelativeDocumentMoniker": "WebApplication1\\Views\\Admin\\Dashboard.cshtml",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Views\\Admin\\Dashboard.cshtml",
+              "RelativeToolTip": "WebApplication1\\Views\\Admin\\Dashboard.cshtml",
+              "ViewState": "AgIAAAIBAAAAAAAAAAAqwA0BAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-09T05:04:23.439Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "AccountantController.cs",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Controllers\\AccountantController.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Controllers\\AccountantController.cs",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Controllers\\AccountantController.cs",
+              "RelativeToolTip": "WebApplication1\\Controllers\\AccountantController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T05:42:05.845Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Register.cshtml",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Views\\Account\\Register.cshtml",
+              "RelativeDocumentMoniker": "WebApplication1\\Views\\Account\\Register.cshtml",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Views\\Account\\Register.cshtml",
+              "RelativeToolTip": "WebApplication1\\Views\\Account\\Register.cshtml",
+              "ViewState": "AgIAACQAAAAAAAAAAAAqwEoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-09T06:16:06.462Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Login.cshtml",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Views\\Account\\Login.cshtml",
+              "RelativeDocumentMoniker": "WebApplication1\\Views\\Account\\Login.cshtml",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Views\\Account\\Login.cshtml",
+              "RelativeToolTip": "WebApplication1\\Views\\Account\\Login.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-09T06:10:10.818Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "style.css",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\wwwroot\\css\\style.css",
+              "RelativeDocumentMoniker": "WebApplication1\\wwwroot\\css\\style.css",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\wwwroot\\css\\style.css",
+              "RelativeToolTip": "WebApplication1\\wwwroot\\css\\style.css",
+              "ViewState": "AgIAAM0BAAAAAAAAAAAIwAYCAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-01-09T06:12:48.256Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Register.cshtml",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Views\\Views\\Account\\Register.cshtml",
+              "RelativeDocumentMoniker": "WebApplication1\\Views\\Views\\Account\\Register.cshtml",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Views\\Views\\Account\\Register.cshtml",
+              "RelativeToolTip": "WebApplication1\\Views\\Views\\Account\\Register.cshtml",
+              "ViewState": "AgIAACQAAAAAAAAAAAAqwDIAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-09T06:16:00.591Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Login.cshtml",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Views\\Views\\Account\\Login.cshtml",
+              "RelativeDocumentMoniker": "WebApplication1\\Views\\Views\\Account\\Login.cshtml",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Views\\Views\\Account\\Login.cshtml",
+              "RelativeToolTip": "WebApplication1\\Views\\Views\\Account\\Login.cshtml",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAqwCUAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-09T05:41:49.288Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "LoginVm.cs",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\ViewModels\\LoginVm.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Models\\Models\\ViewModels\\LoginVm.cs",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\ViewModels\\LoginVm.cs",
+              "RelativeToolTip": "WebApplication1\\Models\\Models\\ViewModels\\LoginVm.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T06:10:04.66Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Program.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Program.cs",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Program.cs",
+              "RelativeToolTip": "WebApplication1\\Program.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAAqwCQAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-01T13:55:29.943Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "UserRole.cs",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\Entities\\UserRole.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Models\\Models\\Entities\\UserRole.cs",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\Entities\\UserRole.cs",
+              "RelativeToolTip": "WebApplication1\\Models\\Models\\Entities\\UserRole.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T04:33:17.039Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "Beneficiary.cs",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\Entities\\Beneficiary.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Models\\Models\\Entities\\Beneficiary.cs",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\Entities\\Beneficiary.cs",
+              "RelativeToolTip": "WebApplication1\\Models\\Models\\Entities\\Beneficiary.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-01T13:45:27.259Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "SupportRequest.cs",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\Entities\\SupportRequest.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Models\\Models\\Entities\\SupportRequest.cs",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\Entities\\SupportRequest.cs",
+              "RelativeToolTip": "WebApplication1\\Models\\Models\\Entities\\SupportRequest.cs",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAkwBEAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T04:33:03.719Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "Role.cs",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\Entities\\Role.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Models\\Models\\Entities\\Role.cs",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\Entities\\Role.cs",
+              "RelativeToolTip": "WebApplication1\\Models\\Models\\Entities\\Role.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T04:32:57.169Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "Log.cs",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\Entities\\Log.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Models\\Models\\Entities\\Log.cs",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\Entities\\Log.cs",
+              "RelativeToolTip": "WebApplication1\\Models\\Models\\Entities\\Log.cs",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAowAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T04:32:50.602Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "Fund.cs",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\Entities\\Fund.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Models\\Models\\Entities\\Fund.cs",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\Entities\\Fund.cs",
+              "RelativeToolTip": "WebApplication1\\Models\\Models\\Entities\\Fund.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T04:32:44.752Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "Expense.cs",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\Entities\\Expense.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Models\\Models\\Entities\\Expense.cs",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\Entities\\Expense.cs",
+              "RelativeToolTip": "WebApplication1\\Models\\Models\\Entities\\Expense.cs",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAowAsAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T04:32:38.671Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "User.cs",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\Entities\\User.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Models\\Models\\Entities\\User.cs",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\Entities\\User.cs",
+              "RelativeToolTip": "WebApplication1\\Models\\Models\\Entities\\User.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAgwBcAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T04:03:36.654Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "Donor.cs",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\Entities\\Donor.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Models\\Models\\Entities\\Donor.cs",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\Entities\\Donor.cs",
+              "RelativeToolTip": "WebApplication1\\Models\\Models\\Entities\\Donor.cs",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAswAkAAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T04:32:32.331Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "Donation.cs",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\Entities\\Donation.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Models\\Models\\Entities\\Donation.cs",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\Entities\\Donation.cs",
+              "RelativeToolTip": "WebApplication1\\Models\\Models\\Entities\\Donation.cs",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAowBEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T04:32:25.43Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "WebApplication1\\appsettings.Development.json",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\appsettings.Development.json",
+              "RelativeToolTip": "WebApplication1\\appsettings.Development.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-01-01T13:45:53.75Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "Approval.cs",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\Entities\\Approval.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Models\\Models\\Entities\\Approval.cs",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\Entities\\Approval.cs",
+              "RelativeToolTip": "WebApplication1\\Models\\Models\\Entities\\Approval.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAowA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-01T13:45:14.9Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "PaymentViewModel.cs",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\ViewModels\\PaymentViewModel.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Models\\Models\\ViewModels\\PaymentViewModel.cs",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Models\\Models\\ViewModels\\PaymentViewModel.cs",
+              "RelativeToolTip": "WebApplication1\\Models\\Models\\ViewModels\\PaymentViewModel.cs",
+              "ViewState": "AgIAAC4AAAAAAAAAAAAwwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-09T04:26:15.523Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Views\\Staff\\Index.cshtml",
+              "RelativeDocumentMoniker": "WebApplication1\\Views\\Staff\\Index.cshtml",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Views\\Staff\\Index.cshtml",
+              "RelativeToolTip": "WebApplication1\\Views\\Staff\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-09T04:12:28.015Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "WebApplication1\\Views\\Home\\Index.cshtml",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "WebApplication1\\Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-09T04:12:14.199Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "20260101140056_InitDb.cs",
+              "DocumentMoniker": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Migrations\\20260101140056_InitDb.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Migrations\\20260101140056_InitDb.cs",
+              "ToolTip": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\Migrations\\20260101140056_InitDb.cs",
+              "RelativeToolTip": "WebApplication1\\Migrations\\20260101140056_InitDb.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-01T14:00:56.413Z",
+              "EditorCaption": ""
             }
           ]
         },
@@ -27,11 +580,11 @@
           "Children": [
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
             },
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
             },
             {
               "$type": "Bookmark",
