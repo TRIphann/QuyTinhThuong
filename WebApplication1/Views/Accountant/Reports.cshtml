@@ -1,0 +1,237 @@
+@model QLDuLichRBAC_Upgrade.Controllers.AccountantReportVm
+@{
+    ViewData["Title"] = "Báo Cáo Tài Chính";
+    var fullName = ViewData["FullName"]?.ToString() ?? "Kế toán";
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-logo">K</div>
+            <div class="brand-text">
+                <div class="brand-name">Accountant Panel</div>
+                <div class="brand-sub">QL Quỹ Tình Thương</div>
+            </div>
+        </div>
+
+        <nav class="menu">
+            <a class="menu-item" asp-controller="Accountant" asp-action="Index">
+                <span class="mi-ico">🏠</span>
+                <span class="mi-text">Dashboard</span>
+            </a>
+            <a class="menu-item" asp-controller="Accountant" asp-action="Donations">
+                <span class="mi-ico">💵</span>
+                <span class="mi-text">Danh sách quyên góp</span>
+            </a>
+            <a class="menu-item" asp-controller="Accountant" asp-action="Expenses">
+                <span class="mi-ico">💸</span>
+                <span class="mi-text">Danh sách chi</span>
+            </a>
+            <a class="menu-item" asp-controller="Accountant" asp-action="ApprovedRequests">
+                <span class="mi-ico">📋</span>
+                <span class="mi-text">Hồ sơ đã duyệt</span>
+            </a>
+            <a class="menu-item active" asp-controller="Accountant" asp-action="Reports">
+                <span class="mi-ico">📊</span>
+                <span class="mi-text">Báo cáo tài chính</span>
+            </a>
+            <div class="menu-divider"></div>
+            <form asp-controller="Account" asp-action="Logout" method="post" style="margin:0;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="menu-item danger" style="width:100%; text-align:left;">
+                    <span class="mi-ico">⎋</span>
+                    <span class="mi-text">Đăng xuất</span>
+                </button>
+            </form>
+        </nav>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn" type="button" id="toggleSidebar">☰</button>
+                <div class="page-title">
+                    <div class="title">Báo Cáo Tài Chính</div>
+                    <div class="subtitle">Thống kê thu chi của quỹ</div>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <div class="user-chip">
+                    <div class="avatar">@fullName.Substring(0, 1).ToUpper()</div>
+                    <div class="user-meta">
+                        <div class="user-name">@fullName</div>
+                        <div class="user-role">Kế Toán</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section class="content">
+            <!-- Summary Stats -->
+            <div class="grid stats">
+                <div class="card stat glow">
+                    <div class="stat-head">
+                        <div class="stat-ico">💰</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Số dư hiện tại</div>
+                            <div class="kpi-value">@Model.CurrentBalance.ToString("N0")</div>
+                        </div>
+                    </div>
+                    <div class="stat-foot">
+                        <span class="muted">VND</span>
+                    </div>
+                </div>
+
+                <div class="card stat">
+                    <div class="stat-head">
+                        <div class="stat-ico">💵</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Tổng thu</div>
+                            <div class="kpi-value text-success">@Model.TotalDonations.ToString("N0")</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card stat">
+                    <div class="stat-head">
+                        <div class="stat-ico">💸</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Tổng chi</div>
+                            <div class="kpi-value text-danger">@Model.TotalExpenses.ToString("N0")</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card stat">
+                    <div class="stat-head">
+                        <div class="stat-ico">📊</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Chênh lệch</div>
+                            <div class="kpi-value">@((Model.TotalDonations - Model.TotalExpenses).ToString("N0"))</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- This Month -->
+            <div class="card panel" style="margin-bottom: 1.5rem;">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-title">Tháng @DateTime.Now.Month/@DateTime.Now.Year</div>
+                        <div class="panel-sub">Thống kê thu chi trong tháng</div>
+                    </div>
+                </div>
+
+                <div class="grid two-col" style="padding: 1rem;">
+                    <div class="info-card success">
+                        <div class="info-icon">💵</div>
+                        <div class="info-content">
+                            <div class="info-label">Thu tháng này</div>
+                            <div class="info-value">@Model.ThisMonthDonations.ToString("N0") VND</div>
+                        </div>
+                    </div>
+
+                    <div class="info-card danger">
+                        <div class="info-icon">💸</div>
+                        <div class="info-content">
+                            <div class="info-label">Chi tháng này</div>
+                            <div class="info-value">@Model.ThisMonthExpenses.ToString("N0") VND</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats by Method -->
+            <div class="grid two-col">
+                <div class="card panel">
+                    <div class="panel-head">
+                        <div>
+                            <div class="panel-title">Thu theo phương thức</div>
+                            <div class="panel-sub">Phân loại theo hình thức nhận</div>
+                        </div>
+                    </div>
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Phương thức</th>
+                                <th>Số lượng</th>
+                                <th>Tổng tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var stat in Model.DonationsByMethod)
+                            {
+                                <tr>
+                                    <td><span class="chip">@stat.Method</span></td>
+                                    <td>@stat.Count khoản</td>
+                                    <td class="text-success"><strong>@stat.TotalAmount.ToString("N0") VND</strong></td>
+                                </tr>
+                            }
+                            @if (!Model.DonationsByMethod.Any())
+                            {
+                                <tr><td colspan="3" class="muted text-center">Chưa có dữ liệu</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card panel">
+                    <div class="panel-head">
+                        <div>
+                            <div class="panel-title">Chi theo phương thức</div>
+                            <div class="panel-sub">Phân loại theo hình thức chi</div>
+                        </div>
+                    </div>
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Phương thức</th>
+                                <th>Số lượng</th>
+                                <th>Tổng tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var stat in Model.ExpensesByMethod)
+                            {
+                                <tr>
+                                    <td><span class="chip">@stat.Method</span></td>
+                                    <td>@stat.Count khoản</td>
+                                    <td class="text-danger"><strong>@stat.TotalAmount.ToString("N0") VND</strong></td>
+                                </tr>
+                            }
+                            @if (!Model.ExpensesByMethod.Any())
+                            {
+                                <tr><td colspan="3" class="muted text-center">Chưa có dữ liệu</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<style>
+    .text-success { color: #22c55e; }
+    .text-danger { color: #ef4444; }
+    .text-center { text-align: center; }
+    .table { width: 100%; border-collapse: collapse; }
+    .table th, .table td { padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb; }
+    .table th { background: #f9fafb; font-weight: 600; }
+    .info-card { display: flex; align-items: center; gap: 1rem; padding: 1.5rem; border-radius: 10px; }
+    .info-card.success { background: linear-gradient(135deg, #d1fae5, #a7f3d0); }
+    .info-card.danger { background: linear-gradient(135deg, #fee2e2, #fecaca); }
+    .info-card .info-icon { font-size: 2rem; }
+    .info-card .info-label { font-size: 14px; color: #6b7280; }
+    .info-card .info-value { font-size: 1.5rem; font-weight: 700; color: #1f2937; }
+</style>
+
+<script>
+    document.getElementById('toggleSidebar')?.addEventListener('click', function() {
+        document.querySelector('.admin-shell')?.classList.toggle('collapsed');
+    });
+</script>

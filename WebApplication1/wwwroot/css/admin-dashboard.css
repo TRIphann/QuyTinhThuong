@@ -628,18 +628,28 @@ body {
     width: 100%;
     border-collapse: collapse;
     min-width: 720px;
+    color: #ffffff !important;
 }
 
     .table th, .table td {
         padding: 12px 12px;
         border-bottom: 1px solid rgba(255,255,255,.10);
         font-size: 13px;
+        color: #ffffff !important;
     }
 
     .table th {
         text-align: left;
-        color: rgba(255,255,255,.80);
+        color: rgba(255,255,255,.80) !important;
         font-weight: 800;
+    }
+    
+    .table td {
+        color: #ffffff !important;
+    }
+    
+    .table td a {
+        color: var(--accent) !important;
     }
 
     .table tbody tr:hover {

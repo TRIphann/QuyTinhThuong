@@ -1,0 +1,213 @@
+@model QLDuLichRBAC_Upgrade.Models.ViewModels.ManagerDashboardVm
+@{
+    ViewData["Title"] = "Dashboard Manager";
+    var fullName = string.IsNullOrWhiteSpace(Model.FullName) ? "Manager" : Model.FullName;
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-logo">M</div>
+            <div class="brand-text">
+                <div class="brand-name">Manager Panel</div>
+                <div class="brand-sub">QL Quỹ Tình Thương</div>
+            </div>
+        </div>
+
+        <nav class="menu">
+            <a class="menu-item active" asp-controller="Manager" asp-action="Index">
+                <span class="mi-ico">🏠</span>
+                <span class="mi-text">Dashboard</span>
+            </a>
+
+            <a class="menu-item" asp-controller="Manager" asp-action="Requests">
+                <span class="mi-ico">📋</span>
+                <span class="mi-text">Duyệt hồ sơ</span>
+            </a>
+
+            <a class="menu-item" asp-controller="Manager" asp-action="Reports">
+                <span class="mi-ico">📊</span>
+                <span class="mi-text">Báo cáo</span>
+            </a>
+
+            <div class="menu-divider"></div>
+
+            <form asp-controller="Account" asp-action="Logout" method="post" style="margin:0;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="menu-item danger" style="width:100%; text-align:left;">
+                    <span class="mi-ico">⎋</span>
+                    <span class="mi-text">Đăng xuất</span>
+                </button>
+            </form>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="badge">
+                <div class="dot"></div>
+                <span>Hệ thống đang hoạt động</span>
+            </div>
+            <div class="tiny">© @DateTime.Now.Year</div>
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn" type="button" id="toggleSidebar" title="Thu gọn sidebar">☰</button>
+
+                <div class="page-title">
+                    <div class="title">Dashboard</div>
+                    <div class="subtitle">
+                        Xin chào, <strong>@fullName</strong>. Chúc bạn một ngày làm việc hiệu quả.
+                    </div>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <div class="user-chip">
+                    <div class="avatar">@fullName.Substring(0, 1).ToUpper()</div>
+                    <div class="user-meta">
+                        <div class="user-name">@fullName</div>
+                        <div class="user-role">Ban Quản Lý</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <section class="content">
+            <!-- Stat cards -->
+            <div class="grid stats">
+                <div class="card stat glow">
+                    <div class="stat-head">
+                        <div class="stat-ico">📋</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Chờ duyệt</div>
+                            <div class="kpi-value">@Model.PendingRequests</div>
+                        </div>
+                    </div>
+                    <div class="stat-foot">
+                        <span class="trend info">•</span>
+                        <span class="muted">Yêu cầu đang chờ xét duyệt</span>
+                    </div>
+                </div>
+
+                <div class="card stat">
+                    <div class="stat-head">
+                        <div class="stat-ico">✅</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Đã duyệt hôm nay</div>
+                            <div class="kpi-value">@Model.ApprovedToday</div>
+                        </div>
+                    </div>
+                    <div class="stat-foot">
+                        <span class="trend up">▲</span>
+                        <span class="muted">Số hồ sơ đã duyệt</span>
+                    </div>
+                </div>
+
+                <div class="card stat">
+                    <div class="stat-head">
+                        <div class="stat-ico">❌</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Từ chối hôm nay</div>
+                            <div class="kpi-value">@Model.RejectedToday</div>
+                        </div>
+                    </div>
+                    <div class="stat-foot">
+                        <span class="trend down">▼</span>
+                        <span class="muted">Số hồ sơ từ chối</span>
+                    </div>
+                </div>
+
+                <div class="card stat">
+                    <div class="stat-head">
+                        <div class="stat-ico">💰</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Tổng đã duyệt</div>
+                            <div class="kpi-value">@Model.TotalApprovedAmount.ToString("N0")</div>
+                        </div>
+                    </div>
+                    <div class="stat-foot">
+                        <span class="muted">VND (tổng cộng)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick actions + Recent requests -->
+            <div class="grid two-col">
+                <div class="card panel">
+                    <div class="panel-head">
+                        <div>
+                            <div class="panel-title">Chức năng chính</div>
+                            <div class="panel-sub">Truy cập nhanh các phân hệ</div>
+                        </div>
+                        <div class="chip">Quick Actions</div>
+                    </div>
+
+                    <div class="actions">
+                        <a class="action-card" asp-controller="Manager" asp-action="Requests">
+                            <div class="action-ico">📋</div>
+                            <div class="action-body">
+                                <div class="action-title">Duyệt hồ sơ</div>
+                                <div class="action-desc">Xem và phê duyệt các yêu cầu hỗ trợ</div>
+                            </div>
+                            <div class="action-go">→</div>
+                        </a>
+
+                        <a class="action-card" asp-controller="Manager" asp-action="Reports">
+                            <div class="action-ico">📊</div>
+                            <div class="action-body">
+                                <div class="action-title">Báo cáo tổng hợp</div>
+                                <div class="action-desc">Xem báo cáo hoạt động của quỹ</div>
+                            </div>
+                            <div class="action-go">→</div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card panel">
+                    <div class="panel-head">
+                        <div>
+                            <div class="panel-title">Hồ sơ chờ duyệt</div>
+                            <div class="panel-sub">@Model.PendingRequests yêu cầu đang chờ</div>
+                        </div>
+                        <div class="chip">Pending</div>
+                    </div>
+
+                    <div class="timeline">
+                        @if (Model.RecentRequests != null && Model.RecentRequests.Count > 0)
+                        {
+                            foreach (var req in Model.RecentRequests.Take(5))
+                            {
+                                <div class="tl-item">
+                                    <div class="tl-dot"></div>
+                                    <div class="tl-content">
+                                        <div class="tl-title">@req.BeneficiaryName</div>
+                                        <div class="tl-sub">@req.RequestedAmount.ToString("N0") VND - @req.RequestDate.ToString("dd/MM/yyyy")</div>
+                                    </div>
+                                    <a class="action-go" asp-controller="Manager" asp-action="Approve" asp-route-id="@req.RequestId">→</a>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="muted">Không có yêu cầu nào đang chờ duyệt</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    document.getElementById('toggleSidebar')?.addEventListener('click', function() {
+        document.querySelector('.admin-shell')?.classList.toggle('collapsed');
+    });
+</script>

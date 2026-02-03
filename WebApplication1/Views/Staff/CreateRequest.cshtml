@@ -1,0 +1,133 @@
+@{
+    ViewData["Title"] = "Tạo Yêu Cầu Hỗ Trợ";
+    var fullName = ViewData["FullName"]?.ToString() ?? "Nhân viên";
+    var beneficiaries = ViewData["Beneficiaries"] as IEnumerable<dynamic>;
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-logo">S</div>
+            <div class="brand-text">
+                <div class="brand-name">Staff Panel</div>
+                <div class="brand-sub">QL Quỹ Tình Thương</div>
+            </div>
+        </div>
+
+        <nav class="menu">
+            <a class="menu-item" asp-controller="Staff" asp-action="Index">
+                <span class="mi-ico">🏠</span>
+                <span class="mi-text">Dashboard</span>
+            </a>
+            <div class="menu-section">Quyên góp</div>
+            <a class="menu-item" asp-controller="Staff" asp-action="Donors">
+                <span class="mi-ico">👥</span>
+                <span class="mi-text">Nhà hảo tâm</span>
+            </a>
+            <a class="menu-item" asp-controller="Staff" asp-action="Donations">
+                <span class="mi-ico">💵</span>
+                <span class="mi-text">Tiếp nhận quyên góp</span>
+            </a>
+            <div class="menu-section">Hỗ trợ</div>
+            <a class="menu-item" asp-controller="Staff" asp-action="Beneficiaries">
+                <span class="mi-ico">🧑‍🤝‍🧑</span>
+                <span class="mi-text">Đối tượng hỗ trợ</span>
+            </a>
+            <a class="menu-item active" asp-controller="Staff" asp-action="Requests">
+                <span class="mi-ico">📋</span>
+                <span class="mi-text">Yêu cầu hỗ trợ</span>
+            </a>
+            <div class="menu-divider"></div>
+            <form asp-controller="Account" asp-action="Logout" method="post" style="margin:0;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="menu-item danger" style="width:100%; text-align:left;">
+                    <span class="mi-ico">⎋</span>
+                    <span class="mi-text">Đăng xuất</span>
+                </button>
+            </form>
+        </nav>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn" type="button" id="toggleSidebar">☰</button>
+                <div class="page-title">
+                    <div class="title">Tạo Yêu Cầu Hỗ Trợ</div>
+                    <div class="subtitle">Lập hồ sơ đề nghị hỗ trợ cho đối tượng</div>
+                </div>
+            </div>
+        </header>
+
+        <section class="content">
+            <div class="card panel" style="max-width: 600px;">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-title">Thông tin yêu cầu</div>
+                        <div class="panel-sub">Điền đầy đủ thông tin bên dưới</div>
+                    </div>
+                </div>
+
+                <form asp-action="CreateRequest" method="post" class="form">
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group">
+                        <label class="form-label">Đối tượng hỗ trợ <span class="required">*</span></label>
+                        <select name="BeneficiaryId" class="form-control" required>
+                            <option value="">-- Chọn đối tượng --</option>
+                            @if (beneficiaries != null)
+                            {
+                                foreach (var b in beneficiaries)
+                                {
+                                    <option value="@b.BeneficiaryId">@b.FullName (@b.BeneficiaryType)</option>
+                                }
+                            }
+                        </select>
+                        <small class="form-hint">Chưa có? <a asp-action="CreateBeneficiary">Thêm đối tượng mới</a></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Số tiền đề nghị <span class="required">*</span></label>
+                        <input type="number" name="RequestedAmount" class="form-control" required min="1000" placeholder="Nhập số tiền (VND)" />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Lý do hỗ trợ</label>
+                        <textarea name="Reason" class="form-control" rows="4" placeholder="Mô tả lý do cần hỗ trợ..."></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <a asp-action="Requests" class="btn btn-secondary">← Quay lại</a>
+                        <button type="submit" class="btn btn-primary">Tạo yêu cầu</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+</div>
+
+<style>
+    .menu-section { padding: 8px 16px; font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; margin-top: 8px; }
+    .form { padding: 1.5rem; }
+    .form-group { margin-bottom: 1.25rem; }
+    .form-label { display: block; font-weight: 500; margin-bottom: 0.5rem; color: #374151; }
+    .required { color: #dc3545; }
+    .form-control { width: 100%; padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; }
+    .form-control:focus { outline: none; border-color: #4f46e5; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+    .form-hint { display: block; margin-top: 6px; font-size: 12px; color: #6b7280; }
+    .form-hint a { color: #4f46e5; }
+    .form-actions { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem; }
+    .btn { padding: 10px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: none; border: none; }
+    .btn-primary { background: #4f46e5; color: white; }
+    .btn-primary:hover { background: #4338ca; }
+    .btn-secondary { background: #f3f4f6; color: #374151; }
+    .btn-secondary:hover { background: #e5e7eb; }
+</style>
+
+<script>
+    document.getElementById('toggleSidebar')?.addEventListener('click', function() {
+        document.querySelector('.admin-shell')?.classList.toggle('collapsed');
+    });
+</script>

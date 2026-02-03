@@ -1,0 +1,117 @@
+@model List<QLDuLichRBAC_Upgrade.Models.ViewModels.DonationVm>
+@{
+    ViewData["Title"] = "Danh Sách Quyên Góp";
+    var fullName = ViewData["FullName"]?.ToString() ?? "Kế toán";
+    var totalAmount = ViewData["TotalAmount"] as decimal? ?? 0;
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-logo">K</div>
+            <div class="brand-text">
+                <div class="brand-name">Accountant Panel</div>
+                <div class="brand-sub">QL Quỹ Tình Thương</div>
+            </div>
+        </div>
+
+        <nav class="menu">
+            <a class="menu-item" asp-controller="Accountant" asp-action="Index">
+                <span class="mi-ico">🏠</span>
+                <span class="mi-text">Dashboard</span>
+            </a>
+            <a class="menu-item active" asp-controller="Accountant" asp-action="Donations">
+                <span class="mi-ico">💵</span>
+                <span class="mi-text">Danh sách quyên góp</span>
+            </a>
+            <a class="menu-item" asp-controller="Accountant" asp-action="Expenses">
+                <span class="mi-ico">💸</span>
+                <span class="mi-text">Danh sách chi</span>
+            </a>
+            <a class="menu-item" asp-controller="Accountant" asp-action="ApprovedRequests">
+                <span class="mi-ico">📋</span>
+                <span class="mi-text">Hồ sơ đã duyệt</span>
+            </a>
+            <a class="menu-item" asp-controller="Accountant" asp-action="Reports">
+                <span class="mi-ico">📊</span>
+                <span class="mi-text">Báo cáo tài chính</span>
+            </a>
+            <div class="menu-divider"></div>
+            <form asp-controller="Account" asp-action="Logout" method="post" style="margin:0;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="menu-item danger" style="width:100%; text-align:left;">
+                    <span class="mi-ico">⎋</span>
+                    <span class="mi-text">Đăng xuất</span>
+                </button>
+            </form>
+        </nav>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn" type="button" id="toggleSidebar">☰</button>
+                <div class="page-title">
+                    <div class="title">Danh Sách Quyên Góp</div>
+                    <div class="subtitle">Tổng: @totalAmount.ToString("N0") VND từ @Model.Count khoản</div>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <div class="user-chip">
+                    <div class="avatar">@fullName.Substring(0, 1).ToUpper()</div>
+                    <div class="user-meta">
+                        <div class="user-name">@fullName</div>
+                        <div class="user-role">Kế Toán</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section class="content">
+            <div class="card panel">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nhà hảo tâm</th>
+                            <th>Loại</th>
+                            <th>Số tiền</th>
+                            <th>Ngày</th>
+                            <th>Phương thức</th>
+                            <th>Người nhận</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var d in Model)
+                        {
+                            <tr>
+                                <td>@d.DonationId</td>
+                                <td><strong>@d.DonorName</strong></td>
+                                <td><span class="chip">@d.DonorType</span></td>
+                                <td class="text-success"><strong>@d.Amount.ToString("N0") VND</strong></td>
+                                <td>@d.DonationDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@d.Method</td>
+                                <td>@(d.ReceivedByName ?? "-")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+
+<style>
+    .table { width: 100%; border-collapse: collapse; }
+    .table th, .table td { padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb; }
+    .table th { background: #f9fafb; font-weight: 600; }
+    .text-success { color: #22c55e; }
+</style>
+
+<script>
+    document.getElementById('toggleSidebar')?.addEventListener('click', function() {
+        document.querySelector('.admin-shell')?.classList.toggle('collapsed');
+    });
+</script>

@@ -1,0 +1,228 @@
+@model QLDuLichRBAC_Upgrade.Models.ViewModels.AccountantDashboardVm
+@{
+    ViewData["Title"] = "Dashboard Kế Toán";
+    var fullName = string.IsNullOrWhiteSpace(Model.FullName) ? "Kế toán" : Model.FullName;
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-logo">K</div>
+            <div class="brand-text">
+                <div class="brand-name">Accountant Panel</div>
+                <div class="brand-sub">QL Quỹ Tình Thương</div>
+            </div>
+        </div>
+
+        <nav class="menu">
+            <a class="menu-item active" asp-controller="Accountant" asp-action="Index">
+                <span class="mi-ico">🏠</span>
+                <span class="mi-text">Dashboard</span>
+            </a>
+
+            <a class="menu-item" asp-controller="Accountant" asp-action="Donations">
+                <span class="mi-ico">💵</span>
+                <span class="mi-text">Danh sách quyên góp</span>
+            </a>
+
+            <a class="menu-item" asp-controller="Accountant" asp-action="Expenses">
+                <span class="mi-ico">💸</span>
+                <span class="mi-text">Danh sách chi</span>
+            </a>
+
+            <a class="menu-item" asp-controller="Accountant" asp-action="ApprovedRequests">
+                <span class="mi-ico">📋</span>
+                <span class="mi-text">Hồ sơ đã duyệt</span>
+            </a>
+
+            <a class="menu-item" asp-controller="Accountant" asp-action="Reports">
+                <span class="mi-ico">📊</span>
+                <span class="mi-text">Báo cáo tài chính</span>
+            </a>
+
+            <div class="menu-divider"></div>
+
+            <form asp-controller="Account" asp-action="Logout" method="post" style="margin:0;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="menu-item danger" style="width:100%; text-align:left;">
+                    <span class="mi-ico">⎋</span>
+                    <span class="mi-text">Đăng xuất</span>
+                </button>
+            </form>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="badge">
+                <div class="dot"></div>
+                <span>Hệ thống đang hoạt động</span>
+            </div>
+            <div class="tiny">© @DateTime.Now.Year</div>
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn" type="button" id="toggleSidebar" title="Thu gọn sidebar">☰</button>
+
+                <div class="page-title">
+                    <div class="title">Dashboard</div>
+                    <div class="subtitle">
+                        Xin chào, <strong>@fullName</strong>. Chúc bạn một ngày làm việc hiệu quả.
+                    </div>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <div class="user-chip">
+                    <div class="avatar">@fullName.Substring(0, 1).ToUpper()</div>
+                    <div class="user-meta">
+                        <div class="user-name">@fullName</div>
+                        <div class="user-role">Kế Toán</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <section class="content">
+            <!-- Stat cards -->
+            <div class="grid stats">
+                <div class="card stat glow">
+                    <div class="stat-head">
+                        <div class="stat-ico">💰</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Số dư quỹ</div>
+                            <div class="kpi-value">@Model.FundBalance.ToString("N0")</div>
+                        </div>
+                    </div>
+                    <div class="stat-foot">
+                        <span class="muted">VND</span>
+                    </div>
+                </div>
+
+                <div class="card stat">
+                    <div class="stat-head">
+                        <div class="stat-ico">💵</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Tổng thu</div>
+                            <div class="kpi-value text-success">@Model.TotalDonations.ToString("N0")</div>
+                        </div>
+                    </div>
+                    <div class="stat-foot">
+                        <span class="muted">@Model.DonationsThisMonth khoản tháng này</span>
+                    </div>
+                </div>
+
+                <div class="card stat">
+                    <div class="stat-head">
+                        <div class="stat-ico">💸</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Tổng chi</div>
+                            <div class="kpi-value text-danger">@Model.TotalExpenses.ToString("N0")</div>
+                        </div>
+                    </div>
+                    <div class="stat-foot">
+                        <span class="muted">@Model.ExpensesThisMonth khoản tháng này</span>
+                    </div>
+                </div>
+
+                <div class="card stat">
+                    <div class="stat-head">
+                        <div class="stat-ico">📊</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Chênh lệch</div>
+                            <div class="kpi-value">@((Model.TotalDonations - Model.TotalExpenses).ToString("N0"))</div>
+                        </div>
+                    </div>
+                    <div class="stat-foot">
+                        <span class="muted">Thu - Chi</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent transactions -->
+            <div class="grid two-col">
+                <div class="card panel">
+                    <div class="panel-head">
+                        <div>
+                            <div class="panel-title">Quyên góp gần đây</div>
+                            <div class="panel-sub">5 khoản gần nhất</div>
+                        </div>
+                        <a asp-action="Donations" class="chip">Xem tất cả →</a>
+                    </div>
+
+                    <div class="timeline">
+                        @if (Model.RecentDonations != null && Model.RecentDonations.Count > 0)
+                        {
+                            foreach (var d in Model.RecentDonations)
+                            {
+                                <div class="tl-item">
+                                    <div class="tl-dot success"></div>
+                                    <div class="tl-content">
+                                        <div class="tl-title">@d.DonorName</div>
+                                        <div class="tl-sub">@d.Amount.ToString("N0") VND - @d.DonationDate.ToString("dd/MM/yyyy")</div>
+                                    </div>
+                                    <span class="chip">@d.Method</span>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="muted" style="padding: 1rem;">Chưa có dữ liệu</p>
+                        }
+                    </div>
+                </div>
+
+                <div class="card panel">
+                    <div class="panel-head">
+                        <div>
+                            <div class="panel-title">Chi tiêu gần đây</div>
+                            <div class="panel-sub">5 khoản gần nhất</div>
+                        </div>
+                        <a asp-action="Expenses" class="chip">Xem tất cả →</a>
+                    </div>
+
+                    <div class="timeline">
+                        @if (Model.RecentExpenses != null && Model.RecentExpenses.Count > 0)
+                        {
+                            foreach (var e in Model.RecentExpenses)
+                            {
+                                <div class="tl-item">
+                                    <div class="tl-dot danger"></div>
+                                    <div class="tl-content">
+                                        <div class="tl-title">@e.BeneficiaryName</div>
+                                        <div class="tl-sub">@e.Amount.ToString("N0") VND - @e.ExpenseDate.ToString("dd/MM/yyyy")</div>
+                                    </div>
+                                    <span class="chip">@e.PaymentMethod</span>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="muted" style="padding: 1rem;">Chưa có dữ liệu</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<style>
+    .text-success { color: #22c55e; }
+    .text-danger { color: #ef4444; }
+    .tl-dot.success { background: #22c55e; }
+    .tl-dot.danger { background: #ef4444; }
+</style>
+
+<script>
+    document.getElementById('toggleSidebar')?.addEventListener('click', function() {
+        document.querySelector('.admin-shell')?.classList.toggle('collapsed');
+    });
+</script>

@@ -1,0 +1,266 @@
+@model QLDuLichRBAC_Upgrade.Models.ViewModels.StaffDashboardVm
+@{
+    ViewData["Title"] = "Dashboard Nhân Viên";
+    var fullName = string.IsNullOrWhiteSpace(Model.FullName) ? "Nhân viên" : Model.FullName;
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-logo">S</div>
+            <div class="brand-text">
+                <div class="brand-name">Staff Panel</div>
+                <div class="brand-sub">QL Quỹ Tình Thương</div>
+            </div>
+        </div>
+
+        <nav class="menu">
+            <a class="menu-item active" asp-controller="Staff" asp-action="Index">
+                <span class="mi-ico">🏠</span>
+                <span class="mi-text">Dashboard</span>
+            </a>
+
+            <div class="menu-section">Quyên góp</div>
+            <a class="menu-item" asp-controller="Staff" asp-action="Donors">
+                <span class="mi-ico">👥</span>
+                <span class="mi-text">Nhà hảo tâm</span>
+            </a>
+            <a class="menu-item" asp-controller="Staff" asp-action="Donations">
+                <span class="mi-ico">💵</span>
+                <span class="mi-text">Tiếp nhận quyên góp</span>
+            </a>
+
+            <div class="menu-section">Hỗ trợ</div>
+            <a class="menu-item" asp-controller="Staff" asp-action="Beneficiaries">
+                <span class="mi-ico">🧑‍🤝‍🧑</span>
+                <span class="mi-text">Đối tượng hỗ trợ</span>
+            </a>
+            <a class="menu-item" asp-controller="Staff" asp-action="Requests">
+                <span class="mi-ico">📋</span>
+                <span class="mi-text">Yêu cầu hỗ trợ</span>
+            </a>
+
+            <div class="menu-divider"></div>
+
+            <form asp-controller="Account" asp-action="Logout" method="post" style="margin:0;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="menu-item danger" style="width:100%; text-align:left;">
+                    <span class="mi-ico">⎋</span>
+                    <span class="mi-text">Đăng xuất</span>
+                </button>
+            </form>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="badge">
+                <div class="dot"></div>
+                <span>Hệ thống đang hoạt động</span>
+            </div>
+            <div class="tiny">© @DateTime.Now.Year</div>
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn" type="button" id="toggleSidebar" title="Thu gọn sidebar">☰</button>
+
+                <div class="page-title">
+                    <div class="title">Dashboard</div>
+                    <div class="subtitle">
+                        Xin chào, <strong>@fullName</strong>. Chúc bạn một ngày làm việc hiệu quả.
+                    </div>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <div class="user-chip">
+                    <div class="avatar">@fullName.Substring(0, 1).ToUpper()</div>
+                    <div class="user-meta">
+                        <div class="user-name">@fullName</div>
+                        <div class="user-role">Nhân viên Quỹ</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <section class="content">
+            <!-- Stat cards -->
+            <div class="grid stats">
+                <div class="card stat glow">
+                    <div class="stat-head">
+                        <div class="stat-ico">👥</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Nhà hảo tâm</div>
+                            <div class="kpi-value">@Model.TotalDonors</div>
+                        </div>
+                    </div>
+                    <div class="stat-foot">
+                        <span class="muted">Tổng số đã đăng ký</span>
+                    </div>
+                </div>
+
+                <div class="card stat">
+                    <div class="stat-head">
+                        <div class="stat-ico">🧑‍🤝‍🧑</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Đối tượng hỗ trợ</div>
+                            <div class="kpi-value">@Model.TotalBeneficiaries</div>
+                        </div>
+                    </div>
+                    <div class="stat-foot">
+                        <span class="muted">Tổng số đã đăng ký</span>
+                    </div>
+                </div>
+
+                <div class="card stat">
+                    <div class="stat-head">
+                        <div class="stat-ico">💵</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Quyên góp hôm nay</div>
+                            <div class="kpi-value">@Model.DonationsToday</div>
+                        </div>
+                    </div>
+                    <div class="stat-foot">
+                        <span class="text-success">@Model.TodayDonationAmount.ToString("N0") VND</span>
+                    </div>
+                </div>
+
+                <div class="card stat">
+                    <div class="stat-head">
+                        <div class="stat-ico">📋</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Yêu cầu hôm nay</div>
+                            <div class="kpi-value">@Model.RequestsCreatedToday</div>
+                        </div>
+                    </div>
+                    <div class="stat-foot">
+                        <span class="muted">Đã tạo</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick actions -->
+            <div class="card panel" style="margin-bottom: 1.5rem;">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-title">Thao tác nhanh</div>
+                        <div class="panel-sub">Các chức năng thường dùng</div>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <a class="action-card" asp-controller="Staff" asp-action="CreateDonor">
+                        <div class="action-ico">➕</div>
+                        <div class="action-body">
+                            <div class="action-title">Thêm nhà hảo tâm</div>
+                            <div class="action-desc">Đăng ký nhà hảo tâm mới</div>
+                        </div>
+                        <div class="action-go">→</div>
+                    </a>
+
+                    <a class="action-card" asp-controller="Staff" asp-action="CreateDonation">
+                        <div class="action-ico">💵</div>
+                        <div class="action-body">
+                            <div class="action-title">Tiếp nhận quyên góp</div>
+                            <div class="action-desc">Ghi nhận khoản quyên góp mới</div>
+                        </div>
+                        <div class="action-go">→</div>
+                    </a>
+
+                    <a class="action-card" asp-controller="Staff" asp-action="CreateBeneficiary">
+                        <div class="action-ico">🧑‍🤝‍🧑</div>
+                        <div class="action-body">
+                            <div class="action-title">Thêm đối tượng</div>
+                            <div class="action-desc">Đăng ký đối tượng hỗ trợ mới</div>
+                        </div>
+                        <div class="action-go">→</div>
+                    </a>
+
+                    <a class="action-card" asp-controller="Staff" asp-action="CreateRequest">
+                        <div class="action-ico">📋</div>
+                        <div class="action-body">
+                            <div class="action-title">Lập yêu cầu hỗ trợ</div>
+                            <div class="action-desc">Tạo hồ sơ đề nghị hỗ trợ</div>
+                        </div>
+                        <div class="action-go">→</div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Recent data -->
+            <div class="grid two-col">
+                <div class="card panel">
+                    <div class="panel-head">
+                        <div>
+                            <div class="panel-title">Nhà hảo tâm gần đây</div>
+                            <div class="panel-sub">5 người mới nhất</div>
+                        </div>
+                        <a asp-action="Donors" class="chip">Xem tất cả →</a>
+                    </div>
+
+                    <div class="timeline">
+                        @foreach (var d in Model.RecentDonors)
+                        {
+                            <div class="tl-item">
+                                <div class="tl-dot"></div>
+                                <div class="tl-content">
+                                    <div class="tl-title">@d.DonorName</div>
+                                    <div class="tl-sub">@d.DonorType - Đã góp: @d.TotalDonated.ToString("N0") VND</div>
+                                </div>
+                            </div>
+                        }
+                        @if (!Model.RecentDonors.Any())
+                        {
+                            <p class="muted" style="padding: 1rem;">Chưa có dữ liệu</p>
+                        }
+                    </div>
+                </div>
+
+                <div class="card panel">
+                    <div class="panel-head">
+                        <div>
+                            <div class="panel-title">Đối tượng hỗ trợ gần đây</div>
+                            <div class="panel-sub">5 đối tượng mới nhất</div>
+                        </div>
+                        <a asp-action="Beneficiaries" class="chip">Xem tất cả →</a>
+                    </div>
+
+                    <div class="timeline">
+                        @foreach (var b in Model.RecentBeneficiaries)
+                        {
+                            <div class="tl-item">
+                                <div class="tl-dot"></div>
+                                <div class="tl-content">
+                                    <div class="tl-title">@b.FullName</div>
+                                    <div class="tl-sub">@b.BeneficiaryType - @b.TotalRequests yêu cầu</div>
+                                </div>
+                            </div>
+                        }
+                        @if (!Model.RecentBeneficiaries.Any())
+                        {
+                            <p class="muted" style="padding: 1rem;">Chưa có dữ liệu</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<style>
+    .menu-section { padding: 8px 16px; font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; margin-top: 8px; }
+    .text-success { color: #22c55e; }
+</style>
+
+<script>
+    document.getElementById('toggleSidebar')?.addEventListener('click', function() {
+        document.querySelector('.admin-shell')?.classList.toggle('collapsed');
+    });
+</script>

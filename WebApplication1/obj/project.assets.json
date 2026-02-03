@@ -4061,23 +4061,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Quoc Viet\\.nuget\\packages\\": {},
+    "C:\\Users\\Admin\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\WebApplication1.csproj",
+      "projectUniqueName": "D:\\vscodetim\\btl\\cuoiky\\WebApplication2\\QuyTinhThuong\\WebApplication1\\WebApplication1.csproj",
       "projectName": "WebApplication1",
-      "projectPath": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\WebApplication1.csproj",
-      "packagesPath": "C:\\Users\\Quoc Viet\\.nuget\\packages\\",
-      "outputPath": "D:\\UTC2\\PhanTichThietKeYeuCau\\BaiTapCuoiKy\\QuyTinhThuong\\QuyTinhThuong\\WebApplication1\\obj\\",
+      "projectPath": "D:\\vscodetim\\btl\\cuoiky\\WebApplication2\\QuyTinhThuong\\WebApplication1\\WebApplication1.csproj",
+      "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+      "outputPath": "D:\\vscodetim\\btl\\cuoiky\\WebApplication2\\QuyTinhThuong\\WebApplication1\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Quoc Viet\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -4086,7 +4086,6 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -4147,7 +4146,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.310/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
