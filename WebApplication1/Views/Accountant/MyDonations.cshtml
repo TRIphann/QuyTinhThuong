@@ -1,0 +1,94 @@
+@model List<QLDuLichRBAC_Upgrade.Controllers.MyDonationVm>
+@{
+    ViewData["Title"] = "Lịch sử quyên góp";
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    <!-- Sidebar -->
+    <partial name="_AccountantSidebar" />
+
+    <!-- Main -->
+    <main class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn" type="button" id="toggleSidebar" title="Thu gọn sidebar">☰</button>
+                <div class="page-title">
+                    <div class="title">Lịch sử quyên góp</div>
+                    <div class="subtitle">Các khoản bạn đã đóng góp vào quỹ</div>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <a asp-action="Donate" style="padding: 0.5rem 1rem; background: #22c55e; color: white; border-radius: 8px; text-decoration: none;">
+                    💝 Quyên góp thêm
+                </a>
+            </div>
+        </header>
+
+        <section class="content">
+            <div class="card panel">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #1e293b; color: #94a3b8; text-align: left;">
+                            <th style="padding: 1rem;">Ngày</th>
+                            <th style="padding: 1rem;">Số tiền</th>
+                            <th style="padding: 1rem;">Phương thức</th>
+                            <th style="padding: 1rem;">Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            var total = 0m;
+                            foreach (var d in Model)
+                            {
+                                total += d.Amount;
+                                <tr style="border-bottom: 1px solid #334155; color: #e2e8f0;">
+                                    <td style="padding: 1rem;">@d.DonationDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td style="padding: 1rem; color: #22c55e; font-weight: bold;">@d.Amount.ToString("N0") VND</td>
+                                    <td style="padding: 1rem; color: #94a3b8;">@d.Method</td>
+                                    <td style="padding: 1rem;">
+                                        @if (d.IsConfirmed == true)
+                                        {
+                                            <span style="background: #22c55e; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.875rem;">
+                                                Đã xác nhận
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span style="background: #f59e0b; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.875rem;">
+                                                Chờ xác nhận
+                                            </span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                            <tr style="background: #1e293b; color: #f8fafc; font-weight: bold;">
+                                <td style="padding: 1rem;">Tổng cộng</td>
+                                <td style="padding: 1rem; color: #22c55e;">@total.ToString("N0") VND</td>
+                                <td colspan="2" style="padding: 1rem; color: #94a3b8;">@Model.Count lần quyên góp</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" style="padding: 3rem; text-align: center; color: #64748b;">
+                                    <div style="font-size: 3rem; margin-bottom: 1rem;">💝</div>
+                                    <p>Bạn chưa có khoản quyên góp nào</p>
+                                    <a asp-action="Donate" style="color: #22c55e; text-decoration: underline;">Quyên góp ngay →</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    document.getElementById('toggleSidebar')?.addEventListener('click', function() {
+        document.querySelector('.admin-shell')?.classList.toggle('collapsed');
+    });
+</script>

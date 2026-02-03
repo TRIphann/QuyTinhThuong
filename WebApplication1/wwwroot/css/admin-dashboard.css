@@ -750,3 +750,83 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* ===== FORM VALIDATION STYLES ===== */
+.admin-shell .field-validation-error,
+.admin-shell .text-danger.small {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--danger) !important;
+    font-weight: 500;
+}
+
+.admin-shell .input-validation-error {
+    border-color: var(--danger) !important;
+    box-shadow: 0 0 0 3px rgba(255, 92, 122, 0.2) !important;
+}
+
+.admin-shell .validation-summary-errors {
+    background: rgba(255, 92, 122, 0.1);
+    border: 1px solid rgba(255, 92, 122, 0.3);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    color: var(--danger);
+}
+
+.admin-shell .validation-summary-errors ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.admin-shell .form-control:focus:invalid {
+    border-color: var(--danger) !important;
+    box-shadow: 0 0 0 3px rgba(255, 92, 122, 0.2) !important;
+}
+
+/* Form success message */
+.admin-shell .alert-success {
+    background: rgba(52, 211, 153, 0.15);
+    border: 1px solid rgba(52, 211, 153, 0.3);
+    color: var(--ok);
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+.admin-shell .alert-danger {
+    background: rgba(255, 92, 122, 0.15);
+    border: 1px solid rgba(255, 92, 122, 0.3);
+    color: var(--danger);
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+/* Form field required indicator */
+.admin-shell .required {
+    color: var(--danger);
+}
+
+/* Shake animation */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+    20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+.admin-shell .input-validation-error {
+    animation: shake 0.4s ease-in-out;
+}
+
+/* Form control states */
+.admin-shell .form-control {
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.admin-shell .form-control:focus {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 3px rgba(110, 231, 255, 0.15) !important;
+    outline: none;
+}

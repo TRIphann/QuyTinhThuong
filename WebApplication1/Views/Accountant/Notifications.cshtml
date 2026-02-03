@@ -1,0 +1,139 @@
+@model List<QLDuLichRBAC_Upgrade.Models.Entities.Notification>
+@{
+    ViewData["Title"] = "Thông báo";
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    <!-- Sidebar -->
+    <partial name="_AccountantSidebar" />
+
+    <!-- Main -->
+    <main class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn" type="button" id="toggleSidebar" title="Thu gọn sidebar">☰</button>
+                <div class="page-title">
+                    <div class="title">Thông báo</div>
+                    <div class="subtitle">Cập nhật về các hoạt động của quỹ</div>
+                </div>
+            </div>
+        </header>
+
+        <section class="content">
+            @if (Model != null && Model.Count > 0)
+            {
+                foreach (var n in Model)
+                {
+                    var bgColor = n.IsRead == true ? "#0f172a" : "#1e293b";
+                    var borderColor = n.IsRead == true ? "#334155" : "#3b82f6";
+                    var hasTask = n.RelatedTask != null;
+                    
+                    <div class="card notification-card" style="margin-bottom: 0.75rem; background: @bgColor; border-left: 3px solid @borderColor;">
+                        <div style="padding: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                                <div style="color: #e2e8f0;">
+                                    <div style="font-weight: bold; margin-bottom: 0.25rem;">
+                                        @if (n.IsRead != true)
+                                        {
+                                            <span style="display: inline-block; width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; margin-right: 0.5rem;"></span>
+                                        }
+                                        🎉 @n.Title
+                                    </div>
+                                    <div style="color: #94a3b8;">@n.Message</div>
+                                </div>
+                                <div style="text-align: right; color: #64748b; font-size: 0.875rem; white-space: nowrap;">
+                                    @n.CreatedAt.ToString("dd/MM HH:mm")
+                                </div>
+                            </div>
+                            
+                            @if (hasTask)
+                            {
+                                <!-- Chi tiết hỗ trợ -->
+                                <div class="task-details" id="details-@n.NotificationId" style="display: none; margin-top: 1rem; padding: 1rem; background: #1e293b; border-radius: 8px;">
+                                    <h4 style="color: #3b82f6; margin-bottom: 1rem;">📋 Chi tiết hoạt động hỗ trợ</h4>
+                                    
+                                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; color: #e2e8f0;">
+                                        <div>
+                                            <div style="color: #64748b; font-size: 0.8rem;">Người thụ hưởng</div>
+                                            <div style="font-weight: 500;">@(n.RelatedTask?.SupportRequest?.Beneficiary?.FullName ?? "N/A")</div>
+                                        </div>
+                                        <div>
+                                            <div style="color: #64748b; font-size: 0.8rem;">Loại đối tượng</div>
+                                            <div style="font-weight: 500;">@(n.RelatedTask?.SupportRequest?.Beneficiary?.BeneficiaryType ?? "N/A")</div>
+                                        </div>
+                                        <div>
+                                            <div style="color: #64748b; font-size: 0.8rem;">Số tiền hỗ trợ</div>
+                                            <div style="font-weight: 500; color: #22c55e;">@((n.RelatedTask?.Amount + n.RelatedTask?.AdditionalAmount)?.ToString("N0")) VND</div>
+                                        </div>
+                                        <div>
+                                            <div style="color: #64748b; font-size: 0.8rem;">Trạng thái</div>
+                                            <div style="font-weight: 500;">
+                                                <span style="background: #22c55e; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem;">@(n.RelatedTask?.Status ?? "N/A")</span>
+                                            </div>
+                                        </div>
+                                        <div style="grid-column: span 2;">
+                                            <div style="color: #64748b; font-size: 0.8rem;">Địa chỉ</div>
+                                            <div style="font-weight: 500;">@(n.RelatedTask?.SupportRequest?.Beneficiary?.Address ?? "N/A")</div>
+                                        </div>
+                                        @if (!string.IsNullOrEmpty(n.RelatedTask?.StaffNote))
+                                        {
+                                            <div style="grid-column: span 2;">
+                                                <div style="color: #64748b; font-size: 0.8rem;">Ghi chú của nhân viên</div>
+                                                <div style="font-weight: 500;">@n.RelatedTask.StaffNote</div>
+                                            </div>
+                                        }
+                                    </div>
+                                    
+                                    <!-- Nút gửi phản hồi -->
+                                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #334155;">
+                                        <a asp-action="SubmitFeedback" asp-route-id="@n.RelatedTask!.TaskId" 
+                                           style="display: inline-flex; align-items: center; gap: 0.5rem; background: #3b82f6; color: white; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-size: 0.875rem;">
+                                            💬 Gửi phản hồi tới Quản lý
+                                        </a>
+                                    </div>
+                                </div>
+                                
+                                <!-- Nút xem chi tiết -->
+                                <button type="button" onclick="toggleDetails(@n.NotificationId)" 
+                                        class="btn-toggle-details" id="btn-@n.NotificationId"
+                                        style="margin-top: 0.5rem; background: transparent; border: 1px solid #3b82f6; color: #3b82f6; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.8rem; cursor: pointer;">
+                                    👁️ Xem chi tiết
+                                </button>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="card panel">
+                    <div style="padding: 3rem; text-align: center; color: #64748b;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🔔</div>
+                        <p>Bạn chưa có thông báo nào</p>
+                        <a asp-action="Index" style="color: #3b82f6; text-decoration: underline;">← Quay về tổng quan</a>
+                    </div>
+                </div>
+            }
+        </section>
+    </main>
+</div>
+
+<script>
+    document.getElementById('toggleSidebar')?.addEventListener('click', function() {
+        document.querySelector('.admin-shell')?.classList.toggle('collapsed');
+    });
+    
+    function toggleDetails(id) {
+        var details = document.getElementById('details-' + id);
+        var btn = document.getElementById('btn-' + id);
+        if (details.style.display === 'none') {
+            details.style.display = 'block';
+            btn.innerHTML = '🔼 Ẩn chi tiết';
+        } else {
+            details.style.display = 'none';
+            btn.innerHTML = '👁️ Xem chi tiết';
+        }
+    }
+</script>

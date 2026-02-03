@@ -1,0 +1,112 @@
+@model List<QLDuLichRBAC_Upgrade.Models.Entities.SupportTask>
+@{
+    ViewData["Title"] = "Yêu cầu hỗ trợ từ nhân viên";
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    <!-- Sidebar -->
+    <partial name="_ManagerSidebar" />
+
+    <!-- Main -->
+    <main class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn" type="button" id="toggleSidebar" title="Thu gọn sidebar">☰</button>
+                <div class="page-title">
+                    <div class="title">Yêu cầu hỗ trợ</div>
+                    <div class="subtitle">Xử lý yêu cầu tiền/nhân lực từ nhân viên</div>
+                </div>
+            </div>
+        </header>
+
+        <section class="content">
+            @if (Model != null && Model.Count > 0)
+            {
+                foreach (var task in Model)
+                {
+                    <div class="card panel" style="margin-bottom: 1rem;">
+                        <div class="panel-head">
+                            <div>
+                                <div class="panel-title">Công việc #@task.TaskId</div>
+                                <div class="panel-sub">@task.AssignedStaff?.FullName → @task.SupportRequest?.Beneficiary?.FullName</div>
+                            </div>
+                            <span style="background: #ef4444; color: white; padding: 0.25rem 0.75rem; border-radius: 20px;">
+                                @task.SupportRequestType
+                            </span>
+                        </div>
+
+                        <div style="padding: 1.5rem; color: #e2e8f0;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                                <div>
+                                    <strong style="color: #94a3b8;">Số tiền đã giao:</strong><br />
+                                    @task.Amount.ToString("N0") VND
+                                </div>
+                                <div>
+                                    <strong style="color: #94a3b8;">Yêu cầu thêm:</strong><br />
+                                    @(task.SupportRequestAmount?.ToString("N0") ?? "0") VND
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 1rem;">
+                                <strong style="color: #94a3b8;">Lý do yêu cầu:</strong><br />
+                                @(task.SupportRequestReason ?? "Không có lý do")
+                            </div>
+
+                            <div style="margin-bottom: 1rem;">
+                                <strong style="color: #94a3b8;">Thời gian yêu cầu:</strong><br />
+                                @(task.SupportRequestAt?.ToString("dd/MM/yyyy HH:mm") ?? "N/A")
+                            </div>
+
+                            <form method="post" asp-action="HandleSupportRequest" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: end;">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="taskId" value="@task.TaskId" />
+
+                                @if (task.SupportRequestType == "Tiền")
+                                {
+                                    <div>
+                                        <label style="color: #94a3b8; display: block; margin-bottom: 0.5rem;">Số tiền duyệt thêm</label>
+                                        <input type="number" name="additionalAmount" value="@task.SupportRequestAmount" min="0"
+                                               style="padding: 0.5rem; border-radius: 6px; background: #1e293b; color: #f8fafc; border: 1px solid #334155; width: 150px;" />
+                                    </div>
+                                }
+
+                                <div>
+                                    <label style="color: #94a3b8; display: block; margin-bottom: 0.5rem;">Ghi chú</label>
+                                    <input type="text" name="responseNote" placeholder="Ghi chú phản hồi..."
+                                           style="padding: 0.5rem; border-radius: 6px; background: #1e293b; color: #f8fafc; border: 1px solid #334155; width: 250px;" />
+                                </div>
+
+                                <button type="submit" name="action" value="approve"
+                                        style="padding: 0.5rem 1.5rem; background: #22c55e; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                                    ✓ Chấp nhận
+                                </button>
+                                <button type="submit" name="action" value="reject"
+                                        style="padding: 0.5rem 1.5rem; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                                    ✗ Từ chối
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="card panel">
+                    <div style="padding: 3rem; text-align: center; color: #64748b;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
+                        <p>Không có yêu cầu hỗ trợ nào cần xử lý</p>
+                        <a asp-action="Index" style="color: #3b82f6; text-decoration: underline;">← Quay về tổng quan</a>
+                    </div>
+                </div>
+            }
+        </section>
+    </main>
+</div>
+
+<script>
+    document.getElementById('toggleSidebar')?.addEventListener('click', function() {
+        document.querySelector('.admin-shell')?.classList.toggle('collapsed');
+    });
+</script>

@@ -1,0 +1,88 @@
+@model List<QLDuLichRBAC_Upgrade.Models.Entities.SupportTask>
+@{
+    ViewData["Title"] = "Danh sách công việc";
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    <!-- Sidebar -->
+    <partial name="_ManagerSidebar" />
+
+    <!-- Main -->
+    <main class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn" type="button" id="toggleSidebar" title="Thu gọn sidebar">☰</button>
+                <div class="page-title">
+                    <div class="title">Danh sách công việc</div>
+                    <div class="subtitle">Tất cả công việc đã giao cho nhân viên</div>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <a asp-action="CreateTask" class="btn btn-success" style="padding: 0.5rem 1rem; background: #22c55e; color: white; border-radius: 8px; text-decoration: none;">
+                    ➕ Tạo mới
+                </a>
+            </div>
+        </header>
+
+        <section class="content">
+            <div class="card panel">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #1e293b; color: #94a3b8; text-align: left;">
+                            <th style="padding: 1rem;">ID</th>
+                            <th style="padding: 1rem;">Nhân viên</th>
+                            <th style="padding: 1rem;">Người hỗ trợ</th>
+                            <th style="padding: 1rem;">Số tiền</th>
+                            <th style="padding: 1rem;">Trạng thái</th>
+                            <th style="padding: 1rem;">Ngày tạo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (var t in Model)
+                            {
+                                var statusColor = t.Status switch
+                                {
+                                    "Chờ thực hiện" => "#f59e0b",
+                                    "Đang thực hiện" => "#3b82f6",
+                                    "Yêu cầu hỗ trợ" => "#ef4444",
+                                    "Hoàn thành" => "#22c55e",
+                                    _ => "#64748b"
+                                };
+                                <tr style="border-bottom: 1px solid #334155; color: #e2e8f0;">
+                                    <td style="padding: 1rem;">#@t.TaskId</td>
+                                    <td style="padding: 1rem;">@t.AssignedStaff?.FullName</td>
+                                    <td style="padding: 1rem;">@t.SupportRequest?.Beneficiary?.FullName</td>
+                                    <td style="padding: 1rem;">@t.TotalAmount.ToString("N0") VND</td>
+                                    <td style="padding: 1rem;">
+                                        <span style="background: @statusColor; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.875rem;">
+                                            @t.Status
+                                        </span>
+                                    </td>
+                                    <td style="padding: 1rem;">@t.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" style="padding: 2rem; text-align: center; color: #64748b;">
+                                    Chưa có công việc nào
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    document.getElementById('toggleSidebar')?.addEventListener('click', function() {
+        document.querySelector('.admin-shell')?.classList.toggle('collapsed');
+    });
+</script>

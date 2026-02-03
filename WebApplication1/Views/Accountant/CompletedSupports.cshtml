@@ -1,0 +1,100 @@
+@model List<QLDuLichRBAC_Upgrade.Models.Entities.SupportTask>
+@{
+    ViewData["Title"] = "Hoạt động hỗ trợ";
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    <!-- Sidebar -->
+    <partial name="_AccountantSidebar" />
+
+    <!-- Main -->
+    <main class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn" type="button" id="toggleSidebar" title="Thu gọn sidebar">☰</button>
+                <div class="page-title">
+                    <div class="title">Hoạt động hỗ trợ</div>
+                    <div class="subtitle">Các đợt hỗ trợ đã hoàn thành từ quỹ</div>
+                </div>
+            </div>
+        </header>
+
+        <section class="content">
+            @if (Model != null && Model.Count > 0)
+            {
+                <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1rem;">
+                    @foreach (var task in Model)
+                    {
+                        var canFeedback = task.StaffCompletedAt.HasValue && 
+                                          (DateTime.Now - task.StaffCompletedAt.Value).TotalDays >= 3;
+                        
+                        <div class="card panel">
+                            <div class="panel-head">
+                                <div>
+                                    <div class="panel-title">@task.SupportRequest?.Beneficiary?.FullName</div>
+                                    <div class="panel-sub">@task.SupportRequest?.Beneficiary?.BeneficiaryType</div>
+                                </div>
+                                <span style="background: #22c55e; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.875rem;">
+                                    Hoàn thành
+                                </span>
+                            </div>
+
+                            <div style="padding: 1rem; color: #e2e8f0;">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem;">
+                                    <div>
+                                        <span style="color: #94a3b8;">Số tiền hỗ trợ:</span><br />
+                                        <strong style="color: #22c55e;">@task.TotalAmount.ToString("N0") VND</strong>
+                                    </div>
+                                    <div>
+                                        <span style="color: #94a3b8;">Ngày hoàn thành:</span><br />
+                                        @task.StaffCompletedAt?.ToString("dd/MM/yyyy")
+                                    </div>
+                                </div>
+
+                                @if (!string.IsNullOrEmpty(task.StaffNote))
+                                {
+                                    <div style="background: #1e293b; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem;">
+                                        <span style="color: #94a3b8; font-size: 0.875rem;">Ghi chú:</span><br />
+                                        @task.StaffNote
+                                    </div>
+                                }
+
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <a asp-action="SupportDetail" asp-route-id="@task.TaskId"
+                                       style="flex: 1; text-align: center; padding: 0.5rem; background: #3b82f6; color: white; border-radius: 6px; text-decoration: none;">
+                                        Xem chi tiết
+                                    </a>
+                                    @if (canFeedback)
+                                    {
+                                        <a asp-action="SubmitFeedback" asp-route-id="@task.TaskId"
+                                           style="flex: 1; text-align: center; padding: 0.5rem; background: #8b5cf6; color: white; border-radius: 6px; text-decoration: none;">
+                                            💬 Góp ý
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="card panel">
+                    <div style="padding: 3rem; text-align: center; color: #64748b;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
+                        <p>Chưa có hoạt động hỗ trợ nào hoàn thành</p>
+                        <a asp-action="Index" style="color: #3b82f6; text-decoration: underline;">← Quay về tổng quan</a>
+                    </div>
+                </div>
+            }
+        </section>
+    </main>
+</div>
+
+<script>
+    document.getElementById('toggleSidebar')?.addEventListener('click', function() {
+        document.querySelector('.admin-shell')?.classList.toggle('collapsed');
+    });
+</script>

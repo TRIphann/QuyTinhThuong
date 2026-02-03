@@ -1,0 +1,61 @@
+<aside class="sidebar">
+    <div class="brand">
+        <div class="brand-logo">K</div>
+        <div class="brand-text">
+            <div class="brand-name">Khách Hàng</div>
+            <div class="brand-sub">QL Quỹ Tình Thương</div>
+        </div>
+    </div>
+
+    <nav class="menu">
+        <a class="menu-item" asp-controller="Accountant" asp-action="Index">
+            <span class="mi-ico">🏠</span>
+            <span class="mi-text">Tổng quan</span>
+        </a>
+
+        <a class="menu-item" asp-controller="Accountant" asp-action="Donate">
+            <span class="mi-ico">💝</span>
+            <span class="mi-text">Quyên góp</span>
+        </a>
+
+        <a class="menu-item" asp-controller="Accountant" asp-action="MyDonations">
+            <span class="mi-ico">📜</span>
+            <span class="mi-text">Lịch sử quyên góp</span>
+        </a>
+
+        <a class="menu-item" asp-controller="Accountant" asp-action="CompletedSupports">
+            <span class="mi-ico">✅</span>
+            <span class="mi-text">Hoạt động hỗ trợ</span>
+        </a>
+
+        @{
+            var unreadCount = ViewData["UnreadNotifications"] as int? ?? 0;
+        }
+        <a class="menu-item" asp-controller="Accountant" asp-action="Notifications" style="position: relative;">
+            <span class="mi-ico">🔔</span>
+            <span class="mi-text">Thông báo</span>
+            @if (unreadCount > 0)
+            {
+                <span style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: #ef4444; color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 10px; font-weight: bold;">@unreadCount</span>
+            }
+        </a>
+
+        <div class="menu-divider"></div>
+
+        <form asp-controller="Account" asp-action="Logout" method="post" style="margin:0;">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="menu-item danger" style="width:100%; text-align:left;">
+                <span class="mi-ico">⎋</span>
+                <span class="mi-text">Đăng xuất</span>
+            </button>
+        </form>
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="badge">
+            <div class="dot"></div>
+            <span>Hệ thống đang hoạt động</span>
+        </div>
+        <div class="tiny">© @DateTime.Now.Year</div>
+    </div>
+</aside>

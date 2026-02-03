@@ -1,0 +1,59 @@
+<aside class="sidebar">
+    <div class="brand">
+        <div class="brand-logo">S</div>
+        <div class="brand-text">
+            <div class="brand-name">Nhân Viên</div>
+            <div class="brand-sub">QL Quỹ Tình Thương</div>
+        </div>
+    </div>
+
+    <nav class="menu">
+        <a class="menu-item" asp-controller="Staff" asp-action="Index">
+            <span class="mi-ico">🏠</span>
+            <span class="mi-text">Tổng quan</span>
+        </a>
+
+        <a class="menu-item" asp-controller="Staff" asp-action="MyTasks">
+            <span class="mi-ico">📋</span>
+            <span class="mi-text">Công việc của tôi</span>
+        </a>
+
+        <div class="menu-section">Quyên góp</div>
+        <a class="menu-item" asp-controller="Staff" asp-action="Donors">
+            <span class="mi-ico">👥</span>
+            <span class="mi-text">Nhà hảo tâm</span>
+        </a>
+        <a class="menu-item" asp-controller="Staff" asp-action="Donations">
+            <span class="mi-ico">💵</span>
+            <span class="mi-text">Tiếp nhận quyên góp</span>
+        </a>
+
+        <div class="menu-section">Hỗ trợ</div>
+        <a class="menu-item" asp-controller="Staff" asp-action="Beneficiaries">
+            <span class="mi-ico">🧑‍🤝‍🧑</span>
+            <span class="mi-text">Đối tượng hỗ trợ</span>
+        </a>
+        <a class="menu-item" asp-controller="Staff" asp-action="Requests">
+            <span class="mi-ico">📝</span>
+            <span class="mi-text">Tạo yêu cầu hỗ trợ</span>
+        </a>
+
+        <div class="menu-divider"></div>
+
+        <form asp-controller="Account" asp-action="Logout" method="post" style="margin:0;">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="menu-item danger" style="width:100%; text-align:left;">
+                <span class="mi-ico">⎋</span>
+                <span class="mi-text">Đăng xuất</span>
+            </button>
+        </form>
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="badge">
+            <div class="dot"></div>
+            <span>Hệ thống đang hoạt động</span>
+        </div>
+        <div class="tiny">© @DateTime.Now.Year</div>
+    </div>
+</aside>

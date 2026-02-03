@@ -1,0 +1,54 @@
+<aside class="sidebar">
+    <div class="brand">
+        <div class="brand-logo">M</div>
+        <div class="brand-text">
+            <div class="brand-name">Quản Lý</div>
+            <div class="brand-sub">QL Quỹ Tình Thương</div>
+        </div>
+    </div>
+
+    <nav class="menu">
+        <a class="menu-item" asp-controller="Manager" asp-action="Index">
+            <span class="mi-ico">🏠</span>
+            <span class="mi-text">Tổng quan</span>
+        </a>
+
+        <a class="menu-item" asp-controller="Manager" asp-action="CreateTask">
+            <span class="mi-ico">➕</span>
+            <span class="mi-text">Tạo công việc</span>
+        </a>
+
+        <a class="menu-item" asp-controller="Manager" asp-action="Tasks">
+            <span class="mi-ico">📋</span>
+            <span class="mi-text">Danh sách công việc</span>
+        </a>
+
+        <a class="menu-item" asp-controller="Manager" asp-action="SupportRequests">
+            <span class="mi-ico">🆘</span>
+            <span class="mi-text">Yêu cầu hỗ trợ</span>
+        </a>
+
+        <a class="menu-item" asp-controller="Manager" asp-action="Complaints">
+            <span class="mi-ico">💬</span>
+            <span class="mi-text">Góp ý khách hàng</span>
+        </a>
+
+        <div class="menu-divider"></div>
+
+        <form asp-controller="Account" asp-action="Logout" method="post" style="margin:0;">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="menu-item danger" style="width:100%; text-align:left;">
+                <span class="mi-ico">⎋</span>
+                <span class="mi-text">Đăng xuất</span>
+            </button>
+        </form>
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="badge">
+            <div class="dot"></div>
+            <span>Hệ thống đang hoạt động</span>
+        </div>
+        <div class="tiny">© @DateTime.Now.Year</div>
+    </div>
+</aside>

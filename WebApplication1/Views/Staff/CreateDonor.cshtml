@@ -10,7 +10,7 @@
         <div class="brand">
             <div class="brand-logo">S</div>
             <div class="brand-text">
-                <div class="brand-name">Staff Panel</div>
+                <div class="brand-name">Nhân Viên</div>
                 <div class="brand-sub">QL Quỹ Tình Thương</div>
             </div>
         </div>
@@ -18,7 +18,7 @@
         <nav class="menu">
             <a class="menu-item" asp-controller="Staff" asp-action="Index">
                 <span class="mi-ico">🏠</span>
-                <span class="mi-text">Dashboard</span>
+                <span class="mi-text">Tổng quan</span>
             </a>
             <div class="menu-section">Quyên góp</div>
             <a class="menu-item active" asp-controller="Staff" asp-action="Donors">
@@ -118,21 +118,67 @@
     .menu-section { padding: 8px 16px; font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; margin-top: 8px; }
     .form { padding: 1.5rem; }
     .form-group { margin-bottom: 1.25rem; }
-    .form-label { display: block; font-weight: 500; margin-bottom: 0.5rem; color: #374151; }
-    .required { color: #dc3545; }
-    .form-control { width: 100%; padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; }
-    .form-control:focus { outline: none; border-color: #4f46e5; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+    .form-label { display: block; font-weight: 500; margin-bottom: 0.5rem; color: #e5e7eb; }
+    .required { color: #ff5c7a; }
+    .form-control { width: 100%; padding: 10px 14px; border: 1px solid #4a4a5a; border-radius: 6px; font-size: 14px; background: #2a2a3a; color: #fff; }
+    .form-control:focus { outline: none; border-color: #6ee7ff; box-shadow: 0 0 0 3px rgba(110, 231, 255, 0.15); }
+    .form-control::placeholder { color: #9ca3af; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .form-actions { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem; }
     .btn { padding: 10px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: none; border: none; }
-    .btn-primary { background: #4f46e5; color: white; }
-    .btn-primary:hover { background: #4338ca; }
-    .btn-secondary { background: #f3f4f6; color: #374151; }
-    .btn-secondary:hover { background: #e5e7eb; }
+    .btn-primary { background: linear-gradient(135deg, #6ee7ff, #a78bfa); color: #0b1020; }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-secondary { background: rgba(255,255,255,0.1); color: #e5e7eb; }
+    .btn-secondary:hover { background: rgba(255,255,255,0.15); }
+    .form-error { color: #ff5c7a; font-size: 12px; margin-top: 4px; display: none; }
+    .form-control.invalid { border-color: #ff5c7a !important; animation: shake 0.4s ease-in-out; }
+    .form-control.invalid + .form-error { display: block; }
+    @@keyframes shake { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); } 20%, 40%, 60%, 80% { transform: translateX(4px); } }
 </style>
 
 <script>
     document.getElementById('toggleSidebar')?.addEventListener('click', function() {
         document.querySelector('.admin-shell')?.classList.toggle('collapsed');
+    });
+
+    // Form validation
+    document.querySelector('form.form')?.addEventListener('submit', function(e) {
+        let isValid = true;
+        const requiredFields = this.querySelectorAll('[required]');
+        
+        requiredFields.forEach(field => {
+            field.classList.remove('invalid');
+            if (!field.value.trim()) {
+                field.classList.add('invalid');
+                isValid = false;
+            }
+        });
+
+        // Validate email format
+        const emailField = this.querySelector('input[type="email"]');
+        if (emailField && emailField.value && !/^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/.test(emailField.value)) {
+            emailField.classList.add('invalid');
+            isValid = false;
+        }
+
+        // Validate phone format
+        const phoneField = this.querySelector('input[name="Phone"]');
+        if (phoneField && phoneField.value && !/^[0-9]{10,11}$/.test(phoneField.value.replace(/\s/g, ''))) {
+            phoneField.classList.add('invalid');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            e.preventDefault();
+            const firstInvalid = this.querySelector('.invalid');
+            firstInvalid?.focus();
+        }
+    });
+
+    // Remove invalid state on input
+    document.querySelectorAll('.form-control').forEach(input => {
+        input.addEventListener('input', function() {
+            this.classList.remove('invalid');
+        });
     });
 </script>

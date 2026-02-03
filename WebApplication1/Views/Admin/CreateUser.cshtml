@@ -1,0 +1,198 @@
+@model QLDuLichRBAC_Upgrade.Models.ViewModels.CreateUserVm
+@{
+    ViewData["Title"] = "Thêm Tài Khoản";
+    var fullName = ViewData["FullName"]?.ToString() ?? "Admin";
+    var roles = ViewData["Roles"] as List<QLDuLichRBAC_Upgrade.Models.Entities.Role> ?? new();
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    @await Html.PartialAsync("_AdminSidebar")
+
+    <main class="main">
+        <header class="topbar">
+            <div class="page-title">
+                <div class="title">Thêm Tài Khoản Mới</div>
+                <div class="subtitle">Tạo tài khoản người dùng trong hệ thống</div>
+            </div>
+        </header>
+
+        <section class="content">
+            <div class="card panel form-panel">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-title">📝 Thông tin tài khoản</div>
+                        <div class="panel-sub">Điền đầy đủ thông tin bên dưới</div>
+                    </div>
+                </div>
+
+                <form asp-action="CreateUser" method="post" class="form" id="createForm">
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label asp-for="FullName" class="form-label">Họ và tên <span class="required">*</span></label>
+                            <input asp-for="FullName" class="form-control" placeholder="Nhập họ tên đầy đủ" />
+                            <span asp-validation-for="FullName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Username" class="form-label">Tên đăng nhập <span class="required">*</span></label>
+                            <input asp-for="Username" class="form-control" placeholder="Nhập username" />
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Password" class="form-label">Mật khẩu <span class="required">*</span></label>
+                            <div class="password-wrapper">
+                                <input asp-for="Password" type="password" class="form-control" placeholder="Nhập mật khẩu" id="password" />
+                                <button type="button" class="toggle-password" onclick="togglePassword('password')">👁️</button>
+                            </div>
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="RoleId" class="form-label">Vai trò <span class="required">*</span></label>
+                            <select asp-for="RoleId" class="form-control">
+                                <option value="">-- Chọn vai trò --</option>
+                                @foreach (var role in roles)
+                                {
+                                    <option value="@role.RoleId">@role.RoleName</option>
+                                }
+                            </select>
+                            <span asp-validation-for="RoleId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Email" class="form-label">Email</label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="example@email.com" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Phone" class="form-label">Số điện thoại</label>
+                            <input asp-for="Phone" class="form-control" placeholder="0901234567" />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <a asp-action="Users" class="btn btn-secondary">← Quay lại</a>
+                        <button type="submit" class="btn btn-primary">✅ Thêm tài khoản</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+</div>
+
+<style>
+    .form-panel { max-width: 700px; }
+    .form { padding: 1.5rem; }
+    .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+    .form-group { margin-bottom: 0; }
+    .form-label { display: block; font-weight: 500; margin-bottom: 0.5rem; color: #e0e0e0; }
+    .required { color: #ff6b6b; }
+    .form-control { 
+        width: 100%; 
+        padding: 10px 14px; 
+        border: 1px solid #4a4a5a; 
+        border-radius: 8px; 
+        font-size: 14px; 
+        background: #2a2a3a;
+        color: #fff;
+        transition: all 0.2s ease;
+    }
+    .form-control:focus { 
+        outline: none; 
+        border-color: #6ee7ff; 
+        box-shadow: 0 0 0 3px rgba(110, 231, 255, 0.15); 
+    }
+    .form-control::placeholder { color: #8a8a9a; }
+    .form-control option { background: #2a2a3a; color: #fff; }
+    .password-wrapper { position: relative; }
+    .toggle-password {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        padding: 0;
+    }
+    .form-actions { 
+        display: flex; 
+        gap: 1rem; 
+        justify-content: flex-end; 
+        margin-top: 1.5rem; 
+        padding-top: 1.5rem;
+        border-top: 1px solid #3a3a4a;
+    }
+    .btn { 
+        padding: 10px 20px; 
+        border-radius: 8px; 
+        font-size: 14px; 
+        font-weight: 600; 
+        cursor: pointer; 
+        text-decoration: none; 
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .btn-primary { background: linear-gradient(135deg, #6ee7ff 0%, #4fb3ff 100%); color: #1a1a2e; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(110, 231, 255, 0.3); }
+    .btn-secondary { background: #3a3a4a; color: #e0e0e0; }
+    .btn-secondary:hover { background: #4a4a5a; }
+    .text-danger { color: #ff6b6b; font-size: 12px; margin-top: 4px; display: block; }
+    
+    /* Validation styles */
+    .form-control.invalid { 
+        border-color: #ff6b6b !important; 
+        animation: shake 0.4s ease-in-out;
+    }
+    @@keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20%, 60% { transform: translateX(-5px); }
+        40%, 80% { transform: translateX(5px); }
+    }
+    
+    @@media (max-width: 768px) {
+        .form-grid { grid-template-columns: 1fr; }
+    }
+</style>
+
+<script>
+    function togglePassword(inputId) {
+        const input = document.getElementById(inputId);
+        input.type = input.type === 'password' ? 'text' : 'password';
+    }
+    
+    // Client-side validation
+    document.getElementById('createForm')?.addEventListener('submit', function(e) {
+        let isValid = true;
+        this.querySelectorAll('.form-control').forEach(el => el.classList.remove('invalid'));
+        
+        const required = this.querySelectorAll('[required], #FullName, #Username, #Password, #RoleId');
+        required.forEach(field => {
+            if (!field.value.trim()) {
+                field.classList.add('invalid');
+                isValid = false;
+            }
+        });
+        
+        if (!isValid) {
+            e.preventDefault();
+            this.querySelector('.invalid')?.focus();
+        }
+    });
+    
+    document.querySelectorAll('.form-control').forEach(input => {
+        input.addEventListener('input', function() {
+            if (this.value.trim()) this.classList.remove('invalid');
+        });
+    });
+</script>

@@ -1,4 +1,4 @@
--- =====================================================
+﻿-- =====================================================
 -- FILE 2: INSERT DỮ LIỆU MẪU
 -- HỆ THỐNG QUẢN LÝ QUỸ TÌNH THƯƠNG
 -- =====================================================
@@ -21,9 +21,9 @@ PRINT N'Đang thêm vai trò...';
 SET IDENTITY_INSERT Roles ON;
 INSERT INTO Roles (RoleId, RoleName, Description) VALUES
 (1, N'ADMIN', N'Quản trị hệ thống - Toàn quyền quản lý'),
-(2, N'STAFF', N'Nhân viên quỹ - Tiếp nhận đóng góp và lập hồ sơ'),
-(3, N'ACCOUNTANT', N'Kế toán - Quản lý thu chi và báo cáo tài chính'),
-(4, N'MANAGER', N'Ban quản lý - Phê duyệt hồ sơ và giám sát');
+(2, N'STAFF', N'Nhân viên quỹ - Thực hiện công việc hỗ trợ'),
+(3, N'ACCOUNTANT', N'Khách hàng - Quyên góp và theo dõi hoạt động'),
+(4, N'MANAGER', N'Ban quản lý - Tạo công việc, phân công và giám sát');
 SET IDENTITY_INSERT Roles OFF;
 
 PRINT N'✓ Đã thêm 4 vai trò';
@@ -35,14 +35,14 @@ PRINT N'Đang thêm người dùng...';
 
 SET IDENTITY_INSERT Users ON;
 INSERT INTO Users (UserId, FullName, Username, Password, Email, Phone, Status) VALUES
-(1, N'Nguyễn Văn Admin', 'admin', '15E2B0D3C33891EBB0F1EF609EC419420C20E320CE94C65FBC8C3312448EB225', 'admin@quytt.vn', '0901234567', N'Hoạt động'),
-(2, N'Trần Thị Lan', 'staff1', '15E2B0D3C33891EBB0F1EF609EC419420C20E320CE94C65FBC8C3312448EB225', 'lan.tran@quytt.vn', '0901234568', N'Hoạt động'),
-(3, N'Lê Văn Minh', 'staff2', '15E2B0D3C33891EBB0F1EF609EC419420C20E320CE94C65FBC8C3312448EB225', 'minh.le@quytt.vn', '0901234569', N'Hoạt động'),
-(4, N'Phạm Thị Hoa', 'accountant1', '15E2B0D3C33891EBB0F1EF609EC419420C20E320CE94C65FBC8C3312448EB225', 'hoa.pham@quytt.vn', '0901234570', N'Hoạt động'),
-(5, N'Võ Văn Dũng', 'manager1', '15E2B0D3C33891EBB0F1EF609EC419420C20E320CE94C65FBC8C3312448EB225', 'dung.vo@quytt.vn', '0901234571', N'Hoạt động'),
-(6, N'Hoàng Thị Mai', 'staff3', '15E2B0D3C33891EBB0F1EF609EC419420C20E320CE94C65FBC8C3312448EB225', 'mai.hoang@quytt.vn', '0901234572', N'Hoạt động'),
-(7, N'Đặng Văn Hùng', 'accountant2', '15E2B0D3C33891EBB0F1EF609EC419420C20E320CE94C65FBC8C3312448EB225', 'hung.dang@quytt.vn', '0901234573', N'Hoạt động'),
-(8, N'Bùi Thị Ngọc', 'manager2', '15E2B0D3C33891EBB0F1EF609EC419420C20E320CE94C65FBC8C3312448EB225', 'ngoc.bui@quytt.vn', '0901234574', N'Hoạt động');
+(1, N'Nguyễn Văn Admin', 'admin', '15E2B0D3C33891EBB0F1EF609EC419420C20E320CE94C65FBC8C3312448EB225', 'admin@quytt.vn', '0901234567', 'Active'),
+(2, N'Trần Thị Lan', 'staff1', '15E2B0D3C33891EBB0F1EF609EC419420C20E320CE94C65FBC8C3312448EB225', 'lan.tran@quytt.vn', '0901234568', 'Active'),
+(3, N'Lê Văn Minh', 'staff2', '15E2B0D3C33891EBB0F1EF609EC419420C20E320CE94C65FBC8C3312448EB225', 'minh.le@quytt.vn', '0901234569', 'Active'),
+(4, N'Phạm Thị Hoa', 'accountant1', '15E2B0D3C33891EBB0F1EF609EC419420C20E320CE94C65FBC8C3312448EB225', 'hoa.pham@quytt.vn', '0901234570', 'Active'),
+(5, N'Võ Văn Dũng', 'manager1', '15E2B0D3C33891EBB0F1EF609EC419420C20E320CE94C65FBC8C3312448EB225', 'dung.vo@quytt.vn', '0901234571', 'Active'),
+(6, N'Hoàng Thị Mai', 'staff3', '15E2B0D3C33891EBB0F1EF609EC419420C20E320CE94C65FBC8C3312448EB225', 'mai.hoang@quytt.vn', '0901234572', 'Active'),
+(7, N'Đặng Văn Hùng', 'accountant2', '15E2B0D3C33891EBB0F1EF609EC419420C20E320CE94C65FBC8C3312448EB225', 'hung.dang@quytt.vn', '0901234573', 'Active'),
+(8, N'Bùi Thị Ngọc', 'manager2', '15E2B0D3C33891EBB0F1EF609EC419420C20E320CE94C65FBC8C3312448EB225', 'ngoc.bui@quytt.vn', '0901234574', 'Active');
 SET IDENTITY_INSERT Users OFF;
 
 PRINT N'✓ Đã thêm 8 người dùng';
@@ -56,16 +56,17 @@ INSERT INTO User_Roles (UserId, RoleId) VALUES
 (1, 1),  -- admin -> ADMIN
 (2, 2),  -- staff1 -> STAFF
 (3, 2),  -- staff2 -> STAFF
-(4, 3),  -- accountant1 -> ACCOUNTANT
+(4, 3),  -- accountant1 -> ACCOUNTANT (Khách hàng)
 (5, 4),  -- manager1 -> MANAGER
 (6, 2),  -- staff3 -> STAFF
-(7, 3),  -- accountant2 -> ACCOUNTANT
+(7, 3),  -- accountant2 -> ACCOUNTANT (Khách hàng)
 (8, 4);  -- manager2 -> MANAGER
 
 PRINT N'✓ Đã phân quyền cho 8 người dùng';
 
 -- =====================================================
 -- INSERT DONORS (NGƯỜI ĐÓNG GÓP)
+-- Bao gồm cả người dùng có tài khoản
 -- =====================================================
 PRINT N'Đang thêm người đóng góp...';
 
@@ -80,45 +81,59 @@ INSERT INTO Donors (DonorId, DonorName, DonorType, Address, Phone, Email) VALUES
 (7, N'Phạm Thị D', N'Cá nhân', N'258 Lý Thường Kiệt, Q.10, TP.HCM', '0987654324', 'phamd@gmail.com'),
 (8, N'Hoàng Văn E', N'Cá nhân', N'369 Võ Văn Tần, Q.3, TP.HCM', '0987654325', 'hoange@gmail.com'),
 (9, N'Ngân hàng ABC', N'Doanh nghiệp', N'741 Nguyễn Trãi, Q.1, TP.HCM', '0281234570', 'csr@abcbank.vn'),
-(10, N'Võ Thị F', N'Cá nhân', N'852 Phan Đình Phùng, Q.5, TP.HCM', '0987654326', 'vothif@gmail.com');
+(10, N'Võ Thị F', N'Cá nhân', N'852 Phan Đình Phùng, Q.5, TP.HCM', '0987654326', 'vothif@gmail.com'),
+-- Donor cho user accountant1 (UserId=4)
+(11, N'Phạm Thị Hoa', N'Cá nhân', N'789 Trần Hưng Đạo, Q.5, TP.HCM', '0912345678', 'hoa.pham@gmail.com'),
+-- Donor cho user accountant2 (UserId=7)
+(12, N'Đặng Văn Hùng', N'Cá nhân', N'456 Lý Thường Kiệt, Q.10, TP.HCM', '0923456789', 'hung.dang@gmail.com');
 SET IDENTITY_INSERT Donors OFF;
 
-PRINT N'✓ Đã thêm 10 người đóng góp';
+PRINT N'✓ Đã thêm 12 người đóng góp';
 
 -- =====================================================
 -- INSERT DONATIONS (KHOẢN QUYÊN GÓP)
+-- Bao gồm donations từ user có tài khoản (DonorUserId)
 -- =====================================================
 PRINT N'Đang thêm khoản quyên góp...';
 
 SET IDENTITY_INSERT Donations ON;
-INSERT INTO Donations (DonationId, DonorId, Amount, DonationDate, Method, ReceivedBy) VALUES
-(1, 1, 5000000, '2025-01-15 09:30:00', N'Tiền mặt', 2),
-(2, 2, 50000000, '2025-01-20 10:00:00', N'Chuyển khoản', 2),
-(3, 3, 2000000, '2025-02-05 14:20:00', N'Tiền mặt', 3),
-(4, 4, 100000000, '2025-02-10 11:15:00', N'Chuyển khoản', 2),
-(5, 5, 3000000, '2025-02-25 16:45:00', N'QR Code', 3),
-(6, 6, 75000000, '2025-03-01 09:00:00', N'Chuyển khoản', 2),
-(7, 7, 1500000, '2025-03-10 13:30:00', N'Tiền mặt', 6),
-(8, 8, 4000000, '2025-03-15 10:20:00', N'QR Code', 6),
-(9, 9, 200000000, '2025-03-20 08:00:00', N'Chuyển khoản', 2),
-(10, 10, 2500000, '2025-04-05 15:00:00', N'Tiền mặt', 3),
-(11, 1, 10000000, '2025-04-15 11:00:00', N'Chuyển khoản', 2),
-(12, 3, 3500000, '2025-05-01 14:00:00', N'QR Code', 6);
+INSERT INTO Donations (DonationId, DonorId, DonorUserId, Amount, DonationDate, Method, ReceivedBy, IsConfirmed) VALUES
+-- Donations từ khách vãng lai (không có tài khoản)
+(1, 1, NULL, 5000000, '2025-01-15 09:30:00', N'Tiền mặt', 2, 1),
+(2, 2, NULL, 50000000, '2025-01-20 10:00:00', N'Chuyển khoản', 2, 1),
+(3, 3, NULL, 2000000, '2025-02-05 14:20:00', N'Tiền mặt', 3, 1),
+(4, 4, NULL, 100000000, '2025-02-10 11:15:00', N'Chuyển khoản', 2, 1),
+(5, 5, NULL, 3000000, '2025-02-25 16:45:00', N'QR Code', 3, 1),
+(6, 6, NULL, 75000000, '2025-03-01 09:00:00', N'Chuyển khoản', 2, 1),
+(7, 7, NULL, 1500000, '2025-03-10 13:30:00', N'Tiền mặt', 6, 1),
+(8, 8, NULL, 4000000, '2025-03-15 10:20:00', N'QR Code', 6, 1),
+(9, 9, NULL, 200000000, '2025-03-20 08:00:00', N'Chuyển khoản', 2, 1),
+(10, 10, NULL, 2500000, '2025-04-05 15:00:00', N'Tiền mặt', 3, 1),
+(11, 1, NULL, 10000000, '2025-04-15 11:00:00', N'Chuyển khoản', 2, 1),
+(12, 3, NULL, 3500000, '2025-05-01 14:00:00', N'QR Code', 6, 1),
+-- Donations từ user accountant1 (UserId=4, DonorId=11)
+(13, 11, 4, 500000, '2025-02-01 08:30:00', N'Chuyển khoản', NULL, 1),
+(14, 11, 4, 1000000, '2025-02-02 14:15:00', N'Chuyển khoản', NULL, 1),
+(15, 11, 4, 2000000, '2025-02-03 10:00:00', N'Chuyển khoản', NULL, 1),
+-- Donations từ user accountant2 (UserId=7, DonorId=12)
+(16, 12, 7, 750000, '2025-02-01 09:00:00', N'Chuyển khoản', NULL, 1),
+(17, 12, 7, 1500000, '2025-02-03 16:30:00', N'Chuyển khoản', NULL, 1);
 SET IDENTITY_INSERT Donations OFF;
 
-PRINT N'✓ Đã thêm 12 khoản quyên góp';
+PRINT N'✓ Đã thêm 17 khoản quyên góp';
 
 -- =====================================================
 -- INSERT FUNDS (QUỸ TIỀN)
+-- Tổng = 456,500,000 + 3,500,000 + 2,250,000 = 462,250,000
 -- =====================================================
 PRINT N'Đang khởi tạo quỹ...';
 
 SET IDENTITY_INSERT Funds ON;
 INSERT INTO Funds (FundId, FundName, Balance, LastUpdated) VALUES
-(1, N'Quỹ Tình Thương', 456500000, GETDATE());
+(1, N'Quỹ Tình Thương', 462250000, GETDATE());
 SET IDENTITY_INSERT Funds OFF;
 
-PRINT N'✓ Đã khởi tạo quỹ với số dư: 456,500,000 VNĐ';
+PRINT N'✓ Đã khởi tạo quỹ với số dư: 462,250,000 VNĐ';
 
 -- =====================================================
 -- INSERT BENEFICIARIES (ĐỐI TƯỢNG THỤ HƯỞNG)
@@ -187,31 +202,112 @@ SET IDENTITY_INSERT Expenses OFF;
 PRINT N'✓ Đã thêm 2 khoản chi hỗ trợ';
 
 -- =====================================================
+-- INSERT SUPPORT_TASKS (CÔNG VIỆC HỖ TRỢ)
+-- Manager đã tạo và phân công cho Staff
+-- =====================================================
+PRINT N'Đang thêm công việc hỗ trợ...';
+
+SET IDENTITY_INSERT Support_Tasks ON;
+INSERT INTO Support_Tasks (TaskId, RequestId, AssignedStaffId, DonorUserId, AssignedBy, AssignedAt, Amount, AdditionalAmount, Status, StartedAt, StaffNote, StaffCompletedAt, ManagerNote, ManagerVerifiedAt, SupportRequestType, SupportRequestReason, SupportRequestAmount, SupportRequestAt, SupportResponseNote, SupportResponseAt, CreatedAt, UpdatedAt) VALUES
+-- Task đã hoàn thành
+(1, 1, 2, 4, 5, '2025-02-02 10:30:00', 20000000, 0, N'Hoàn thành', '2025-02-03 08:00:00', N'Đã trao tiền trực tiếp cho gia đình bệnh nhân tại nhà. Gia đình rất biết ơn sự hỗ trợ của quỹ.', '2025-02-05 14:00:00', N'Hỗ trợ chi phí điều trị ung thư', '2025-02-05 15:00:00', NULL, NULL, NULL, NULL, NULL, NULL, '2025-02-02 10:30:00', '2025-02-05 15:00:00'),
+(2, 2, 3, 7, 5, '2025-02-16 14:30:00', 15000000, 0, N'Hoàn thành', '2025-02-17 09:00:00', N'Đã mua xe lăn chất lượng cao và giao tận nơi. Người nhận rất vui mừng và xúc động.', '2025-02-20 15:30:00', N'Mua xe lăn cho người khuyết tật', '2025-02-20 16:00:00', NULL, NULL, NULL, NULL, NULL, NULL, '2025-02-16 14:30:00', '2025-02-20 16:00:00'),
+-- Task đang thực hiện
+(3, 3, 2, 4, 5, '2025-03-02 11:30:00', 5000000, 0, N'Đang thực hiện', '2025-03-03 08:00:00', NULL, NULL, N'Hỗ trợ sinh hoạt phí 6 tháng', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-03-02 11:30:00', '2025-03-03 08:00:00'),
+-- Task yêu cầu hỗ trợ (Staff cần thêm tiền)
+(4, 4, 6, 7, 5, '2025-03-11 10:00:00', 10000000, 2000000, N'Đang thực hiện', '2025-03-12 08:00:00', N'Đang liên hệ với trường đại học để chuyển học phí', NULL, N'Hỗ trợ học phí năm học 2025', NULL, N'Tiền', N'Cần thêm 2 triệu để đóng phí ký túc xá cho sinh viên', 2000000, '2025-03-13 10:00:00', N'Đã duyệt thêm 2 triệu. Hãy hoàn thành sớm nhé!', '2025-03-13 11:00:00', '2025-03-11 10:00:00', '2025-03-13 11:00:00'),
+-- Task chờ thực hiện
+(5, 5, 2, NULL, 5, '2025-03-21 09:00:00', 8000000, 0, N'Chờ thực hiện', NULL, NULL, NULL, N'Sửa nhà cho gia đình khó khăn', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-03-21 09:00:00', '2025-03-21 09:00:00'),
+(6, 6, 3, NULL, 8, '2025-04-02 10:00:00', 12000000, 0, N'Chờ thực hiện', NULL, NULL, NULL, N'Chi phí tang lễ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-04-02 10:00:00', '2025-04-02 10:00:00'),
+-- Task hoàn thành khác
+(7, 7, 6, 4, 8, '2025-04-15 14:00:00', 6000000, 0, N'Hoàn thành', '2025-04-16 08:00:00', N'Đã hỗ trợ tiền sinh hoạt và học phí cho 2 con của gia đình. Các cháu học giỏi và ngoan ngoãn.', '2025-04-18 16:00:00', N'Hỗ trợ trẻ em mồ côi', '2025-04-18 17:00:00', NULL, NULL, NULL, NULL, NULL, NULL, '2025-04-15 14:00:00', '2025-04-18 17:00:00'),
+(8, 8, 2, 7, 5, '2025-05-01 11:00:00', 18000000, 0, N'Hoàn thành', '2025-05-02 09:00:00', N'Đã chuyển khoản cho bệnh viện để thanh toán chi phí lọc máu 1 năm cho bệnh nhân.', '2025-05-03 11:00:00', N'Chi phí lọc máu 1 năm', '2025-05-03 12:00:00', NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-01 11:00:00', '2025-05-03 12:00:00');
+SET IDENTITY_INSERT Support_Tasks OFF;
+
+PRINT N'✓ Đã thêm 8 công việc hỗ trợ';
+
+-- =====================================================
+-- INSERT NOTIFICATIONS (THÔNG BÁO)
+-- =====================================================
+PRINT N'Đang thêm thông báo...';
+
+SET IDENTITY_INSERT Notifications ON;
+INSERT INTO Notifications (NotificationId, UserId, Title, Message, Type, RelatedTaskId, IsRead, CreatedAt) VALUES
+-- Thông báo cho Staff về công việc mới
+(1, 2, N'Công việc mới được giao', N'Bạn được phân công hỗ trợ bệnh nhân Nguyễn Thị Mai - 20,000,000 VNĐ. Đây là trường hợp khẩn cấp, vui lòng thực hiện sớm.', N'Công việc mới', 1, 1, '2025-02-02 10:30:00'),
+(2, 3, N'Công việc mới được giao', N'Bạn được phân công hỗ trợ người khuyết tật Trần Văn Bình - 15,000,000 VNĐ (mua xe lăn và thiết bị hỗ trợ)', N'Công việc mới', 2, 1, '2025-02-16 14:30:00'),
+(3, 2, N'Công việc mới được giao', N'Bạn được phân công hỗ trợ cụ bà Lê Thị Hoa - 5,000,000 VNĐ sinh hoạt phí 6 tháng', N'Công việc mới', 3, 1, '2025-03-02 11:30:00'),
+(4, 6, N'Công việc mới được giao', N'Bạn được phân công hỗ trợ sinh viên Phạm Văn Tùng - 10,000,000 VNĐ học phí năm học 2025', N'Công việc mới', 4, 1, '2025-03-11 10:00:00'),
+(5, 2, N'Công việc mới được giao', N'Bạn được phân công hỗ trợ bé Hoàng Thị Lan - 8,000,000 VNĐ chi phí chữa bệnh cho mẹ', N'Công việc mới', 5, 0, '2025-03-21 09:00:00'),
+(6, 3, N'Công việc mới được giao', N'Bạn được phân công hỗ trợ gia đình Võ Văn Đức - 12,000,000 VNĐ sửa chữa nhà sau lũ', N'Công việc mới', 6, 0, '2025-04-02 10:00:00'),
+(7, 6, N'Công việc mới được giao', N'Bạn được phân công hỗ trợ gia đình Đặng Thị Ngọc - 6,000,000 VNĐ sinh hoạt và học phí con', N'Công việc mới', 7, 1, '2025-04-15 14:00:00'),
+(8, 2, N'Công việc mới được giao', N'Bạn được phân công hỗ trợ bệnh nhân Bùi Văn Hải - 18,000,000 VNĐ chi phí lọc máu 1 năm', N'Công việc mới', 8, 1, '2025-05-01 11:00:00'),
+
+-- Thông báo Manager phản hồi yêu cầu hỗ trợ
+(9, 6, N'Yêu cầu hỗ trợ đã được duyệt', N'Manager đã duyệt yêu cầu bổ sung 2,000,000 VNĐ cho công việc hỗ trợ sinh viên Phạm Văn Tùng. Ghi chú: Đã duyệt thêm 2 triệu. Hãy hoàn thành sớm nhé!', N'Phản hồi yêu cầu', 4, 1, '2025-03-12 10:00:00'),
+
+-- Thông báo cho TẤT CẢ khách hàng (Accountant) về hỗ trợ hoàn thành
+(10, 4, N'🎉 Hoạt động hỗ trợ hoàn thành', N'Quỹ đã hoàn thành hỗ trợ bệnh nhân Nguyễn Thị Mai với số tiền 20,000,000 VNĐ. Nhân viên ghi chú: Đã trao tiền trực tiếp cho gia đình bệnh nhân tại nhà.', N'Hoàn thành', 1, 1, '2025-02-05 14:00:00'),
+(11, 7, N'🎉 Hoạt động hỗ trợ hoàn thành', N'Quỹ đã hoàn thành hỗ trợ bệnh nhân Nguyễn Thị Mai với số tiền 20,000,000 VNĐ. Nhân viên ghi chú: Đã trao tiền trực tiếp cho gia đình bệnh nhân tại nhà.', N'Hoàn thành', 1, 0, '2025-02-05 14:00:00'),
+(12, 4, N'🎉 Hoạt động hỗ trợ hoàn thành', N'Quỹ đã hoàn thành hỗ trợ người khuyết tật Trần Văn Bình với số tiền 15,000,000 VNĐ. Nhân viên ghi chú: Đã mua xe lăn chất lượng cao và giao tận nơi.', N'Hoàn thành', 2, 1, '2025-02-20 15:30:00'),
+(13, 7, N'🎉 Hoạt động hỗ trợ hoàn thành', N'Quỹ đã hoàn thành hỗ trợ người khuyết tật Trần Văn Bình với số tiền 15,000,000 VNĐ. Nhân viên ghi chú: Đã mua xe lăn chất lượng cao và giao tận nơi.', N'Hoàn thành', 2, 1, '2025-02-20 15:30:00'),
+(14, 4, N'🎉 Hoạt động hỗ trợ hoàn thành', N'Quỹ đã hoàn thành hỗ trợ gia đình Đặng Thị Ngọc với số tiền 6,000,000 VNĐ. Nhân viên ghi chú: Đã hỗ trợ tiền sinh hoạt và học phí cho 2 con của gia đình.', N'Hoàn thành', 7, 0, '2025-04-18 16:00:00'),
+(15, 7, N'🎉 Hoạt động hỗ trợ hoàn thành', N'Quỹ đã hoàn thành hỗ trợ gia đình Đặng Thị Ngọc với số tiền 6,000,000 VNĐ. Nhân viên ghi chú: Đã hỗ trợ tiền sinh hoạt và học phí cho 2 con của gia đình.', N'Hoàn thành', 7, 0, '2025-04-18 16:00:00'),
+(16, 4, N'🎉 Hoạt động hỗ trợ hoàn thành', N'Quỹ đã hoàn thành hỗ trợ bệnh nhân Bùi Văn Hải với số tiền 18,000,000 VNĐ. Nhân viên ghi chú: Đã chuyển khoản cho bệnh viện để thanh toán chi phí lọc máu 1 năm.', N'Hoàn thành', 8, 0, '2025-05-03 11:00:00'),
+(17, 7, N'🎉 Hoạt động hỗ trợ hoàn thành', N'Quỹ đã hoàn thành hỗ trợ bệnh nhân Bùi Văn Hải với số tiền 18,000,000 VNĐ. Nhân viên ghi chú: Đã chuyển khoản cho bệnh viện để thanh toán chi phí lọc máu 1 năm.', N'Hoàn thành', 8, 0, '2025-05-03 11:00:00'),
+
+-- Thông báo cho Manager về yêu cầu hỗ trợ từ Staff
+(18, 5, N'🔔 Nhân viên yêu cầu hỗ trợ', N'Nhân viên Hoàng Thị Mai yêu cầu bổ sung 2,000,000 VNĐ cho công việc hỗ trợ sinh viên Phạm Văn Tùng. Lý do: Cần thêm tiền để đóng phí ký túc xá.', N'Yêu cầu hỗ trợ', 4, 1, '2025-03-12 09:00:00'),
+(19, 8, N'🔔 Nhân viên yêu cầu hỗ trợ', N'Nhân viên Hoàng Thị Mai yêu cầu bổ sung 2,000,000 VNĐ cho công việc hỗ trợ sinh viên Phạm Văn Tùng. Lý do: Cần thêm tiền để đóng phí ký túc xá.', N'Yêu cầu hỗ trợ', 4, 1, '2025-03-12 09:00:00');
+SET IDENTITY_INSERT Notifications OFF;
+
+PRINT N'✓ Đã thêm 19 thông báo';
+
+-- =====================================================
+-- INSERT COMPLAINTS (PHẢN ÁNH TỪ KHÁCH HÀNG)
+-- =====================================================
+PRINT N'Đang thêm phản ánh từ khách hàng...';
+
+SET IDENTITY_INSERT Complaints ON;
+INSERT INTO Complaints (ComplaintId, TaskId, UserId, Content, Status, ResponseContent, ResponseAt, CreatedAt) VALUES
+-- Phản ánh đã được phản hồi
+(1, 1, 4, N'Tôi rất hài lòng với sự hỗ trợ kịp thời của quỹ. Gia đình bệnh nhân đã nhận được tiền đúng hạn và rất biết ơn. Cảm ơn quỹ rất nhiều!', N'Đã phản hồi', N'Cảm ơn bạn đã gửi phản hồi tích cực! Chúng tôi rất vui vì đã giúp được gia đình bệnh nhân. Đây là động lực để quỹ tiếp tục hoạt động.', '2025-02-10 10:00:00', '2025-02-08 15:00:00'),
+(2, 2, 7, N'Xe lăn chất lượng rất tốt, người nhận rất hài lòng. Tuy nhiên tôi muốn hỏi có hỗ trợ thêm các thiết bị phục hồi chức năng không?', N'Đã phản hồi', N'Cảm ơn phản hồi của bạn! Về việc hỗ trợ thiết bị phục hồi chức năng, quỹ sẽ xem xét trong các đợt hỗ trợ tiếp theo. Vui lòng theo dõi thông tin từ quỹ.', '2025-02-25 14:00:00', '2025-02-23 11:00:00'),
+
+-- Phản ánh chờ xử lý
+(3, 7, 4, N'Rất cảm ơn quỹ đã hỗ trợ gia đình khó khăn. Các cháu nhỏ rất vui khi được tiếp tục đi học. Mong quỹ ngày càng phát triển!', N'Chờ xử lý', NULL, NULL, '2025-04-21 09:30:00'),
+(4, 8, 7, N'Tôi thấy việc hỗ trợ chi phí lọc máu rất ý nghĩa. Bệnh nhân đã có thể yên tâm điều trị cả năm mà không lo về tài chính. Cảm ơn quỹ!', N'Chờ xử lý', NULL, NULL, '2025-05-06 16:00:00');
+SET IDENTITY_INSERT Complaints OFF;
+
+PRINT N'✓ Đã thêm 4 phản ánh từ khách hàng';
+
+-- =====================================================
 -- INSERT LOGS (NHẬT KÝ HỆ THỐNG MẪU)
 -- =====================================================
 PRINT N'Đang thêm nhật ký hệ thống...';
 
 SET IDENTITY_INSERT Logs ON;
 INSERT INTO Logs (LogId, UserId, Action, TableName, ActionTime, OldData, NewData) VALUES
-(1, 1, N'Khởi tạo hệ thống', N'System', GETDATE(), NULL, N'Hệ thống được khởi tạo thành công'),
-(2, 2, N'Thêm người đóng góp', N'Donors', GETDATE(), NULL, N'Thêm người đóng góp: Nguyễn Văn A'),
-(3, 5, N'Phê duyệt hồ sơ', N'Approvals', GETDATE(), NULL, N'Phê duyệt hồ sơ RequestId=1');
+(1, 1, N'Khởi tạo hệ thống', N'System', '2025-01-01 00:00:00', NULL, N'Hệ thống Quỹ Tình Thương được khởi tạo thành công'),
+(2, 5, N'Tạo công việc hỗ trợ', N'Support_Tasks', '2025-02-02 10:30:00', NULL, N'Tạo task #1 - Hỗ trợ bệnh nhân Nguyễn Thị Mai 20,000,000 VNĐ, giao cho staff1'),
+(3, 2, N'Bắt đầu thực hiện công việc', N'Support_Tasks', '2025-02-03 08:00:00', N'Status: Chờ thực hiện', N'Status: Đang thực hiện. Staff bắt đầu thực hiện task #1'),
+(4, 2, N'Hoàn thành công việc', N'Support_Tasks', '2025-02-05 14:00:00', N'Status: Đang thực hiện', N'Status: Hoàn thành. Staff hoàn thành task #1'),
+(5, 4, N'Quyên góp', N'Donations', '2025-02-01 08:30:00', NULL, N'Khách hàng accountant1 quyên góp 500,000 VNĐ qua chuyển khoản'),
+(6, 4, N'Quyên góp', N'Donations', '2025-02-02 14:15:00', NULL, N'Khách hàng accountant1 quyên góp 1,000,000 VNĐ qua chuyển khoản'),
+(7, 7, N'Quyên góp', N'Donations', '2025-02-01 09:00:00', NULL, N'Khách hàng accountant2 quyên góp 750,000 VNĐ qua chuyển khoản'),
+(8, 5, N'Tạo công việc hỗ trợ', N'Support_Tasks', '2025-02-16 14:30:00', NULL, N'Tạo task #2 - Hỗ trợ người khuyết tật Trần Văn Bình 15,000,000 VNĐ'),
+(9, 3, N'Hoàn thành công việc', N'Support_Tasks', '2025-02-20 15:30:00', N'Status: Đang thực hiện', N'Status: Hoàn thành. Đã mua và giao xe lăn'),
+(10, 6, N'Yêu cầu hỗ trợ', N'Support_Tasks', '2025-03-12 09:00:00', NULL, N'Staff yêu cầu bổ sung 2,000,000 VNĐ cho task #4'),
+(11, 5, N'Duyệt yêu cầu hỗ trợ', N'Support_Tasks', '2025-03-12 10:00:00', N'AdditionalAmount: 0', N'AdditionalAmount: 2,000,000. Đã duyệt thêm tiền'),
+(12, 4, N'Gửi phản ánh', N'Complaints', '2025-02-08 15:00:00', NULL, N'Khách hàng gửi phản ánh tích cực về task #1'),
+(13, 5, N'Phản hồi phản ánh', N'Complaints', '2025-02-10 10:00:00', N'Status: Chờ xử lý', N'Status: Đã phản hồi. Manager phản hồi phản ánh #1'),
+(14, 2, N'Hoàn thành công việc', N'Support_Tasks', '2025-05-03 11:00:00', N'Status: Đang thực hiện', N'Status: Hoàn thành. Đã chuyển khoản chi phí lọc máu'),
+(15, 1, N'Đăng nhập hệ thống', N'Users', GETDATE(), NULL, N'Admin đăng nhập hệ thống');
 SET IDENTITY_INSERT Logs OFF;
 
-PRINT N'✓ Đã thêm nhật ký hệ thống';
+PRINT N'✓ Đã thêm 15 nhật ký hệ thống';
 
-PRINT N'';
 PRINT N'=====================================================';
-PRINT N'✓ HOÀN TẤT THÊM DỮ LIỆU MẪU';
+PRINT N'HOÀN TẤT THÊM DỮ LIỆU MẪU';
 PRINT N'=====================================================';
-PRINT N'';
-PRINT N'THÔNG TIN ĐĂNG NHẬP:';
-PRINT N'---------------------------------------------------';
-PRINT N'Admin:       Username: admin       | Password: 123456789';
-PRINT N'Staff:       Username: staff1      | Password: 123456789';
-PRINT N'Staff:       Username: staff2      | Password: 123456789';
-PRINT N'Accountant:  Username: accountant1 | Password: 123456789';
-PRINT N'Manager:     Username: manager1    | Password: 123456789';
-PRINT N'---------------------------------------------------';
-PRINT N'';
 GO

@@ -1,7 +1,20 @@
 ﻿@model QLDuLichRBAC_Upgrade.Models.ViewModels.AdminDashboardVm
 @{
-    ViewData["Title"] = "Dashboard Admin";
-    var fullName = string.IsNullOrWhiteSpace(Model.FullName) ? "Admin" : Model.FullName;
+    ViewData["Title"] = "Dashboard Quản trị";
+    var fullName = string.IsNullOrWhiteSpace(Model.FullName) ? "Quản trị viên" : Model.FullName;
+    
+    // Helper function để chuyển role sang tiếng Việt
+    string RoleToVietnamese(string role)
+    {
+        return role?.ToUpper() switch
+        {
+            "ADMIN" => "Quản trị viên",
+            "STAFF" => "Nhân viên",
+            "ACCOUNTANT" => "Khách hàng",
+            "MANAGER" => "Quản lý",
+            _ => role ?? "N/A"
+        };
+    }
 }
 
 <link rel="stylesheet" href="~/css/admin-dashboard.css" />
@@ -63,7 +76,7 @@
         <div class="brand">
             <div class="brand-logo">A</div>
             <div class="brand-text">
-                <div class="brand-name">Admin Panel</div>
+                <div class="brand-name">Quản Trị</div>
                 <div class="brand-sub">QL Quỹ Tình Thương</div>
             </div>
         </div>
@@ -112,7 +125,7 @@
                 <button class="icon-btn" type="button" id="toggleSidebar" title="Thu gọn sidebar">☰</button>
 
                 <div class="page-title">
-                    <div class="title">Dashboard</div>
+                    <div class="title">Tổng quan</div>
                     <div class="subtitle">
                         Xin chào, <strong>@fullName</strong>. Chúc bạn một ngày làm việc hiệu quả.
                     </div>
@@ -134,7 +147,7 @@
                     <div class="avatar">@fullName.Substring(0, 1).ToUpper()</div>
                     <div class="user-meta">
                         <div class="user-name">@fullName</div>
-                        <div class="user-role">Administrator</div>
+                        <div class="user-role">Quản trị viên</div>
                     </div>
                 </div>
             </div>
@@ -210,7 +223,7 @@
                             <div class="panel-title">Chức năng chính</div>
                             <div class="panel-sub">Truy cập nhanh các phân hệ quản trị</div>
                         </div>
-                        <div class="chip">Quick Actions</div>
+                        <div class="chip">Thao tác nhanh</div>
                     </div>
 
                     <div class="actions">
@@ -240,7 +253,7 @@
                             <div class="panel-title">Hoạt động gần đây</div>
                             <div class="panel-sub">Lấy từ bảng Logs (mới nhất)</div>
                         </div>
-                        <div class="chip">Logs</div>
+                        <div class="chip">Nhật ký</div>
                     </div>
 
                     <div class="timeline">
@@ -253,14 +266,14 @@
                                     <div class="tl-content">
                                         <div class="tl-title">@log.Action</div>
                                         <div class="tl-meta">
-                                            @log.ActionTime.ToString("HH:mm dd/MM/yyyy")
-                                            @if (!string.IsNullOrWhiteSpace(log.TableName))
+                                            @log.TimeAgo • @log.UserName
+                                            @if (!string.IsNullOrWhiteSpace(log.RoleName) && log.RoleName != "N/A")
                                             {
-                                                <text> • @log.TableName</text>
+                                                <text> • </text><span class="status info">@RoleToVietnamese(log.RoleName)</span>
                                             }
                                         </div>
                                     </div>
-                                    <div class="tl-tag info">LOG</div>
+                                    <div class="tl-tag info">NHẬT KÝ</div>
                                 </div>
                             }
                         }
@@ -279,7 +292,7 @@
                         <div class="panel-title">Tổng quan hệ thống</div>
                         <div class="panel-sub">Bảng tóm tắt trạng thái (có thể thay bằng dữ liệu thật)</div>
                     </div>
-                    <div class="chip">Overview</div>
+                    <div class="chip">Tổng quan</div>
                 </div>
 
                 <div class="table-wrap">
@@ -297,19 +310,19 @@
                                 <td>Người dùng</td>
                                 <td>Tổng số tài khoản trong hệ thống</td>
                                 <td><span class="status info">@Model.TotalUsers</span></td>
-                                <td>Realtime</td>
+                                <td>Thời gian thực</td>
                             </tr>
                             <tr>
                                 <td>Yêu cầu hỗ trợ</td>
                                 <td>Tổng số yêu cầu đã tạo</td>
                                 <td><span class="status info">@Model.TotalSupportRequests</span></td>
-                                <td>Realtime</td>
+                                <td>Thời gian thực</td>
                             </tr>
                             <tr>
                                 <td>Quỹ</td>
                                 <td>Số dư quỹ mới nhất</td>
                                 <td><span class="status ok">@Model.FundBalance.ToString("N0")</span></td>
-                                <td>Realtime</td>
+                                <td>Thời gian thực</td>
                             </tr>
                             <tr>
                                 <td>Duyệt hôm nay</td>

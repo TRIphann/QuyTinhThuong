@@ -1,0 +1,206 @@
+@model List<QLDuLichRBAC_Upgrade.Models.Entities.SupportTask>
+@{
+    ViewData["Title"] = "Công việc của tôi";
+    var fullName = ViewBag.FullName as string ?? "Nhân viên";
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    <!-- Sidebar -->
+    <partial name="_StaffSidebar" />
+
+    <!-- Main -->
+    <main class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn" type="button" id="toggleSidebar" title="Thu gọn sidebar">☰</button>
+                <div class="page-title">
+                    <div class="title">Công việc của tôi</div>
+                    <div class="subtitle">Danh sách công việc được giao</div>
+                </div>
+            </div>
+        </header>
+
+        <section class="content">
+            <div class="card panel">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #1e293b; color: #94a3b8; text-align: left;">
+                            <th style="padding: 1rem;">ID</th>
+                            <th style="padding: 1rem;">Người hỗ trợ</th>
+                            <th style="padding: 1rem;">Số tiền</th>
+                            <th style="padding: 1rem;">Trạng thái</th>
+                            <th style="padding: 1rem;">Ngày giao</th>
+                            <th style="padding: 1rem; text-align: center;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (var task in Model)
+                            {
+                                var statusColor = task.Status switch
+                                {
+                                    "Chờ thực hiện" => "#f59e0b",
+                                    "Đang thực hiện" => "#3b82f6",
+                                    "Yêu cầu hỗ trợ" => "#ef4444",
+                                    "Hoàn thành" => "#22c55e",
+                                    _ => "#64748b"
+                                };
+                                var canStart = task.Status == "Chờ thực hiện";
+                                var canComplete = task.Status == "Đang thực hiện";
+                                var canRequestSupport = task.Status == "Đang thực hiện" && string.IsNullOrEmpty(task.SupportRequestType);
+                                var isWaitingSupport = task.Status == "Yêu cầu hỗ trợ";
+
+                                <tr style="border-bottom: 1px solid #334155; color: #e2e8f0;">
+                                    <td style="padding: 1rem;">#@task.TaskId</td>
+                                    <td style="padding: 1rem;">
+                                        <strong>@task.SupportRequest?.Beneficiary?.FullName</strong><br />
+                                        <small style="color: #94a3b8;">@task.SupportRequest?.Beneficiary?.BeneficiaryType</small>
+                                    </td>
+                                    <td style="padding: 1rem;">
+                                        <strong style="color: #22c55e;">@task.TotalAmount.ToString("N0") VND</strong>
+                                        @if (task.AdditionalAmount > 0)
+                                        {
+                                            <br /><small style="color: #94a3b8;">(+@task.AdditionalAmount.ToString("N0") hỗ trợ thêm)</small>
+                                        }
+                                    </td>
+                                    <td style="padding: 1rem;">
+                                        <span style="background: @statusColor; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.875rem;">
+                                            @task.Status
+                                        </span>
+                                        @if (isWaitingSupport)
+                                        {
+                                            <br /><small style="color: #94a3b8; margin-top: 0.25rem; display: block;">Đang chờ quản lý duyệt</small>
+                                        }
+                                    </td>
+                                    <td style="padding: 1rem;">@task.CreatedAt.ToString("dd/MM/yyyy")</td>
+                                    <td style="padding: 1rem; text-align: center;">
+                                        <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+                                            @if (canStart)
+                                            {
+                                                <form method="post" asp-action="StartTask" style="display: inline;">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="taskId" value="@task.TaskId" />
+                                                    <button type="submit" class="btn-action btn-start" title="Bắt đầu thực hiện">
+                                                        ▶ Thực hiện
+                                                    </button>
+                                                </form>
+                                            }
+                                            @if (canComplete)
+                                            {
+                                                <form method="post" asp-action="CompleteTask" style="display: inline;">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="taskId" value="@task.TaskId" />
+                                                    <button type="submit" class="btn-action btn-complete" title="Hoàn thành">
+                                                        ✓ Hoàn thành
+                                                    </button>
+                                                </form>
+                                            }
+                                            @if (canRequestSupport)
+                                            {
+                                                <button type="button" class="btn-action btn-support"
+                                                        onclick="openSupportModal(@task.TaskId)" title="Yêu cầu hỗ trợ">
+                                                    🆘 Hỗ trợ
+                                                </button>
+                                            }
+                                            @if (task.Status == "Hoàn thành")
+                                            {
+                                                <span style="color: #22c55e;">✓ Đã xong</span>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" style="padding: 3rem; text-align: center; color: #64748b;">
+                                    <div style="font-size: 3rem; margin-bottom: 1rem;">📋</div>
+                                    <p>Bạn chưa được giao công việc nào</p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Modal yêu cầu hỗ trợ -->
+<div id="supportModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center;">
+    <div style="background: #1e293b; border-radius: 12px; padding: 1.5rem; max-width: 500px; width: 90%; margin: 2rem;">
+        <h3 style="color: #f8fafc; margin-bottom: 1rem;">🆘 Yêu cầu hỗ trợ</h3>
+        <form method="post" asp-action="RequestSupport">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="taskId" id="modalTaskId" />
+
+            <div style="margin-bottom: 1rem;">
+                <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">Loại hỗ trợ</label>
+                <select name="supportType" required style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #0f172a; color: #f8fafc; border: 1px solid #334155;">
+                    <option value="Tiền">Tiền</option>
+                    <option value="Nhân lực">Nhân lực</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">Số tiền yêu cầu thêm (nếu cần tiền)</label>
+                <input type="number" name="amount" min="0" placeholder="Nhập số tiền VND..."
+                       style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #0f172a; color: #f8fafc; border: 1px solid #334155;" />
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">Lý do <span class="text-danger">*</span></label>
+                <textarea name="reason" required rows="3" placeholder="Mô tả chi tiết lý do cần hỗ trợ..."
+                          style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #0f172a; color: #f8fafc; border: 1px solid #334155;"></textarea>
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+                <button type="submit" style="flex: 1; padding: 0.75rem; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                    Gửi yêu cầu
+                </button>
+                <button type="button" onclick="closeSupportModal()" style="flex: 1; padding: 0.75rem; background: #475569; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                    Hủy
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .text-danger { color: #ef4444; }
+    .btn-action {
+        padding: 0.4rem 0.75rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        color: white;
+    }
+    .btn-start { background: #22c55e; }
+    .btn-complete { background: #3b82f6; }
+    .btn-support { background: #ef4444; }
+    .btn-action:hover { opacity: 0.9; }
+</style>
+
+<script>
+    document.getElementById('toggleSidebar')?.addEventListener('click', function () {
+        document.querySelector('.admin-shell')?.classList.toggle('collapsed');
+    });
+
+    function openSupportModal(taskId) {
+        document.getElementById('modalTaskId').value = taskId;
+        document.getElementById('supportModal').style.display = 'flex';
+    }
+
+    function closeSupportModal() {
+        document.getElementById('supportModal').style.display = 'none';
+    }
+
+    document.getElementById('supportModal')?.addEventListener('click', function (e) {
+        if (e.target === this) closeSupportModal();
+    });
+</script>

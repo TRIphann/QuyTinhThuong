@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QLDuLichRBAC_Upgrade.Models;
 using QLDuLichRBAC_Upgrade.Models.Entities;
+using QLDuLichRBAC_Upgrade.Models.ViewModels;
 using QLDuLichRBAC_Upgrade.Utils;
 
 namespace QLDuLichRBAC_Upgrade.Controllers
@@ -17,44 +18,43 @@ namespace QLDuLichRBAC_Upgrade.Controllers
 
         public IActionResult Login()
         {
-            return View();
+            return View(new LoginVm());
         }
 
         [HttpPost]
-        [HttpPost]
-        public async Task<IActionResult> Login(string Username, string Password)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginVm model)
         {
-            // Validate input
-            var validation = ValidationHelper.ValidateLogin(Username, Password);
-            if (!validation.IsValid)
+            if (!ModelState.IsValid)
             {
-                ViewBag.ErrorAlert = AlertHelper.Error(validation.ErrorMessage);
-                return View();
+                return View(model);
             }
 
             // Sanitize input
-            Username = AuthHelper.SanitizeInput(Username);
+            var username = AuthHelper.SanitizeInput(model.Username);
 
             // Hash password
-            string hashed = AuthHelper.HashPassword(Password);
+            string hashed = AuthHelper.HashPassword(model.Password);
 
             // Tìm user và load role
             var user = await _context.Users
                 .Include(u => u.UserRoles)
                     .ThenInclude(ur => ur.Role)
-                .FirstOrDefaultAsync(u => u.Username == Username && u.Password == hashed);
+                .FirstOrDefaultAsync(u => u.Username == username && u.Password == hashed);
 
             if (user == null)
             {
                 ViewBag.ErrorAlert = AlertHelper.Error("Tên đăng nhập hoặc mật khẩu không đúng!");
-                return View();
+                return View(model);
             }
 
-            // Kiểm tra trạng thái tài khoản
-            if (!string.Equals(user.Status?.Trim(), "Hoạt động", StringComparison.OrdinalIgnoreCase))
+            // Kiểm tra trạng thái tài khoản (Active hoặc Hoạt động)
+            var status = user.Status?.Trim();
+            if (!string.Equals(status, "Active", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(status, "Hoạt động", StringComparison.OrdinalIgnoreCase))
             {
                 ViewBag.ErrorAlert = AlertHelper.Error("Tài khoản đã bị khóa!");
-                return View();
+                return View(model);
             }
 
             // Lấy role ưu tiên (ADMIN trước), chuẩn hóa (Trim + Upper)
@@ -66,11 +66,11 @@ namespace QLDuLichRBAC_Upgrade.Controllers
             if (string.IsNullOrWhiteSpace(roleName))
             {
                 ViewBag.ErrorAlert = AlertHelper.Error("Tài khoản chưa được phân quyền!");
-                return View();
+                return View(model);
             }
 
             // Set session (lưu role đã chuẩn hoá)
-            HttpContext.Session.SetString("UserId", user.UserId.ToString());
+            HttpContext.Session.SetInt32("UserId", user.UserId);
             HttpContext.Session.SetString("Username", user.Username);
             HttpContext.Session.SetString("FullName", user.FullName);
             HttpContext.Session.SetString("Role", roleName);
@@ -101,54 +101,52 @@ namespace QLDuLichRBAC_Upgrade.Controllers
 
         public IActionResult Register()
         {
-            return View();
+            return View(new RegisterVm());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(string Username, string Password, string FullName, string Email, string Phone)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterVm model)
         {
-            // Validate input
-            var validation = ValidationHelper.ValidateRegistration(Username, Password, FullName, Email, Phone);
-            if (!validation.IsValid)
+            if (!ModelState.IsValid)
             {
-                ViewBag.ErrorAlert = AlertHelper.Error(validation.ErrorMessage);
-                return View();
+                return View(model);
             }
 
             // Sanitize input
-            Username = AuthHelper.SanitizeInput(Username);
-            FullName = AuthHelper.SanitizeInput(FullName);
-            Email = AuthHelper.SanitizeInput(Email);
-            Phone = AuthHelper.SanitizeInput(Phone);
+            var username = AuthHelper.SanitizeInput(model.Username);
+            var fullName = AuthHelper.SanitizeInput(model.FullName);
+            var email = AuthHelper.SanitizeInput(model.Email);
+            var phone = AuthHelper.SanitizeInput(model.Phone ?? "");
 
             // Kiểm tra username đã tồn tại chưa
-            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == Username);
+            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
             if (existingUser != null)
             {
-                ViewBag.ErrorAlert = AlertHelper.Error("Tên đăng nhập đã tồn tại!");
-                return View();
+                ModelState.AddModelError("Username", "Tên đăng nhập đã tồn tại!");
+                return View(model);
             }
 
             // Kiểm tra email đã tồn tại chưa
-            var existingEmail = await _context.Users.FirstOrDefaultAsync(u => u.Email == Email);
+            var existingEmail = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
             if (existingEmail != null)
             {
-                ViewBag.ErrorAlert = AlertHelper.Error("Email đã được sử dụng!");
-                return View();
+                ModelState.AddModelError("Email", "Email đã được sử dụng!");
+                return View(model);
             }
 
             // Hash password
-            string hashed = AuthHelper.HashPassword(Password);
+            string hashed = AuthHelper.HashPassword(model.Password);
 
             // Tạo user mới
             var newUser = new User
             {
-                Username = Username,
+                Username = username,
                 Password = hashed,
-                FullName = FullName,
-                Email = Email,
-                Phone = Phone,
-                Status = "Hoạt động"
+                FullName = fullName,
+                Email = email,
+                Phone = phone,
+                Status = "Active"
             };
 
             _context.Users.Add(newUser);
@@ -168,18 +166,18 @@ namespace QLDuLichRBAC_Upgrade.Controllers
             }
 
             ViewBag.SuccessAlert = AlertHelper.Success("Đăng ký thành công! Vui lòng đăng nhập.");
-            return View();
+            return View(new RegisterVm());
         }
 
         public async Task<IActionResult> Logout()
         {   
-            var userId = HttpContext.Session.GetString("UserId");
-            if (!string.IsNullOrEmpty(userId))
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId.HasValue)
             {
                 // Ghi log đăng xuất
                 var log = new Log
                 {
-                    UserId = int.Parse(userId),
+                    UserId = userId.Value,
                     Action = "Đăng xuất hệ thống",
                     TableName = "Users",
                     ActionTime = DateTime.Now

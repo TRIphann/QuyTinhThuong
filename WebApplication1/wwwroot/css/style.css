@@ -530,3 +530,59 @@ a:hover {
     .content .input-group .btn-outline-light:hover {
         background: rgba(255,255,255,0.10);
     }
+
+/* ===== VALIDATION STYLES ===== */
+.content .field-validation-error,
+.content .text-danger {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: #ff6b6b !important;
+    font-weight: 500;
+}
+
+.content .input-validation-error,
+.content .form-control.input-validation-error {
+    border-color: #ff6b6b !important;
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.15) !important;
+}
+
+.content .validation-summary-errors {
+    background: rgba(255, 107, 107, 0.15);
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    color: #ff6b6b;
+}
+
+.content .validation-summary-errors ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.content .validation-summary-errors li {
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.content .validation-summary-valid {
+    display: none;
+}
+
+/* Form control valid state */
+.content .form-control.valid,
+.content .form-control:valid:not(:placeholder-shown):not(.input-validation-error) {
+    border-color: #4ade80 !important;
+}
+
+/* Shake animation for invalid fields */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+    20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+.content .input-validation-error {
+    animation: shake 0.4s ease-in-out;
+}

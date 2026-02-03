@@ -1,0 +1,105 @@
+@model List<QLDuLichRBAC_Upgrade.Models.Entities.Complaint>
+@{
+    ViewData["Title"] = "Góp ý khách hàng";
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    <!-- Sidebar -->
+    <partial name="_ManagerSidebar" />
+
+    <!-- Main -->
+    <main class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn" type="button" id="toggleSidebar" title="Thu gọn sidebar">☰</button>
+                <div class="page-title">
+                    <div class="title">Góp ý từ khách hàng</div>
+                    <div class="subtitle">Phản hồi từ khách hàng về các đợt hỗ trợ</div>
+                </div>
+            </div>
+        </header>
+
+        <section class="content">
+            @if (Model != null && Model.Count > 0)
+            {
+                foreach (var c in Model)
+                {
+                    <div class="card panel" style="margin-bottom: 1rem;">
+                        <div class="panel-head">
+                            <div>
+                                <div class="panel-title">Góp ý từ @c.User?.FullName</div>
+                                <div class="panel-sub">Công việc #@c.TaskId - @c.CreatedAt.ToString("dd/MM/yyyy HH:mm")</div>
+                            </div>
+                            @if (c.Status == "Chờ xử lý")
+                            {
+                                <span style="background: #f59e0b; color: white; padding: 0.25rem 0.75rem; border-radius: 20px;">
+                                    Chờ xử lý
+                                </span>
+                            }
+                            else
+                            {
+                                <span style="background: #22c55e; color: white; padding: 0.25rem 0.75rem; border-radius: 20px;">
+                                    Đã phản hồi
+                                </span>
+                            }
+                        </div>
+
+                        <div style="padding: 1.5rem; color: #e2e8f0;">
+                            <div style="margin-bottom: 1rem; padding: 1rem; background: #1e293b; border-radius: 8px;">
+                                <strong style="color: #94a3b8;">Nội dung góp ý:</strong><br />
+                                @c.Content
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(c.ResponseContent))
+                            {
+                                <div style="margin-bottom: 1rem; padding: 1rem; background: #0f172a; border-radius: 8px; border-left: 3px solid #22c55e;">
+                                    <strong style="color: #94a3b8;">Phản hồi từ quản lý:</strong><br />
+                                    @c.ResponseContent
+                                    <div style="color: #64748b; font-size: 0.875rem; margin-top: 0.5rem;">
+                                        @(c.ResponseAt?.ToString("dd/MM/yyyy HH:mm"))
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <form method="post" asp-action="ResponseComplaint" style="display: flex; gap: 1rem; align-items: end;">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="complaintId" value="@c.ComplaintId" />
+
+                                    <div style="flex: 1;">
+                                        <label style="color: #94a3b8; display: block; margin-bottom: 0.5rem;">Phản hồi</label>
+                                        <input type="text" name="responseContent" required placeholder="Nhập phản hồi cho khách hàng..."
+                                               style="width: 100%; padding: 0.75rem; border-radius: 6px; background: #1e293b; color: #f8fafc; border: 1px solid #334155;" />
+                                    </div>
+
+                                    <button type="submit"
+                                            style="padding: 0.75rem 1.5rem; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                                        Gửi phản hồi
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="card panel">
+                    <div style="padding: 3rem; text-align: center; color: #64748b;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">💬</div>
+                        <p>Chưa có góp ý nào từ khách hàng</p>
+                        <a asp-action="Index" style="color: #3b82f6; text-decoration: underline;">← Quay về tổng quan</a>
+                    </div>
+                </div>
+            }
+        </section>
+    </main>
+</div>
+
+<script>
+    document.getElementById('toggleSidebar')?.addEventListener('click', function() {
+        document.querySelector('.admin-shell')?.classList.toggle('collapsed');
+    });
+</script>

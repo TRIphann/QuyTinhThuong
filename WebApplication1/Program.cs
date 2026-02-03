@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using QLDuLichRBAC_Upgrade.Models;
+using QLDuLichRBAC_Upgrade.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,9 @@ builder.Services.AddDbContext<QLQuyTinhThuongContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection")
     )
 );
+
+// Đăng ký HttpClient và PaymentService
+builder.Services.AddHttpClient<PaymentService>();
 
 // Đăng ký Session
 builder.Services.AddSession(options =>

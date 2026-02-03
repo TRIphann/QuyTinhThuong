@@ -2,6 +2,20 @@
 @{
     ViewData["Title"] = "Quản lý người dùng";
     var fullName = ViewData["FullName"]?.ToString() ?? "Admin";
+    var currentRole = ViewData["CurrentRole"]?.ToString() ?? "all";
+    
+    // Helper function để chuyển role sang tiếng Việt
+    string RoleToVietnamese(string role)
+    {
+        return role?.ToUpper() switch
+        {
+            "ADMIN" => "Quản trị viên",
+            "STAFF" => "Nhân viên",
+            "ACCOUNTANT" => "Khách hàng",
+            "MANAGER" => "Quản lý",
+            _ => role ?? "N/A"
+        };
+    }
 }
 
 <link rel="stylesheet" href="~/css/admin-dashboard.css" />
@@ -27,6 +41,38 @@
     .admin-shell .table tbody tr:hover {
         background: #1a1a2a;
     }
+    .role-tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    .role-tab {
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.2s ease;
+        border: 1px solid #3a3a4a;
+        background: #1a1a2a;
+        color: #a0a0b0;
+    }
+    .role-tab:hover {
+        background: #2a2a3a;
+        color: #ffffff;
+    }
+    .role-tab.active {
+        background: linear-gradient(135deg, #6ee7ff, #a78bfa);
+        color: #0b1020;
+        border-color: transparent;
+    }
+    .status-time {
+        font-size: 12px;
+        color: #a0a0b0;
+    }
+    .status-time.online {
+        color: #34d399;
+    }
 </style>
 
 <div class="admin-shell">
@@ -41,14 +87,41 @@
         </header>
 
         <section class="content">
+            <!-- Role Tabs -->
+            <div class="role-tabs">
+                <a href="@Url.Action("Users", "Admin")" class="role-tab @(currentRole == "all" ? "active" : "")">
+                    Tất cả (@Model.Count)
+                </a>
+                <a href="@Url.Action("Users", "Admin", new { role = "STAFF" })" class="role-tab @(currentRole == "STAFF" ? "active" : "")">
+                    👷 Nhân viên (@Model.Count(u => u.Role == "STAFF"))
+                </a>
+                <a href="@Url.Action("Users", "Admin", new { role = "ACCOUNTANT" })" class="role-tab @(currentRole == "ACCOUNTANT" ? "active" : "")">
+                    💼 Khách hàng (@Model.Count(u => u.Role == "ACCOUNTANT"))
+                </a>
+                <a href="@Url.Action("Users", "Admin", new { role = "MANAGER" })" class="role-tab @(currentRole == "MANAGER" ? "active" : "")">
+                    👔 Quản lý (@Model.Count(u => u.Role == "MANAGER"))
+                </a>
+            </div>
+
             <div class="card panel">
                 <div class="panel-head">
                     <div>
                         <div class="panel-title">Danh sách người dùng</div>
                         <div class="panel-sub">Dữ liệu lấy trực tiếp từ bảng Users</div>
                     </div>
-                    <div class="chip">Users</div>
+                    <a asp-action="CreateUser" class="btn btn-add">
+                        <span>➕</span> Thêm tài khoản
+                    </a>
                 </div>
+
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success">✅ @TempData["Success"]</div>
+                }
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-error">❌ @TempData["Error"]</div>
+                }
 
                 <div class="table-wrap">
                     <table class="table">
@@ -58,8 +131,9 @@
                                 <th>Họ tên</th>
                                 <th>Username</th>
                                 <th>Email</th>
-                                <th>Role</th>
-                                <th>Trạng thái</th>
+                                <th>Vai trò</th>
+                                <th>Hoạt động</th>
+                                <th style="text-align: center;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -71,17 +145,27 @@
                                     <td>@u.Username</td>
                                     <td>@u.Email</td>
                                     <td>
-                                        <span class="status info">@u.Role</span>
+                                        <span class="status info">@RoleToVietnamese(u.Role)</span>
                                     </td>
                                     <td>
-                                        @if (u.Status == "Hoạt động")
+                                        @if (u.LastActiveText == "Đang hoạt động")
                                         {
-                                            <span class="status ok">Hoạt động</span>
+                                            <span class="status-time online">🟢 @u.LastActiveText</span>
                                         }
                                         else
                                         {
-                                            <span class="status warn">@u.Status</span>
+                                            <span class="status-time">@u.LastActiveText</span>
                                         }
+                                    </td>
+                                    <td class="action-cell">
+                                        <a asp-action="EditUser" asp-route-id="@u.UserId" class="btn-action btn-edit" title="Chỉnh sửa">
+                                            ✏️
+                                        </a>
+                                        <button type="button" class="btn-action btn-delete" 
+                                                onclick="confirmDelete(@u.UserId, '@u.Username')" 
+                                                title="Xóa">
+                                            🗑️
+                                        </button>
                                     </td>
                                 </tr>
                             }
@@ -89,6 +173,184 @@
                     </table>
                 </div>
             </div>
+
+            <!-- Delete Confirmation Modal -->
+            <div id="deleteModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <span class="modal-icon">⚠️</span>
+                        <h3>Xác nhận xóa</h3>
+                    </div>
+                    <p>Bạn có chắc muốn xóa tài khoản <strong id="deleteUsername"></strong>?</p>
+                    <p class="modal-warning">Hành động này không thể hoàn tác!</p>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">Hủy bỏ</button>
+                        <form id="deleteForm" method="post" style="display: inline;">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger">Xóa tài khoản</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </section>
     </main>
 </div>
+
+<style>
+    .btn-add {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 18px;
+        background: linear-gradient(135deg, #6ee7ff 0%, #4fb3ff 100%);
+        color: #1a1a2e;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+    .btn-add:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(110, 231, 255, 0.3);
+    }
+    .action-cell {
+        text-align: center;
+        white-space: nowrap;
+    }
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        margin: 0 4px;
+    }
+    .btn-edit {
+        background: #3a3a4a;
+    }
+    .btn-edit:hover {
+        background: #4fb3ff;
+        transform: scale(1.1);
+    }
+    .btn-delete {
+        background: #3a3a4a;
+    }
+    .btn-delete:hover {
+        background: #ff6b6b;
+        transform: scale(1.1);
+    }
+    .alert {
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin: 0 16px 16px;
+        font-weight: 500;
+    }
+    .alert-success {
+        background: rgba(74, 222, 128, 0.15);
+        border: 1px solid #4ade80;
+        color: #4ade80;
+    }
+    .alert-error {
+        background: rgba(255, 107, 107, 0.15);
+        border: 1px solid #ff6b6b;
+        color: #ff6b6b;
+    }
+    /* Modal styles */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+    }
+    .modal.show {
+        display: flex;
+    }
+    .modal-content {
+        background: #2a2a3a;
+        border-radius: 16px;
+        padding: 24px 32px;
+        max-width: 420px;
+        text-align: center;
+        border: 1px solid #4a4a5a;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+    .modal-header {
+        margin-bottom: 16px;
+    }
+    .modal-icon {
+        font-size: 48px;
+        display: block;
+        margin-bottom: 12px;
+    }
+    .modal-header h3 {
+        color: #ffffff;
+        margin: 0;
+        font-size: 20px;
+    }
+    .modal-content p {
+        color: #c0c0d0;
+        margin: 8px 0;
+    }
+    .modal-warning {
+        color: #ff6b6b !important;
+        font-size: 13px;
+    }
+    .modal-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-top: 24px;
+    }
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        text-decoration: none;
+        font-size: 14px;
+    }
+    .btn-secondary {
+        background: #3a3a4a;
+        color: #e0e0e0;
+    }
+    .btn-secondary:hover {
+        background: #4a4a5a;
+    }
+    .btn-danger {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+        color: white;
+    }
+    .btn-danger:hover {
+        background: linear-gradient(135deg, #ff5252 0%, #ff4444 100%);
+    }
+</style>
+
+<script>
+    function confirmDelete(userId, username) {
+        document.getElementById('deleteUsername').textContent = username;
+        document.getElementById('deleteForm').action = '@Url.Action("DeleteUser", "Admin")/' + userId + '?id=' + userId;
+        document.getElementById('deleteModal').classList.add('show');
+    }
+    
+    function closeModal() {
+        document.getElementById('deleteModal').classList.remove('show');
+    }
+    
+    // Close modal when clicking outside
+    document.getElementById('deleteModal')?.addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+</script>

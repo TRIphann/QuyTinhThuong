@@ -5,6 +5,7 @@
 }
 
 <link rel="stylesheet" href="~/css/admin-dashboard.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <div class="admin-shell">
     @await Html.PartialAsync("_AdminSidebar")
@@ -12,22 +13,551 @@
     <main class="main">
         <header class="topbar">
             <div class="page-title">
-                <div class="title">Quản lý dữ liệu</div>
+                <div class="title">📊 Quản lý dữ liệu</div>
                 <div class="subtitle">Tổng quan các bảng dữ liệu hệ thống</div>
             </div>
         </header>
 
         <section class="content">
-            <div class="grid stats">
-                <div class="card stat"><div class="kpi-label">Beneficiaries</div><div class="kpi-value">@Model.Beneficiaries</div></div>
-                <div class="card stat"><div class="kpi-label">Support Requests</div><div class="kpi-value">@Model.SupportRequests</div></div>
-                <div class="card stat"><div class="kpi-label">Approvals</div><div class="kpi-value">@Model.Approvals</div></div>
-                <div class="card stat"><div class="kpi-label">Expenses</div><div class="kpi-value">@Model.Expenses</div></div>
-                <div class="card stat"><div class="kpi-label">Donors</div><div class="kpi-value">@Model.Donors</div></div>
-                <div class="card stat"><div class="kpi-label">Donations</div><div class="kpi-value">@Model.Donations</div></div>
-                <div class="card stat"><div class="kpi-label">Funds</div><div class="kpi-value">@Model.Funds</div></div>
-                <div class="card stat"><div class="kpi-label">Logs</div><div class="kpi-value">@Model.Logs</div></div>
+            <!-- KPI Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card blue">
+                    <div class="stat-icon">🧑‍🤝‍🧑</div>
+                    <div class="stat-info">
+                        <div class="stat-value">@Model.Beneficiaries</div>
+                        <div class="stat-label">Đối tượng hỗ trợ</div>
+                    </div>
+                </div>
+                <div class="stat-card purple">
+                    <div class="stat-icon">📋</div>
+                    <div class="stat-info">
+                        <div class="stat-value">@Model.SupportRequests</div>
+                        <div class="stat-label">Yêu cầu hỗ trợ</div>
+                    </div>
+                </div>
+                <div class="stat-card green">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-info">
+                        <div class="stat-value">@Model.Approvals</div>
+                        <div class="stat-label">Phê duyệt</div>
+                    </div>
+                </div>
+                <div class="stat-card orange">
+                    <div class="stat-icon">💸</div>
+                    <div class="stat-info">
+                        <div class="stat-value">@Model.Expenses</div>
+                        <div class="stat-label">Chi tiêu</div>
+                    </div>
+                </div>
+                <div class="stat-card cyan">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-info">
+                        <div class="stat-value">@Model.Donors</div>
+                        <div class="stat-label">Nhà hảo tâm</div>
+                    </div>
+                </div>
+                <div class="stat-card pink">
+                    <div class="stat-icon">💵</div>
+                    <div class="stat-info">
+                        <div class="stat-value">@Model.Donations</div>
+                        <div class="stat-label">Quyên góp</div>
+                    </div>
+                </div>
+                <div class="stat-card teal">
+                    <div class="stat-icon">🏦</div>
+                    <div class="stat-info">
+                        <div class="stat-value">@Model.Funds</div>
+                        <div class="stat-label">Quỹ</div>
+                    </div>
+                </div>
+                <div class="stat-card gray">
+                    <div class="stat-icon">📜</div>
+                    <div class="stat-info">
+                        <div class="stat-value">@Model.Logs</div>
+                        <div class="stat-label">Nhật ký</div>
+                    </div>
+                </div>
             </div>
+
+            <!-- Financial Overview -->
+            <div class="finance-row">
+                <div class="finance-card income">
+                    <div class="finance-icon">📥</div>
+                    <div class="finance-info">
+                        <div class="finance-label">Tổng quyên góp</div>
+                        <div class="finance-value">@Model.TotalDonations.ToString("N0") VND</div>
+                    </div>
+                </div>
+                <div class="finance-card expense">
+                    <div class="finance-icon">📤</div>
+                    <div class="finance-info">
+                        <div class="finance-label">Tổng chi tiêu</div>
+                        <div class="finance-value">@Model.TotalExpenses.ToString("N0") VND</div>
+                    </div>
+                </div>
+                <div class="finance-card balance">
+                    <div class="finance-icon">💰</div>
+                    <div class="finance-info">
+                        <div class="finance-label">Số dư quỹ</div>
+                        <div class="finance-value">@Model.FundBalance.ToString("N0") VND</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="charts-row">
+                <div class="card panel chart-panel">
+                    <div class="panel-head">
+                        <div class="panel-title">📈 Quyên góp 7 ngày qua</div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="donationChart"></canvas>
+                    </div>
+                </div>
+                <div class="card panel chart-panel">
+                    <div class="panel-head">
+                        <div class="panel-title">📉 Chi tiêu 7 ngày qua</div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="expenseChart"></canvas>
+                    </div>
+                </div>
+                <div class="card panel chart-panel">
+                    <div class="panel-head">
+                        <div class="panel-title">🎯 Trạng thái yêu cầu</div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="requestStatusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tables Row 1 -->
+            <div class="tables-row">
+                <!-- Recent Donations Table -->
+                <div class="card panel table-panel">
+                    <div class="panel-head">
+                        <div>
+                            <div class="panel-title">💵 Quyên góp gần đây</div>
+                            <div class="panel-sub">5 giao dịch mới nhất</div>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nhà hảo tâm</th>
+                                    <th>Số tiền</th>
+                                    <th>Ngày</th>
+                                    <th>Phương thức</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var d in Model.RecentDonations)
+                                {
+                                    <tr>
+                                        <td>#@d.DonationId</td>
+                                        <td>@d.DonorName</td>
+                                        <td class="amount positive">@d.Amount.ToString("N0")</td>
+                                        <td>@d.DonationDate.ToString("dd/MM/yyyy")</td>
+                                        <td><span class="chip">@d.PaymentMethod</span></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Recent Expenses Table -->
+                <div class="card panel table-panel">
+                    <div class="panel-head">
+                        <div>
+                            <div class="panel-title">💸 Chi tiêu gần đây</div>
+                            <div class="panel-sub">5 khoản chi mới nhất</div>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Đối tượng</th>
+                                    <th>Số tiền</th>
+                                    <th>Ngày</th>
+                                    <th>Phương thức</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var e in Model.RecentExpenses)
+                                {
+                                    <tr>
+                                        <td>#@e.ExpenseId</td>
+                                        <td>@e.BeneficiaryName</td>
+                                        <td class="amount negative">@e.Amount.ToString("N0")</td>
+                                        <td>@e.ExpenseDate.ToString("dd/MM/yyyy")</td>
+                                        <td><span class="chip">@e.PaymentMethod</span></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tables Row 2 -->
+            <div class="tables-row">
+                <!-- Top Donors Table -->
+                <div class="card panel table-panel">
+                    <div class="panel-head">
+                        <div>
+                            <div class="panel-title">🏆 Top nhà hảo tâm</div>
+                            <div class="panel-sub">Xếp hạng theo tổng quyên góp</div>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Tên</th>
+                                    <th>Loại</th>
+                                    <th>Tổng góp</th>
+                                    <th>Số lần</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{ int rank = 1; }
+                                @foreach (var d in Model.TopDonors)
+                                {
+                                    <tr>
+                                        <td>
+                                            @if (rank == 1) { <span class="rank gold">🥇</span> }
+                                            else if (rank == 2) { <span class="rank silver">🥈</span> }
+                                            else if (rank == 3) { <span class="rank bronze">🥉</span> }
+                                            else { <span class="rank">@rank</span> }
+                                        </td>
+                                        <td><strong>@d.FullName</strong></td>
+                                        <td><span class="chip type">@d.DonorType</span></td>
+                                        <td class="amount positive">@d.TotalDonated.ToString("N0")</td>
+                                        <td>@d.DonationCount lần</td>
+                                    </tr>
+                                    rank++;
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Recent Beneficiaries Table -->
+                <div class="card panel table-panel">
+                    <div class="panel-head">
+                        <div>
+                            <div class="panel-title">🧑‍🤝‍🧑 Đối tượng hỗ trợ</div>
+                            <div class="panel-sub">Danh sách mới nhất</div>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Họ tên</th>
+                                    <th>Loại</th>
+                                    <th>Địa chỉ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var b in Model.RecentBeneficiaries)
+                                {
+                                    <tr>
+                                        <td>#@b.BeneficiaryId</td>
+                                        <td>@b.FullName</td>
+                                        <td><span class="chip beneficiary">@b.BeneficiaryType</span></td>
+                                        <td>@(b.Address ?? "Chưa cập nhật")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tables Row 3 -->
+            <div class="tables-row">
+                <!-- Recent Requests Table -->
+                <div class="card panel table-panel">
+                    <div class="panel-head">
+                        <div>
+                            <div class="panel-title">📋 Yêu cầu hỗ trợ gần đây</div>
+                            <div class="panel-sub">5 yêu cầu mới nhất</div>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Đối tượng</th>
+                                    <th>Số tiền</th>
+                                    <th>Ngày</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var r in Model.RecentRequests)
+                                {
+                                    <tr>
+                                        <td>#@r.RequestId</td>
+                                        <td>@r.BeneficiaryName</td>
+                                        <td class="amount">@r.RequestedAmount.ToString("N0")</td>
+                                        <td>@r.RequestDate.ToString("dd/MM/yyyy")</td>
+                                        <td>
+                                            @if (r.Status == "Đã duyệt")
+                                            {
+                                                <span class="status success">✅ @r.Status</span>
+                                            }
+                                            else if (r.Status == "Từ chối")
+                                            {
+                                                <span class="status danger">❌ @r.Status</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="status warning">⏳ @r.Status</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Recent Logs Table -->
+                <div class="card panel table-panel">
+                    <div class="panel-head">
+                        <div>
+                            <div class="panel-title">📜 Nhật ký hoạt động</div>
+                            <div class="panel-sub">8 hoạt động gần đây</div>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Hành động</th>
+                                    <th>Bảng</th>
+                                    <th>Người thực hiện</th>
+                                    <th>Thời gian</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var l in Model.RecentLogs)
+                                {
+                                    <tr>
+                                        <td>#@l.LogId</td>
+                                        <td>@l.Action</td>
+                                        <td><span class="chip table-name">@l.TableName</span></td>
+                                        <td>@l.UserName</td>
+                                        <td class="time">@l.ActionTime.ToString("dd/MM HH:mm")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </section>
     </main>
 </div>
+
+<style>
+    /* Stats Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    .stat-card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 20px;
+        border-radius: 12px;
+        background: #2a2a3a;
+        border: 1px solid #3a3a4a;
+    }
+    .stat-icon {
+        font-size: 32px;
+        width: 56px;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+    }
+    .stat-card.blue .stat-icon { background: rgba(59, 130, 246, 0.2); }
+    .stat-card.purple .stat-icon { background: rgba(139, 92, 246, 0.2); }
+    .stat-card.green .stat-icon { background: rgba(34, 197, 94, 0.2); }
+    .stat-card.orange .stat-icon { background: rgba(249, 115, 22, 0.2); }
+    .stat-card.cyan .stat-icon { background: rgba(6, 182, 212, 0.2); }
+    .stat-card.pink .stat-icon { background: rgba(236, 72, 153, 0.2); }
+    .stat-card.teal .stat-icon { background: rgba(20, 184, 166, 0.2); }
+    .stat-card.gray .stat-icon { background: rgba(107, 114, 128, 0.2); }
+    .stat-value { font-size: 28px; font-weight: 700; color: #fff; }
+    .stat-label { font-size: 13px; color: #a0a0b0; }
+
+    /* Finance Row */
+    .finance-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    .finance-card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 24px;
+        border-radius: 12px;
+        border: 1px solid #3a3a4a;
+    }
+    .finance-card.income { background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.05)); border-color: #22c55e; }
+    .finance-card.expense { background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.05)); border-color: #ef4444; }
+    .finance-card.balance { background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05)); border-color: #3b82f6; }
+    .finance-icon { font-size: 36px; }
+    .finance-label { font-size: 13px; color: #a0a0b0; margin-bottom: 4px; }
+    .finance-value { font-size: 24px; font-weight: 700; color: #fff; }
+
+    /* Charts Row */
+    .charts-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    .chart-panel { padding: 0; }
+    .chart-panel .panel-head { padding: 16px; border-bottom: 1px solid #3a3a4a; }
+    .chart-container { padding: 16px; height: 220px; }
+
+    /* Tables Row */
+    .tables-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    .table-panel { padding: 0; }
+    .table-panel .panel-head { padding: 16px; border-bottom: 1px solid #3a3a4a; }
+    .table-wrap { padding: 0; max-height: 300px; overflow-y: auto; }
+    
+    /* Data Table */
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th, .data-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #3a3a4a; color: #fff; }
+    .data-table th { background: #1a1a2a; font-weight: 600; color: #a0a0b0; font-size: 12px; text-transform: uppercase; position: sticky; top: 0; }
+    .data-table tbody tr:hover { background: #1a1a2a; }
+    .data-table .amount { font-weight: 600; font-family: monospace; }
+    .data-table .amount.positive { color: #4ade80; }
+    .data-table .amount.negative { color: #f87171; }
+    .data-table .time { font-size: 12px; color: #a0a0b0; }
+    
+    /* Chips & Status */
+    .chip { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; background: #3a3a4a; color: #e0e0e0; }
+    .chip.type { background: rgba(139, 92, 246, 0.2); color: #a78bfa; }
+    .chip.beneficiary { background: rgba(6, 182, 212, 0.2); color: #22d3ee; }
+    .chip.table-name { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+    .status { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+    .status.success { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
+    .status.danger { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+    .status.warning { background: rgba(234, 179, 8, 0.15); color: #facc15; }
+    
+    /* Rank */
+    .rank { font-size: 18px; }
+    
+    @@media (max-width: 1200px) {
+        .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        .charts-row { grid-template-columns: 1fr; }
+        .tables-row { grid-template-columns: 1fr; }
+        .finance-row { grid-template-columns: 1fr; }
+    }
+</style>
+
+<script>
+    // Donation Chart
+    const donationCtx = document.getElementById('donationChart').getContext('2d');
+    new Chart(donationCtx, {
+        type: 'line',
+        data: {
+            labels: [@Html.Raw(Model.DonationChartLabels)],
+            datasets: [{
+                label: 'Quyên góp (VND)',
+                data: [@Html.Raw(Model.DonationChartData)],
+                borderColor: '#4ade80',
+                backgroundColor: 'rgba(74, 222, 128, 0.1)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { ticks: { color: '#a0a0b0' }, grid: { color: '#3a3a4a' } },
+                x: { ticks: { color: '#a0a0b0' }, grid: { display: false } }
+            }
+        }
+    });
+
+    // Expense Chart
+    const expenseCtx = document.getElementById('expenseChart').getContext('2d');
+    new Chart(expenseCtx, {
+        type: 'bar',
+        data: {
+            labels: [@Html.Raw(Model.ExpenseChartLabels)],
+            datasets: [{
+                label: 'Chi tiêu (VND)',
+                data: [@Html.Raw(Model.ExpenseChartData)],
+                backgroundColor: 'rgba(248, 113, 113, 0.6)',
+                borderColor: '#f87171',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { ticks: { color: '#a0a0b0' }, grid: { color: '#3a3a4a' } },
+                x: { ticks: { color: '#a0a0b0' }, grid: { display: false } }
+            }
+        }
+    });
+
+    // Request Status Chart (Pie)
+    const statusCtx = document.getElementById('requestStatusChart').getContext('2d');
+    new Chart(statusCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Chờ duyệt', 'Đã duyệt', 'Từ chối'],
+            datasets: [{
+                data: [@Model.PendingRequests, @Model.ApprovedRequests, @Model.RejectedRequests],
+                backgroundColor: ['#facc15', '#4ade80', '#f87171'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { 
+                legend: { 
+                    position: 'bottom',
+                    labels: { color: '#e0e0e0', padding: 16 }
+                } 
+            }
+        }
+    });
+</script>

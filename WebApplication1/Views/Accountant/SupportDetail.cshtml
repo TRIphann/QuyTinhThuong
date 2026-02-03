@@ -1,0 +1,96 @@
+@model QLDuLichRBAC_Upgrade.Models.Entities.SupportTask
+@{
+    ViewData["Title"] = "Chi tiết hỗ trợ";
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    <!-- Sidebar -->
+    <partial name="_AccountantSidebar" />
+
+    <!-- Main -->
+    <main class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn" type="button" id="toggleSidebar" title="Thu gọn sidebar">☰</button>
+                <div class="page-title">
+                    <div class="title">Chi tiết hỗ trợ #@Model.TaskId</div>
+                    <div class="subtitle">Thông tin đợt hỗ trợ</div>
+                </div>
+            </div>
+        </header>
+
+        <section class="content">
+            <div class="card panel">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-title">@Model.SupportRequest?.Beneficiary?.FullName</div>
+                        <div class="panel-sub">@Model.SupportRequest?.Beneficiary?.BeneficiaryType</div>
+                    </div>
+                    <span style="background: #22c55e; color: white; padding: 0.25rem 0.75rem; border-radius: 20px;">
+                        @Model.Status
+                    </span>
+                </div>
+
+                <div style="padding: 1.5rem; color: #e2e8f0;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div>
+                            <h4 style="color: #94a3b8; margin-bottom: 0.5rem;">Người được hỗ trợ</h4>
+                            <p><strong>Họ tên:</strong> @Model.SupportRequest?.Beneficiary?.FullName</p>
+                            <p><strong>Loại:</strong> @Model.SupportRequest?.Beneficiary?.BeneficiaryType</p>
+                            <p><strong>Địa chỉ:</strong> @(Model.SupportRequest?.Beneficiary?.Address ?? "N/A")</p>
+                        </div>
+
+                        <div>
+                            <h4 style="color: #94a3b8; margin-bottom: 0.5rem;">Thông tin hỗ trợ</h4>
+                            <p><strong>Số tiền:</strong> <span style="color: #22c55e;">@Model.TotalAmount.ToString("N0") VND</span></p>
+                            <p><strong>Nhân viên thực hiện:</strong> @Model.AssignedStaff?.FullName</p>
+                            <p><strong>Ngày hoàn thành:</strong> @Model.StaffCompletedAt?.ToString("dd/MM/yyyy HH:mm")</p>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.SupportRequest?.Reason))
+                    {
+                        <div style="margin-top: 1.5rem; padding: 1rem; background: #1e293b; border-radius: 8px;">
+                            <h4 style="color: #94a3b8; margin-bottom: 0.5rem;">Lý do hỗ trợ</h4>
+                            <p>@Model.SupportRequest.Reason</p>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.StaffNote))
+                    {
+                        <div style="margin-top: 1rem; padding: 1rem; background: #1e293b; border-radius: 8px;">
+                            <h4 style="color: #94a3b8; margin-bottom: 0.5rem;">Ghi chú từ nhân viên</h4>
+                            <p>@Model.StaffNote</p>
+                        </div>
+                    }
+
+                    <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                        <a asp-action="CompletedSupports" style="padding: 0.75rem 1.5rem; background: #475569; color: white; border-radius: 8px; text-decoration: none;">
+                            ← Quay lại danh sách
+                        </a>
+
+                        @{
+                            var canFeedback = Model.StaffCompletedAt.HasValue && 
+                                              (DateTime.Now - Model.StaffCompletedAt.Value).TotalDays >= 3;
+                        }
+                        @if (canFeedback)
+                        {
+                            <a asp-action="SubmitFeedback" asp-route-id="@Model.TaskId"
+                               style="padding: 0.75rem 1.5rem; background: #8b5cf6; color: white; border-radius: 8px; text-decoration: none;">
+                                💬 Gửi góp ý
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    document.getElementById('toggleSidebar')?.addEventListener('click', function() {
+        document.querySelector('.admin-shell')?.classList.toggle('collapsed');
+    });
+</script>

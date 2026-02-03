@@ -1,0 +1,93 @@
+@model dynamic
+@{
+    ViewData["Title"] = "Tạo công việc mới";
+    var staffList = ViewBag.Staff as List<QLDuLichRBAC_Upgrade.Models.Entities.User> ?? new();
+    var beneficiaryList = ViewBag.Beneficiaries as List<QLDuLichRBAC_Upgrade.Models.Entities.Beneficiary> ?? new();
+    var balance = ViewBag.Balance ?? 0m;
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    <!-- Sidebar -->
+    <partial name="_ManagerSidebar" />
+
+    <!-- Main -->
+    <main class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn" type="button" id="toggleSidebar" title="Thu gọn sidebar">☰</button>
+                <div class="page-title">
+                    <div class="title">Tạo công việc mới</div>
+                    <div class="subtitle">Giao việc cho nhân viên hỗ trợ người cần</div>
+                </div>
+            </div>
+        </header>
+
+        <section class="content">
+            <div class="card panel">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-title">Thông tin công việc</div>
+                        <div class="panel-sub">Số dư quỹ hiện tại: <strong class="text-success">@(((decimal)balance).ToString("N0")) VND</strong></div>
+                    </div>
+                </div>
+
+                <form method="post" asp-action="CreateTask" style="padding: 1.5rem;">
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">Nhân viên thực hiện <span class="text-danger">*</span></label>
+                        <select name="staffId" class="form-control" required style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #1e293b; color: #f8fafc; border: 1px solid #334155;">
+                            <option value="">-- Chọn nhân viên --</option>
+                            @foreach (var s in staffList)
+                            {
+                                <option value="@s.UserId">@s.FullName</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">Người cần hỗ trợ <span class="text-danger">*</span></label>
+                        <select name="beneficiaryId" class="form-control" required style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #1e293b; color: #f8fafc; border: 1px solid #334155;">
+                            <option value="">-- Chọn người cần hỗ trợ --</option>
+                            @foreach (var b in beneficiaryList)
+                            {
+                                <option value="@b.BeneficiaryId">@b.FullName - @b.BeneficiaryType</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">Số tiền hỗ trợ <span class="text-danger">*</span></label>
+                        <input type="number" name="amount" class="form-control" required min="1000" max="@balance"
+                               placeholder="Nhập số tiền (VND)"
+                               style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #1e293b; color: #f8fafc; border: 1px solid #334155;" />
+                        <small style="color: #64748b;">Số tiền tối đa: @(((decimal)balance).ToString("N0")) VND</small>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">Ghi chú</label>
+                        <textarea name="note" class="form-control" rows="3" placeholder="Mô tả chi tiết công việc..."
+                                  style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #1e293b; color: #f8fafc; border: 1px solid #334155;"></textarea>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="submit" class="btn btn-success" style="padding: 0.75rem 2rem; border-radius: 8px; background: #22c55e; color: white; border: none; cursor: pointer;">
+                            ✓ Tạo công việc
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary" style="padding: 0.75rem 2rem; border-radius: 8px; background: #475569; color: white; text-decoration: none;">
+                            ← Quay lại
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    document.getElementById('toggleSidebar')?.addEventListener('click', function() {
+        document.querySelector('.admin-shell')?.classList.toggle('collapsed');
+    });
+</script>

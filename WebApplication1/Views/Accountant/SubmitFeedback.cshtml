@@ -1,0 +1,75 @@
+@model QLDuLichRBAC_Upgrade.Models.Entities.SupportTask
+@{
+    ViewData["Title"] = "Gửi góp ý";
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    <!-- Sidebar -->
+    <partial name="_AccountantSidebar" />
+
+    <!-- Main -->
+    <main class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn" type="button" id="toggleSidebar" title="Thu gọn sidebar">☰</button>
+                <div class="page-title">
+                    <div class="title">Gửi góp ý</div>
+                    <div class="subtitle">Góp ý về đợt hỗ trợ #@Model.TaskId</div>
+                </div>
+            </div>
+        </header>
+
+        <section class="content">
+            <div class="card panel">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-title">@Model.SupportRequest?.Beneficiary?.FullName</div>
+                        <div class="panel-sub">Hoàn thành ngày @Model.StaffCompletedAt?.ToString("dd/MM/yyyy")</div>
+                    </div>
+                </div>
+
+                <form method="post" asp-action="SubmitFeedback" style="padding: 1.5rem;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="taskId" value="@Model.TaskId" />
+
+                    <div style="margin-bottom: 1rem; padding: 1rem; background: #1e293b; border-radius: 8px; color: #e2e8f0;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div>
+                                <span style="color: #94a3b8;">Người được hỗ trợ:</span><br />
+                                @Model.SupportRequest?.Beneficiary?.FullName
+                            </div>
+                            <div>
+                                <span style="color: #94a3b8;">Số tiền:</span><br />
+                                <strong style="color: #22c55e;">@Model.TotalAmount.ToString("N0") VND</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">Nội dung góp ý <span class="text-danger">*</span></label>
+                        <textarea name="content" rows="5" required placeholder="Nhập góp ý, nhận xét của bạn về đợt hỗ trợ này..."
+                                  style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #1e293b; color: #f8fafc; border: 1px solid #334155;"></textarea>
+                        <small style="color: #64748b;">Góp ý của bạn sẽ giúp chúng tôi cải thiện hoạt động của quỹ</small>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="submit" style="padding: 0.75rem 2rem; background: #8b5cf6; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                            💬 Gửi góp ý
+                        </button>
+                        <a asp-action="CompletedSupports" style="padding: 0.75rem 2rem; background: #475569; color: white; border-radius: 8px; text-decoration: none;">
+                            ← Hủy
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    document.getElementById('toggleSidebar')?.addEventListener('click', function() {
+        document.querySelector('.admin-shell')?.classList.toggle('collapsed');
+    });
+</script>

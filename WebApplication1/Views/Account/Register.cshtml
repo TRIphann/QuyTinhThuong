@@ -1,4 +1,5 @@
-﻿@{
+﻿@model QLDuLichRBAC_Upgrade.Models.ViewModels.RegisterVm
+@{
     ViewData["Title"] = "Đăng ký";
     Layout = "_AuthLayout";
 }
@@ -22,30 +23,37 @@
         <div class="info text-center w-100">
             <h2 class="fw-bold mb-4" style="color:white;">Tạo tài khoản mới</h2>
 
-            <form asp-action="Register" method="post" class="text-start">
+            <form asp-action="Register" method="post" class="text-start" id="registerForm">
+                @Html.AntiForgeryToken()
+                
                 <div class="mb-3">
-                    <label for="FullName" class="form-label fw-semibold text-white">Họ và tên</label>
-                    <input type="text" id="FullName" name="FullName" class="form-control" placeholder="Nhập họ và tên" required />
+                    <label asp-for="FullName" class="form-label fw-semibold text-white">Họ và tên</label>
+                    <input asp-for="FullName" class="form-control" placeholder="Nhập họ và tên" />
+                    <span asp-validation-for="FullName" class="text-danger small"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label for="Email" class="form-label fw-semibold text-white">Email</label>
-                    <input type="email" id="Email" name="Email" class="form-control" placeholder="Nhập địa chỉ email" required />
+                    <label asp-for="Email" class="form-label fw-semibold text-white">Email</label>
+                    <input asp-for="Email" class="form-control" placeholder="Nhập địa chỉ email" />
+                    <span asp-validation-for="Email" class="text-danger small"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label for="Username" class="form-label fw-semibold text-white">Tên đăng nhập</label>
-                    <input type="text" id="Username" name="Username" class="form-control" placeholder="Nhập tên đăng nhập" required />
+                    <label asp-for="Username" class="form-label fw-semibold text-white">Tên đăng nhập</label>
+                    <input asp-for="Username" class="form-control" placeholder="Nhập tên đăng nhập" />
+                    <span asp-validation-for="Username" class="text-danger small"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label for="Password" class="form-label fw-semibold text-white">Mật khẩu</label>
-                    <input type="password" id="Password" name="Password" class="form-control" placeholder="Nhập mật khẩu" required />
+                    <label asp-for="Password" class="form-label fw-semibold text-white">Mật khẩu</label>
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Nhập mật khẩu (ít nhất 6 ký tự)" />
+                    <span asp-validation-for="Password" class="text-danger small"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label for="Phone" class="form-label fw-semibold text-white">Số điện thoại</label>
-                    <input type="text" id="Phone" name="Phone" class="form-control" placeholder="Nhập số điện thoại" />
+                    <label asp-for="Phone" class="form-label fw-semibold text-white">Số điện thoại</label>
+                    <input asp-for="Phone" class="form-control" placeholder="Nhập số điện thoại (10-11 số)" />
+                    <span asp-validation-for="Phone" class="text-danger small"></span>
                 </div>
 
                 <button type="submit" class="btn w-100 py-2 mt-3">Đăng ký</button>
@@ -72,3 +80,7 @@
         <li></li>
     </ul>
 </section>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

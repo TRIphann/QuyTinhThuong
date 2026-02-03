@@ -1,9 +1,12 @@
-@model List<QLDuLichRBAC_Upgrade.Models.ViewModels.DonationVm>
+@model List<QLDuLichRBAC_Upgrade.Models.ViewModels.BeneficiarySupportVm>
 @{
-    ViewData["Title"] = "Danh Sách Quyên Góp";
-    var fullName = ViewData["FullName"]?.ToString() ?? "Kế toán";
+    ViewData["Title"] = "Danh Sách Người Cần Hỗ Trợ";
+    var fullName = ViewData["FullName"]?.ToString() ?? "Khách hàng";
     var totalAmount = ViewData["TotalAmount"] as decimal? ?? 0;
+    var totalBeneficiaries = ViewData["TotalBeneficiaries"] as int? ?? 0;
 }
+
+@Html.AntiForgeryToken()
 
 <link rel="stylesheet" href="~/css/admin-dashboard.css" />
 
@@ -12,7 +15,7 @@
         <div class="brand">
             <div class="brand-logo">K</div>
             <div class="brand-text">
-                <div class="brand-name">Accountant Panel</div>
+                <div class="brand-name">Khách Hàng</div>
                 <div class="brand-sub">QL Quỹ Tình Thương</div>
             </div>
         </div>
@@ -20,11 +23,11 @@
         <nav class="menu">
             <a class="menu-item" asp-controller="Accountant" asp-action="Index">
                 <span class="mi-ico">🏠</span>
-                <span class="mi-text">Dashboard</span>
+                <span class="mi-text">Tổng quan</span>
             </a>
             <a class="menu-item active" asp-controller="Accountant" asp-action="Donations">
-                <span class="mi-ico">💵</span>
-                <span class="mi-text">Danh sách quyên góp</span>
+                <span class="mi-ico">💝</span>
+                <span class="mi-text">Hỗ trợ người cần</span>
             </a>
             <a class="menu-item" asp-controller="Accountant" asp-action="Expenses">
                 <span class="mi-ico">💸</span>
@@ -54,8 +57,8 @@
             <div class="topbar-left">
                 <button class="icon-btn" type="button" id="toggleSidebar">☰</button>
                 <div class="page-title">
-                    <div class="title">Danh Sách Quyên Góp</div>
-                    <div class="subtitle">Tổng: @totalAmount.ToString("N0") VND từ @Model.Count khoản</div>
+                    <div class="title">Danh Sách Người Cần Hỗ Trợ</div>
+                    <div class="subtitle">@totalBeneficiaries người cần hỗ trợ - Tổng: @totalAmount.ToString("N0") VND</div>
                 </div>
             </div>
             <div class="topbar-right">
@@ -63,81 +66,639 @@
                     <div class="avatar">@fullName.Substring(0, 1).ToUpper()</div>
                     <div class="user-meta">
                         <div class="user-name">@fullName</div>
-                        <div class="user-role">Kế Toán</div>
+                        <div class="user-role">Khách Hàng</div>
                     </div>
                 </div>
             </div>
         </header>
 
         <section class="content">
-            <div class="card panel">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nhà hảo tâm</th>
-                            <th>Loại</th>
-                            <th>Số tiền</th>
-                            <th>Ngày</th>
-                            <th>Phương thức</th>
-                            <th>Người nhận</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var d in Model)
-                        {
-                            <tr>
-                                <td>@d.DonationId</td>
-                                <td><strong>@d.DonorName</strong></td>
-                                <td><span class="chip">@d.DonorType</span></td>
-                                <td class="text-success"><strong>@d.Amount.ToString("N0") VND</strong></td>
-                                <td>@d.DonationDate.ToString("dd/MM/yyyy HH:mm")</td>
-                                <td>@d.Method</td>
-                                <td>@(d.ReceivedByName ?? "-")</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+            @if (Model.Count == 0)
+            {
+                <div class="empty-state">
+                    <div class="empty-icon">💝</div>
+                    <div class="empty-text">Chưa có người cần hỗ trợ</div>
+                    <div class="empty-subtext">Các yêu cầu hỗ trợ sẽ hiển thị ở đây khi được tạo</div>
+                </div>
+            }
+            else
+            {
+                <div class="beneficiary-grid">
+                    @foreach (var b in Model)
+                    {
+                        <div class="beneficiary-card">
+                            <div class="card-header">
+                                <div class="avatar-large">@b.BeneficiaryName.Substring(0, 1).ToUpper()</div>
+                                <div class="card-info">
+                                    <h3 class="card-name">@b.BeneficiaryName</h3>
+                                    <span class="card-type">@b.BeneficiaryType</span>
+                                </div>
+                                <span class="status-badge @(b.Status == "Đã duyệt" ? "approved" : "pending")">
+                                    @b.Status
+                                </span>
+                            </div>
+                            
+                            <div class="card-body">
+                                @if (!string.IsNullOrEmpty(b.Address))
+                                {
+                                    <div class="card-row">
+                                        <span class="row-icon">📍</span>
+                                        <span class="row-text">@b.Address</span>
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(b.Reason))
+                                {
+                                    <div class="card-row">
+                                        <span class="row-icon">📝</span>
+                                        <span class="row-text">@b.Reason</span>
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(b.Description))
+                                {
+                                    <div class="card-row">
+                                        <span class="row-icon">ℹ️</span>
+                                        <span class="row-text">@b.Description</span>
+                                    </div>
+                                }
+                                <div class="card-row">
+                                    <span class="row-icon">📅</span>
+                                    <span class="row-text">Ngày yêu cầu: @b.RequestDate.ToString("dd/MM/yyyy")</span>
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <div class="amount-display">
+                                    <span class="amount-label">Số tiền cần hỗ trợ</span>
+                                    <span class="amount-value">@b.RequestedAmount.ToString("N0") VND</span>
+                                </div>
+                                <button type="button" class="btn-transfer" 
+                                        onclick="showQRModal(@b.RequestId, @b.RequestedAmount, '@b.BeneficiaryName.Replace("'", "\\'")' )">
+                                    <span class="btn-icon">📲</span>
+                                    <span class="btn-text">Chuyển khoản</span>
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
         </section>
     </main>
 </div>
 
+<!-- Modal QR Code -->
+<div id="qrModal" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+        <button type="button" class="modal-close" onclick="closeQRModal()">&times;</button>
+        <div class="modal-header">
+            <h2>🏦 Chuyển khoản hỗ trợ</h2>
+            <p id="modalBeneficiaryName" class="modal-subtitle"></p>
+        </div>
+        <div class="modal-body">
+            <div class="qr-container">
+                <img id="qrCodeImage" src="" alt="QR Code" />
+            </div>
+            <div class="payment-info">
+                <div class="info-row">
+                    <span class="info-label">Ngân hàng:</span>
+                    <span id="bankName" class="info-value"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Số tài khoản:</span>
+                    <span id="accountNumber" class="info-value"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Chủ tài khoản:</span>
+                    <span id="accountName" class="info-value"></span>
+                </div>
+                <div class="info-row amount-row">
+                    <span class="info-label">Số tiền:</span>
+                    <span id="transferAmount" class="info-value amount"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Nội dung CK:</span>
+                    <span id="transferMemo" class="info-value memo"></span>
+                </div>
+            </div>
+            <div class="qr-note">
+                <p>📱 Quét mã QR bằng ứng dụng ngân hàng để chuyển khoản</p>
+                <p>⚠️ Vui lòng giữ nguyên nội dung chuyển khoản để hệ thống tự động ghi nhận</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-confirm" id="btnConfirmPayment" onclick="confirmPayment()">
+                ✅ Xác nhận đã thanh toán
+            </button>
+            <button type="button" class="btn-secondary" onclick="closeQRModal()">Đóng</button>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="loading-overlay" style="display:none;">
+    <div class="loading-spinner"></div>
+    <p>Đang tạo mã QR...</p>
+</div>
+
 <style>
-    .table { width: 100%; border-collapse: collapse; }
-    .table th, .table td { 
-        padding: 12px; 
-        text-align: left; 
-        border-bottom: 1px solid #3a3a4a; 
-        color: #ffffff !important;
+    .beneficiary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 24px;
+        padding: 0;
     }
-    .table th { 
-        background: #2a2a3a; 
-        font-weight: 600; 
-        color: #e0e0e0 !important;
-        border-top: 2px solid #5a5a6a;
+
+    .beneficiary-card {
+        background: linear-gradient(145deg, #1e1e2e, #252538);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    .table td {
-        color: #ffffff !important;
+
+    .beneficiary-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
     }
-    .table td strong {
-        color: #ffffff !important;
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.02);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
-    .text-success { color: #22c55e !important; }
-    .chip {
-        display: inline-block;
-        padding: 4px 12px;
-        border-radius: 999px;
-        background: #1a3a4a;
-        color: #6ee7ff !important;
-        font-size: 12px;
+
+    .avatar-large {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        font-weight: 700;
+        color: white;
+        flex-shrink: 0;
+    }
+
+    .card-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .card-name {
+        font-size: 16px;
         font-weight: 600;
-        border: 1px solid #3a6a7a;
+        color: #ffffff;
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .card-type {
+        font-size: 12px;
+        color: #a0a0b0;
+    }
+
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .status-badge.approved {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+        border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .status-badge.pending {
+        background: rgba(251, 191, 36, 0.15);
+        color: #fbbf24;
+        border: 1px solid rgba(251, 191, 36, 0.3);
+    }
+
+    .card-body {
+        padding: 16px 20px;
+    }
+
+    .card-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 10px;
+        color: #c0c0d0;
+        font-size: 14px;
+    }
+
+    .card-row:last-child {
+        margin-bottom: 0;
+    }
+
+    .row-icon {
+        flex-shrink: 0;
+    }
+
+    .row-text {
+        line-height: 1.4;
+    }
+
+    .card-footer {
+        padding: 16px 20px;
+        background: rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    .amount-display {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .amount-label {
+        font-size: 11px;
+        color: #808090;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .amount-value {
+        font-size: 20px;
+        font-weight: 700;
+        color: #22c55e;
+    }
+
+    .btn-transfer {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 20px;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-transfer:hover {
+        background: linear-gradient(135deg, #7c7ff4, #9d78f8);
+        transform: scale(1.02);
+    }
+
+    .btn-icon {
+        font-size: 18px;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+    }
+
+    .empty-icon {
+        font-size: 64px;
+        margin-bottom: 20px;
+    }
+
+    .empty-text {
+        font-size: 20px;
+        font-weight: 600;
+        color: #ffffff;
+        margin-bottom: 8px;
+    }
+
+    .empty-subtext {
+        color: #808090;
+        font-size: 14px;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        padding: 20px;
+    }
+
+    .modal-content {
+        background: linear-gradient(145deg, #1e1e2e, #252538);
+        border-radius: 20px;
+        max-width: 450px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 32px;
+        height: 32px;
+        border: none;
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+        font-size: 20px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.3s;
+    }
+
+    .modal-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .modal-header {
+        padding: 24px 24px 16px;
+        text-align: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .modal-header h2 {
+        margin: 0;
+        font-size: 20px;
+        color: #ffffff;
+    }
+
+    .modal-subtitle {
+        margin: 8px 0 0;
+        color: #a0a0b0;
+        font-size: 14px;
+    }
+
+    .modal-body {
+        padding: 24px;
+    }
+
+    .qr-container {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 16px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .qr-container img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .payment-info {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        color: #808090;
+        font-size: 13px;
+    }
+
+    .info-value {
+        color: #ffffff;
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+    .info-value.amount {
+        color: #22c55e;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .info-value.memo {
+        color: #6366f1;
+        font-family: monospace;
+        font-size: 15px;
+    }
+
+    .amount-row {
+        background: rgba(34, 197, 94, 0.1);
+        margin: 8px -16px;
+        padding: 12px 16px !important;
+        border-radius: 8px;
+    }
+
+    .qr-note {
+        text-align: center;
+        padding: 12px;
+        background: rgba(251, 191, 36, 0.1);
+        border-radius: 10px;
+        border: 1px solid rgba(251, 191, 36, 0.2);
+    }
+
+    .qr-note p {
+        margin: 4px 0;
+        font-size: 12px;
+        color: #fbbf24;
+    }
+
+    .modal-footer {
+        padding: 16px 24px 24px;
+        text-align: center;
+    }
+
+    .btn-secondary {
+        padding: 12px 32px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 500;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-confirm {
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        border: none;
+        color: #ffffff;
+        font-size: 15px;
+        font-weight: 600;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-right: 12px;
+    }
+
+    .btn-confirm:hover {
+        background: linear-gradient(135deg, #16a34a, #15803d);
+        transform: scale(1.02);
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    /* Loading Overlay */
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.9);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        color: #ffffff;
+    }
+
+    .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        border-top-color: #6366f1;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 16px;
+    }
+
+    @@keyframes spin {
+        to { transform: rotate(360deg); }
     }
 </style>
 
 <script>
+    let currentRequestId = 0;
+    
     document.getElementById('toggleSidebar')?.addEventListener('click', function() {
         document.querySelector('.admin-shell')?.classList.toggle('collapsed');
+    });
+
+    function showQRModal(requestId, amount, beneficiaryName) {
+        currentRequestId = requestId;
+        
+        // Show loading
+        document.getElementById('loadingOverlay').style.display = 'flex';
+        
+        // Fetch QR code from API
+        fetch(`/Accountant/GetPaymentQR?requestId=${requestId}&amount=${amount}&beneficiaryName=${encodeURIComponent(beneficiaryName)}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                
+                if (data.success) {
+                    document.getElementById('modalBeneficiaryName').textContent = `Hỗ trợ: ${beneficiaryName}`;
+                    document.getElementById('qrCodeImage').src = data.qrCode;
+                    document.getElementById('bankName').textContent = data.bankName;
+                    document.getElementById('accountNumber').textContent = data.accountNumber;
+                    document.getElementById('accountName').textContent = data.accountName;
+                    document.getElementById('transferAmount').textContent = new Intl.NumberFormat('vi-VN').format(data.amount) + ' VND';
+                    document.getElementById('transferMemo').textContent = data.memo;
+                    document.getElementById('qrModal').style.display = 'flex';
+                } else {
+                    alert('Lỗi tạo mã QR: ' + data.message);
+                }
+            })
+            .catch(error => {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                alert('Lỗi kết nối: ' + error.message);
+            });
+    }
+
+    function closeQRModal() {
+        document.getElementById('qrModal').style.display = 'none';
+        currentRequestId = 0;
+    }
+
+    function confirmPayment() {
+        if (!currentRequestId) {
+            alert('Không tìm thấy mã yêu cầu');
+            return;
+        }
+        
+        if (!confirm('Bạn xác nhận đã chuyển khoản thành công?')) {
+            return;
+        }
+        
+        document.getElementById('loadingOverlay').style.display = 'flex';
+        
+        fetch('/Accountant/ConfirmPayment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+            },
+            body: `requestId=${currentRequestId}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('loadingOverlay').style.display = 'none';
+            
+            if (data.success) {
+                alert(data.message);
+                closeQRModal();
+                location.reload();
+            } else {
+                alert('Lỗi: ' + data.message);
+            }
+        })
+        .catch(error => {
+            document.getElementById('loadingOverlay').style.display = 'none';
+            alert('Lỗi kết nối: ' + error.message);
+        });
+    }
+
+    // Close modal on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeQRModal();
+        }
+    });
+
+    // Close modal on overlay click
+    document.getElementById('qrModal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeQRModal();
+        }
     });
 </script>

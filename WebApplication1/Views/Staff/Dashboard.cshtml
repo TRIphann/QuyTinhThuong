@@ -1,6 +1,6 @@
 @model QLDuLichRBAC_Upgrade.Models.ViewModels.StaffDashboardVm
 @{
-    ViewData["Title"] = "Dashboard Nhân Viên";
+    ViewData["Title"] = "Tổng quan Nhân Viên";
     var fullName = string.IsNullOrWhiteSpace(Model.FullName) ? "Nhân viên" : Model.FullName;
 }
 
@@ -12,7 +12,7 @@
         <div class="brand">
             <div class="brand-logo">S</div>
             <div class="brand-text">
-                <div class="brand-name">Staff Panel</div>
+                <div class="brand-name">Nhân Viên</div>
                 <div class="brand-sub">QL Quỹ Tình Thương</div>
             </div>
         </div>
@@ -20,7 +20,16 @@
         <nav class="menu">
             <a class="menu-item active" asp-controller="Staff" asp-action="Index">
                 <span class="mi-ico">🏠</span>
-                <span class="mi-text">Dashboard</span>
+                <span class="mi-text">Tổng quan</span>
+            </a>
+
+            <a class="menu-item" asp-controller="Staff" asp-action="MyTasks">
+                <span class="mi-ico">📋</span>
+                <span class="mi-text">Công việc của tôi</span>
+                @if (Model.AssignedTasks > 0)
+                {
+                    <span class="badge-count">@Model.AssignedTasks</span>
+                }
             </a>
 
             <div class="menu-section">Quyên góp</div>
@@ -39,8 +48,8 @@
                 <span class="mi-text">Đối tượng hỗ trợ</span>
             </a>
             <a class="menu-item" asp-controller="Staff" asp-action="Requests">
-                <span class="mi-ico">📋</span>
-                <span class="mi-text">Yêu cầu hỗ trợ</span>
+                <span class="mi-ico">📝</span>
+                <span class="mi-text">Tạo yêu cầu hỗ trợ</span>
             </a>
 
             <div class="menu-divider"></div>
@@ -71,7 +80,7 @@
                 <button class="icon-btn" type="button" id="toggleSidebar" title="Thu gọn sidebar">☰</button>
 
                 <div class="page-title">
-                    <div class="title">Dashboard</div>
+                    <div class="title">Tổng quan</div>
                     <div class="subtitle">
                         Xin chào, <strong>@fullName</strong>. Chúc bạn một ngày làm việc hiệu quả.
                     </div>
@@ -83,7 +92,7 @@
                     <div class="avatar">@fullName.Substring(0, 1).ToUpper()</div>
                     <div class="user-meta">
                         <div class="user-name">@fullName</div>
-                        <div class="user-role">Nhân viên Quỹ</div>
+                        <div class="user-role">Nhân Viên</div>
                     </div>
                 </div>
             </div>
@@ -91,31 +100,44 @@
 
         <!-- Content -->
         <section class="content">
-            <!-- Stat cards -->
+            <!-- Task stats -->
             <div class="grid stats">
                 <div class="card stat glow">
                     <div class="stat-head">
-                        <div class="stat-ico">👥</div>
+                        <div class="stat-ico">📋</div>
                         <div class="stat-kpi">
-                            <div class="kpi-label">Nhà hảo tâm</div>
-                            <div class="kpi-value">@Model.TotalDonors</div>
+                            <div class="kpi-label">Công việc chờ</div>
+                            <div class="kpi-value text-warning">@Model.PendingTasks</div>
                         </div>
                     </div>
                     <div class="stat-foot">
-                        <span class="muted">Tổng số đã đăng ký</span>
+                        <span class="muted">Chờ thực hiện</span>
                     </div>
                 </div>
 
                 <div class="card stat">
                     <div class="stat-head">
-                        <div class="stat-ico">🧑‍🤝‍🧑</div>
+                        <div class="stat-ico">🔄</div>
                         <div class="stat-kpi">
-                            <div class="kpi-label">Đối tượng hỗ trợ</div>
-                            <div class="kpi-value">@Model.TotalBeneficiaries</div>
+                            <div class="kpi-label">Đang thực hiện</div>
+                            <div class="kpi-value text-primary">@Model.InProgressTasks</div>
                         </div>
                     </div>
                     <div class="stat-foot">
-                        <span class="muted">Tổng số đã đăng ký</span>
+                        <span class="muted">Đang làm</span>
+                    </div>
+                </div>
+
+                <div class="card stat">
+                    <div class="stat-head">
+                        <div class="stat-ico">✅</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Đã hoàn thành</div>
+                            <div class="kpi-value text-success">@Model.CompletedTasks</div>
+                        </div>
+                    </div>
+                    <div class="stat-foot">
+                        <span class="muted">Tổng hoàn thành</span>
                     </div>
                 </div>
 
@@ -123,130 +145,172 @@
                     <div class="stat-head">
                         <div class="stat-ico">💵</div>
                         <div class="stat-kpi">
-                            <div class="kpi-label">Quyên góp hôm nay</div>
-                            <div class="kpi-value">@Model.DonationsToday</div>
+                            <div class="kpi-label">Thu hôm nay</div>
+                            <div class="kpi-value">@Model.TodayDonationAmount.ToString("N0")</div>
                         </div>
                     </div>
                     <div class="stat-foot">
-                        <span class="text-success">@Model.TodayDonationAmount.ToString("N0") VND</span>
-                    </div>
-                </div>
-
-                <div class="card stat">
-                    <div class="stat-head">
-                        <div class="stat-ico">📋</div>
-                        <div class="stat-kpi">
-                            <div class="kpi-label">Yêu cầu hôm nay</div>
-                            <div class="kpi-value">@Model.RequestsCreatedToday</div>
-                        </div>
-                    </div>
-                    <div class="stat-foot">
-                        <span class="muted">Đã tạo</span>
+                        <span class="muted">VND</span>
                     </div>
                 </div>
             </div>
+
+            <!-- My Tasks -->
+            @if (Model.MyTasks.Count > 0)
+            {
+                <div class="card panel" style="margin-bottom: 1rem;">
+                    <div class="panel-head">
+                        <div>
+                            <div class="panel-title">Công việc của tôi</div>
+                            <div class="panel-sub">@Model.AssignedTasks công việc cần xử lý</div>
+                        </div>
+                        <a asp-action="MyTasks" class="chip">Xem tất cả →</a>
+                    </div>
+
+                    <div style="padding: 0;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="background: #1e293b; color: #94a3b8; text-align: left;">
+                                    <th style="padding: 0.75rem 1rem;">Người hỗ trợ</th>
+                                    <th style="padding: 0.75rem 1rem;">Số tiền</th>
+                                    <th style="padding: 0.75rem 1rem;">Trạng thái</th>
+                                    <th style="padding: 0.75rem 1rem; text-align: center;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var task in Model.MyTasks)
+                                {
+                                    var statusColor = task.Status switch
+                                    {
+                                        "Chờ thực hiện" => "#f59e0b",
+                                        "Đang thực hiện" => "#3b82f6",
+                                        "Yêu cầu hỗ trợ" => "#ef4444",
+                                        _ => "#64748b"
+                                    };
+                                    var canStart = task.Status == "Chờ thực hiện";
+                                    var canComplete = task.Status == "Đang thực hiện";
+                                    var canRequestSupport = task.Status == "Đang thực hiện" && string.IsNullOrEmpty(task.SupportRequestType);
+                                    
+                                    <tr style="border-bottom: 1px solid #334155; color: #e2e8f0;">
+                                        <td style="padding: 0.75rem 1rem;">
+                                            <strong>@task.SupportRequest?.Beneficiary?.FullName</strong><br />
+                                            <small style="color: #94a3b8;">@task.SupportRequest?.Beneficiary?.BeneficiaryType</small>
+                                        </td>
+                                        <td style="padding: 0.75rem 1rem; color: #22c55e; font-weight: bold;">
+                                            @task.TotalAmount.ToString("N0") VND
+                                        </td>
+                                        <td style="padding: 0.75rem 1rem;">
+                                            <span style="background: @statusColor; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.875rem;">
+                                                @task.Status
+                                            </span>
+                                        </td>
+                                        <td style="padding: 0.75rem 1rem; text-align: center;">
+                                            <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+                                                @if (canStart)
+                                                {
+                                                    <form method="post" asp-action="StartTask" style="display: inline;">
+                                                        @Html.AntiForgeryToken()
+                                                        <input type="hidden" name="taskId" value="@task.TaskId" />
+                                                        <button type="submit" class="btn-action btn-start" title="Bắt đầu thực hiện">
+                                                            ▶ Thực hiện
+                                                        </button>
+                                                    </form>
+                                                }
+                                                @if (canComplete)
+                                                {
+                                                    <form method="post" asp-action="CompleteTask" style="display: inline;">
+                                                        @Html.AntiForgeryToken()
+                                                        <input type="hidden" name="taskId" value="@task.TaskId" />
+                                                        <button type="submit" class="btn-action btn-complete" title="Hoàn thành">
+                                                            ✓ Hoàn thành
+                                                        </button>
+                                                    </form>
+                                                }
+                                                @if (canRequestSupport)
+                                                {
+                                                    <button type="button" class="btn-action btn-support" 
+                                                            onclick="openSupportModal(@task.TaskId)" title="Yêu cầu hỗ trợ">
+                                                        🆘 Yêu cầu hỗ trợ
+                                                    </button>
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
 
             <!-- Quick actions -->
-            <div class="card panel" style="margin-bottom: 1.5rem;">
-                <div class="panel-head">
-                    <div>
-                        <div class="panel-title">Thao tác nhanh</div>
-                        <div class="panel-sub">Các chức năng thường dùng</div>
-                    </div>
-                </div>
-
-                <div class="actions">
-                    <a class="action-card" asp-controller="Staff" asp-action="CreateDonor">
-                        <div class="action-ico">➕</div>
-                        <div class="action-body">
-                            <div class="action-title">Thêm nhà hảo tâm</div>
-                            <div class="action-desc">Đăng ký nhà hảo tâm mới</div>
-                        </div>
-                        <div class="action-go">→</div>
-                    </a>
-
-                    <a class="action-card" asp-controller="Staff" asp-action="CreateDonation">
-                        <div class="action-ico">💵</div>
-                        <div class="action-body">
-                            <div class="action-title">Tiếp nhận quyên góp</div>
-                            <div class="action-desc">Ghi nhận khoản quyên góp mới</div>
-                        </div>
-                        <div class="action-go">→</div>
-                    </a>
-
-                    <a class="action-card" asp-controller="Staff" asp-action="CreateBeneficiary">
-                        <div class="action-ico">🧑‍🤝‍🧑</div>
-                        <div class="action-body">
-                            <div class="action-title">Thêm đối tượng</div>
-                            <div class="action-desc">Đăng ký đối tượng hỗ trợ mới</div>
-                        </div>
-                        <div class="action-go">→</div>
-                    </a>
-
-                    <a class="action-card" asp-controller="Staff" asp-action="CreateRequest">
-                        <div class="action-ico">📋</div>
-                        <div class="action-body">
-                            <div class="action-title">Lập yêu cầu hỗ trợ</div>
-                            <div class="action-desc">Tạo hồ sơ đề nghị hỗ trợ</div>
-                        </div>
-                        <div class="action-go">→</div>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Recent data -->
             <div class="grid two-col">
                 <div class="card panel">
                     <div class="panel-head">
                         <div>
-                            <div class="panel-title">Nhà hảo tâm gần đây</div>
-                            <div class="panel-sub">5 người mới nhất</div>
+                            <div class="panel-title">Chức năng chính</div>
+                            <div class="panel-sub">Truy cập nhanh các phân hệ</div>
                         </div>
-                        <a asp-action="Donors" class="chip">Xem tất cả →</a>
+                        <div class="chip">Thao tác nhanh</div>
                     </div>
 
-                    <div class="timeline">
-                        @foreach (var d in Model.RecentDonors)
-                        {
-                            <div class="tl-item">
-                                <div class="tl-dot"></div>
-                                <div class="tl-content">
-                                    <div class="tl-title">@d.DonorName</div>
-                                    <div class="tl-sub">@d.DonorType - Đã góp: @d.TotalDonated.ToString("N0") VND</div>
-                                </div>
+                    <div class="actions">
+                        <a class="action-card" asp-controller="Staff" asp-action="MyTasks">
+                            <div class="action-ico">📋</div>
+                            <div class="action-body">
+                                <div class="action-title">Công việc của tôi</div>
+                                <div class="action-desc">Xem và xử lý công việc được giao</div>
                             </div>
-                        }
-                        @if (!Model.RecentDonors.Any())
-                        {
-                            <p class="muted" style="padding: 1rem;">Chưa có dữ liệu</p>
-                        }
+                            <div class="action-go">→</div>
+                        </a>
+
+                        <a class="action-card" asp-controller="Staff" asp-action="Donations">
+                            <div class="action-ico">💵</div>
+                            <div class="action-body">
+                                <div class="action-title">Tiếp nhận quyên góp</div>
+                                <div class="action-desc">Ghi nhận quyên góp bằng tiền mặt</div>
+                            </div>
+                            <div class="action-go">→</div>
+                        </a>
+
+                        <a class="action-card" asp-controller="Staff" asp-action="Requests">
+                            <div class="action-ico">📝</div>
+                            <div class="action-body">
+                                <div class="action-title">Tạo yêu cầu hỗ trợ</div>
+                                <div class="action-desc">Tạo hồ sơ cho người cần hỗ trợ</div>
+                            </div>
+                            <div class="action-go">→</div>
+                        </a>
                     </div>
                 </div>
 
                 <div class="card panel">
                     <div class="panel-head">
                         <div>
-                            <div class="panel-title">Đối tượng hỗ trợ gần đây</div>
-                            <div class="panel-sub">5 đối tượng mới nhất</div>
+                            <div class="panel-title">Thống kê nhanh</div>
+                            <div class="panel-sub">Dữ liệu hệ thống</div>
                         </div>
-                        <a asp-action="Beneficiaries" class="chip">Xem tất cả →</a>
                     </div>
 
-                    <div class="timeline">
-                        @foreach (var b in Model.RecentBeneficiaries)
-                        {
-                            <div class="tl-item">
-                                <div class="tl-dot"></div>
-                                <div class="tl-content">
-                                    <div class="tl-title">@b.FullName</div>
-                                    <div class="tl-sub">@b.BeneficiaryType - @b.TotalRequests yêu cầu</div>
-                                </div>
+                    <div style="padding: 1rem;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div style="background: #1e293b; padding: 1rem; border-radius: 8px; text-align: center;">
+                                <div style="color: #94a3b8;">Nhà hảo tâm</div>
+                                <div style="font-size: 1.5rem; font-weight: bold; color: #f8fafc;">@Model.TotalDonors</div>
                             </div>
-                        }
-                        @if (!Model.RecentBeneficiaries.Any())
-                        {
-                            <p class="muted" style="padding: 1rem;">Chưa có dữ liệu</p>
-                        }
+                            <div style="background: #1e293b; padding: 1rem; border-radius: 8px; text-align: center;">
+                                <div style="color: #94a3b8;">Đối tượng hỗ trợ</div>
+                                <div style="font-size: 1.5rem; font-weight: bold; color: #f8fafc;">@Model.TotalBeneficiaries</div>
+                            </div>
+                            <div style="background: #1e293b; padding: 1rem; border-radius: 8px; text-align: center;">
+                                <div style="color: #94a3b8;">Quyên góp hôm nay</div>
+                                <div style="font-size: 1.5rem; font-weight: bold; color: #22c55e;">@Model.DonationsToday</div>
+                            </div>
+                            <div style="background: #1e293b; padding: 1rem; border-radius: 8px; text-align: center;">
+                                <div style="color: #94a3b8;">Yêu cầu hôm nay</div>
+                                <div style="font-size: 1.5rem; font-weight: bold; color: #f8fafc;">@Model.RequestsCreatedToday</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -254,13 +318,89 @@
     </main>
 </div>
 
+<!-- Modal yêu cầu hỗ trợ -->
+<div id="supportModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center;">
+    <div style="background: #1e293b; border-radius: 12px; padding: 1.5rem; max-width: 500px; width: 90%; margin: 2rem;">
+        <h3 style="color: #f8fafc; margin-bottom: 1rem;">🆘 Yêu cầu hỗ trợ</h3>
+        <form method="post" asp-action="RequestSupport">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="taskId" id="modalTaskId" />
+            
+            <div style="margin-bottom: 1rem;">
+                <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">Loại hỗ trợ</label>
+                <select name="supportType" required style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #0f172a; color: #f8fafc; border: 1px solid #334155;">
+                    <option value="Tiền">Tiền</option>
+                    <option value="Nhân lực">Nhân lực</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">Số tiền yêu cầu thêm (nếu cần tiền)</label>
+                <input type="number" name="amount" min="0" placeholder="Nhập số tiền VND..."
+                       style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #0f172a; color: #f8fafc; border: 1px solid #334155;" />
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">Lý do <span class="text-danger">*</span></label>
+                <textarea name="reason" required rows="3" placeholder="Mô tả chi tiết lý do cần hỗ trợ..."
+                          style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #0f172a; color: #f8fafc; border: 1px solid #334155;"></textarea>
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+                <button type="submit" style="flex: 1; padding: 0.75rem; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                    Gửi yêu cầu
+                </button>
+                <button type="button" onclick="closeSupportModal()" style="flex: 1; padding: 0.75rem; background: #475569; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                    Hủy
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <style>
-    .menu-section { padding: 8px 16px; font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; margin-top: 8px; }
     .text-success { color: #22c55e; }
+    .text-danger { color: #ef4444; }
+    .text-warning { color: #f59e0b; }
+    .text-primary { color: #3b82f6; }
+    .badge-count {
+        background: #ef4444;
+        color: white;
+        border-radius: 10px;
+        padding: 2px 8px;
+        font-size: 0.75rem;
+        margin-left: auto;
+    }
+    .btn-action {
+        padding: 0.25rem 0.75rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.75rem;
+        color: white;
+    }
+    .btn-start { background: #22c55e; }
+    .btn-complete { background: #3b82f6; }
+    .btn-support { background: #ef4444; }
+    .btn-action:hover { opacity: 0.9; }
 </style>
 
 <script>
     document.getElementById('toggleSidebar')?.addEventListener('click', function() {
         document.querySelector('.admin-shell')?.classList.toggle('collapsed');
+    });
+
+    function openSupportModal(taskId) {
+        document.getElementById('modalTaskId').value = taskId;
+        document.getElementById('supportModal').style.display = 'flex';
+    }
+
+    function closeSupportModal() {
+        document.getElementById('supportModal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('supportModal')?.addEventListener('click', function(e) {
+        if (e.target === this) closeSupportModal();
     });
 </script>

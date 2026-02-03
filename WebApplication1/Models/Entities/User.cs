@@ -28,7 +28,7 @@ namespace QLDuLichRBAC_Upgrade.Models.Entities
         public string? Phone { get; set; }
 
         [MaxLength(50)]
-        public string Status { get; set; } = "Hoạt động";
+        public string Status { get; set; } = "Active";
 
         // Navigation properties
         public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();

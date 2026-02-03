@@ -1,7 +1,7 @@
 @model List<QLDuLichRBAC_Upgrade.Models.ViewModels.SupportRequestVm>
 @{
     ViewData["Title"] = "Duyệt Hồ Sơ";
-    var fullName = ViewData["FullName"]?.ToString() ?? "Manager";
+    var fullName = ViewData["FullName"]?.ToString() ?? "Quản lý";
 }
 
 <link rel="stylesheet" href="~/css/admin-dashboard.css" />
@@ -12,7 +12,7 @@
         <div class="brand">
             <div class="brand-logo">M</div>
             <div class="brand-text">
-                <div class="brand-name">Manager Panel</div>
+                <div class="brand-name">Quản Lý</div>
                 <div class="brand-sub">QL Quỹ Tình Thương</div>
             </div>
         </div>
@@ -20,7 +20,7 @@
         <nav class="menu">
             <a class="menu-item" asp-controller="Manager" asp-action="Index">
                 <span class="mi-ico">🏠</span>
-                <span class="mi-text">Dashboard</span>
+                <span class="mi-text">Tổng quan</span>
             </a>
 
             <a class="menu-item active" asp-controller="Manager" asp-action="Requests">

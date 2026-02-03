@@ -1,7 +1,7 @@
 @model QLDuLichRBAC_Upgrade.Models.ViewModels.ManagerDashboardVm
 @{
-    ViewData["Title"] = "Dashboard Manager";
-    var fullName = string.IsNullOrWhiteSpace(Model.FullName) ? "Manager" : Model.FullName;
+    ViewData["Title"] = "Tổng quan Quản Lý";
+    var fullName = string.IsNullOrWhiteSpace(Model.FullName) ? "Quản lý" : Model.FullName;
 }
 
 <link rel="stylesheet" href="~/css/admin-dashboard.css" />
@@ -12,7 +12,7 @@
         <div class="brand">
             <div class="brand-logo">M</div>
             <div class="brand-text">
-                <div class="brand-name">Manager Panel</div>
+                <div class="brand-name">Quản Lý</div>
                 <div class="brand-sub">QL Quỹ Tình Thương</div>
             </div>
         </div>
@@ -20,17 +20,31 @@
         <nav class="menu">
             <a class="menu-item active" asp-controller="Manager" asp-action="Index">
                 <span class="mi-ico">🏠</span>
-                <span class="mi-text">Dashboard</span>
+                <span class="mi-text">Tổng quan</span>
             </a>
 
-            <a class="menu-item" asp-controller="Manager" asp-action="Requests">
+            <a class="menu-item" asp-controller="Manager" asp-action="CreateTask">
+                <span class="mi-ico">➕</span>
+                <span class="mi-text">Tạo công việc</span>
+            </a>
+
+            <a class="menu-item" asp-controller="Manager" asp-action="Tasks">
                 <span class="mi-ico">📋</span>
-                <span class="mi-text">Duyệt hồ sơ</span>
+                <span class="mi-text">Danh sách công việc</span>
             </a>
 
-            <a class="menu-item" asp-controller="Manager" asp-action="Reports">
-                <span class="mi-ico">📊</span>
-                <span class="mi-text">Báo cáo</span>
+            <a class="menu-item" asp-controller="Manager" asp-action="SupportRequests">
+                <span class="mi-ico">🆘</span>
+                <span class="mi-text">Yêu cầu hỗ trợ</span>
+                @if (Model.PendingSupportRequests > 0)
+                {
+                    <span class="badge-count">@Model.PendingSupportRequests</span>
+                }
+            </a>
+
+            <a class="menu-item" asp-controller="Manager" asp-action="Complaints">
+                <span class="mi-ico">💬</span>
+                <span class="mi-text">Góp ý khách hàng</span>
             </a>
 
             <div class="menu-divider"></div>
@@ -61,7 +75,7 @@
                 <button class="icon-btn" type="button" id="toggleSidebar" title="Thu gọn sidebar">☰</button>
 
                 <div class="page-title">
-                    <div class="title">Dashboard</div>
+                    <div class="title">Tổng quan</div>
                     <div class="subtitle">
                         Xin chào, <strong>@fullName</strong>. Chúc bạn một ngày làm việc hiệu quả.
                     </div>
@@ -85,15 +99,95 @@
             <div class="grid stats">
                 <div class="card stat glow">
                     <div class="stat-head">
-                        <div class="stat-ico">📋</div>
+                        <div class="stat-ico">💰</div>
                         <div class="stat-kpi">
-                            <div class="kpi-label">Chờ duyệt</div>
-                            <div class="kpi-value">@Model.PendingRequests</div>
+                            <div class="kpi-label">Số dư quỹ</div>
+                            <div class="kpi-value text-success">@Model.CurrentBalance.ToString("N0")</div>
                         </div>
                     </div>
                     <div class="stat-foot">
-                        <span class="trend info">•</span>
-                        <span class="muted">Yêu cầu đang chờ xét duyệt</span>
+                        <span class="muted">VND</span>
+                    </div>
+                </div>
+
+                <div class="card stat">
+                    <div class="stat-head">
+                        <div class="stat-ico">💵</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Tổng quyên góp</div>
+                            <div class="kpi-value">@Model.TotalDonations.ToString("N0")</div>
+                        </div>
+                    </div>
+                    <div class="stat-foot">
+                        <span class="muted">VND</span>
+                    </div>
+                </div>
+
+                <div class="card stat">
+                    <div class="stat-head">
+                        <div class="stat-ico">💸</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Tổng chi</div>
+                            <div class="kpi-value text-danger">@Model.TotalExpenses.ToString("N0")</div>
+                        </div>
+                    </div>
+                    <div class="stat-foot">
+                        <span class="muted">VND</span>
+                    </div>
+                </div>
+
+                <div class="card stat">
+                    <div class="stat-head">
+                        <div class="stat-ico">👥</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Đối tượng hỗ trợ</div>
+                            <div class="kpi-value">@Model.TotalBeneficiaries</div>
+                        </div>
+                    </div>
+                    <div class="stat-foot">
+                        <span class="muted">Người cần hỗ trợ</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Task stats -->
+            <div class="grid stats">
+                <div class="card stat">
+                    <div class="stat-head">
+                        <div class="stat-ico">⏳</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Chờ thực hiện</div>
+                            <div class="kpi-value">@Model.PendingTasks</div>
+                        </div>
+                    </div>
+                    <div class="stat-foot">
+                        <span class="muted">Công việc đang chờ</span>
+                    </div>
+                </div>
+
+                <div class="card stat">
+                    <div class="stat-head">
+                        <div class="stat-ico">🔄</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Đang thực hiện</div>
+                            <div class="kpi-value">@Model.TasksInProgress</div>
+                        </div>
+                    </div>
+                    <div class="stat-foot">
+                        <span class="muted">Nhân viên đang làm</span>
+                    </div>
+                </div>
+
+                <div class="card stat">
+                    <div class="stat-head">
+                        <div class="stat-ico">🆘</div>
+                        <div class="stat-kpi">
+                            <div class="kpi-label">Yêu cầu hỗ trợ</div>
+                            <div class="kpi-value text-warning">@Model.PendingSupportRequests</div>
+                        </div>
+                    </div>
+                    <div class="stat-foot">
+                        <span class="muted">Cần xử lý</span>
                     </div>
                 </div>
 
@@ -101,45 +195,17 @@
                     <div class="stat-head">
                         <div class="stat-ico">✅</div>
                         <div class="stat-kpi">
-                            <div class="kpi-label">Đã duyệt hôm nay</div>
-                            <div class="kpi-value">@Model.ApprovedToday</div>
+                            <div class="kpi-label">Hoàn thành hôm nay</div>
+                            <div class="kpi-value">@Model.CompletedToday</div>
                         </div>
                     </div>
                     <div class="stat-foot">
-                        <span class="trend up">▲</span>
-                        <span class="muted">Số hồ sơ đã duyệt</span>
-                    </div>
-                </div>
-
-                <div class="card stat">
-                    <div class="stat-head">
-                        <div class="stat-ico">❌</div>
-                        <div class="stat-kpi">
-                            <div class="kpi-label">Từ chối hôm nay</div>
-                            <div class="kpi-value">@Model.RejectedToday</div>
-                        </div>
-                    </div>
-                    <div class="stat-foot">
-                        <span class="trend down">▼</span>
-                        <span class="muted">Số hồ sơ từ chối</span>
-                    </div>
-                </div>
-
-                <div class="card stat">
-                    <div class="stat-head">
-                        <div class="stat-ico">💰</div>
-                        <div class="stat-kpi">
-                            <div class="kpi-label">Tổng đã duyệt</div>
-                            <div class="kpi-value">@Model.TotalApprovedAmount.ToString("N0")</div>
-                        </div>
-                    </div>
-                    <div class="stat-foot">
-                        <span class="muted">VND (tổng cộng)</span>
+                        <span class="muted">Công việc hoàn tất</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Quick actions + Recent requests -->
+            <!-- Quick actions + Support requests -->
             <div class="grid two-col">
                 <div class="card panel">
                     <div class="panel-head">
@@ -147,24 +213,33 @@
                             <div class="panel-title">Chức năng chính</div>
                             <div class="panel-sub">Truy cập nhanh các phân hệ</div>
                         </div>
-                        <div class="chip">Quick Actions</div>
+                        <div class="chip">Thao tác nhanh</div>
                     </div>
 
                     <div class="actions">
-                        <a class="action-card" asp-controller="Manager" asp-action="Requests">
-                            <div class="action-ico">📋</div>
+                        <a class="action-card" asp-controller="Manager" asp-action="CreateTask">
+                            <div class="action-ico">➕</div>
                             <div class="action-body">
-                                <div class="action-title">Duyệt hồ sơ</div>
-                                <div class="action-desc">Xem và phê duyệt các yêu cầu hỗ trợ</div>
+                                <div class="action-title">Tạo công việc mới</div>
+                                <div class="action-desc">Giao việc cho nhân viên hỗ trợ người cần</div>
                             </div>
                             <div class="action-go">→</div>
                         </a>
 
-                        <a class="action-card" asp-controller="Manager" asp-action="Reports">
-                            <div class="action-ico">📊</div>
+                        <a class="action-card" asp-controller="Manager" asp-action="Tasks">
+                            <div class="action-ico">📋</div>
                             <div class="action-body">
-                                <div class="action-title">Báo cáo tổng hợp</div>
-                                <div class="action-desc">Xem báo cáo hoạt động của quỹ</div>
+                                <div class="action-title">Danh sách công việc</div>
+                                <div class="action-desc">Xem tất cả công việc đã tạo</div>
+                            </div>
+                            <div class="action-go">→</div>
+                        </a>
+
+                        <a class="action-card" asp-controller="Manager" asp-action="SupportRequests">
+                            <div class="action-ico">🆘</div>
+                            <div class="action-body">
+                                <div class="action-title">Xử lý yêu cầu hỗ trợ</div>
+                                <div class="action-desc">Duyệt yêu cầu tiền/nhân lực từ nhân viên</div>
                             </div>
                             <div class="action-go">→</div>
                         </a>
@@ -174,30 +249,30 @@
                 <div class="card panel">
                     <div class="panel-head">
                         <div>
-                            <div class="panel-title">Hồ sơ chờ duyệt</div>
-                            <div class="panel-sub">@Model.PendingRequests yêu cầu đang chờ</div>
+                            <div class="panel-title">Yêu cầu hỗ trợ từ nhân viên</div>
+                            <div class="panel-sub">@Model.PendingSupportRequests yêu cầu đang chờ</div>
                         </div>
-                        <div class="chip">Pending</div>
+                        <a asp-action="SupportRequests" class="chip">Xem tất cả →</a>
                     </div>
 
                     <div class="timeline">
-                        @if (Model.RecentRequests != null && Model.RecentRequests.Count > 0)
+                        @if (Model.SupportRequests != null && Model.SupportRequests.Count > 0)
                         {
-                            foreach (var req in Model.RecentRequests.Take(5))
+                            foreach (var req in Model.SupportRequests.Take(5))
                             {
                                 <div class="tl-item">
-                                    <div class="tl-dot"></div>
+                                    <div class="tl-dot warning"></div>
                                     <div class="tl-content">
-                                        <div class="tl-title">@req.BeneficiaryName</div>
-                                        <div class="tl-sub">@req.RequestedAmount.ToString("N0") VND - @req.RequestDate.ToString("dd/MM/yyyy")</div>
+                                        <div class="tl-title">@req.AssignedStaff?.FullName - @req.SupportRequest?.Beneficiary?.FullName</div>
+                                        <div class="tl-sub">@req.SupportRequestType: @(req.SupportRequestAmount?.ToString("N0") ?? "N/A") VND</div>
                                     </div>
-                                    <a class="action-go" asp-controller="Manager" asp-action="Approve" asp-route-id="@req.RequestId">→</a>
+                                    <a class="action-go" asp-controller="Manager" asp-action="SupportRequests">→</a>
                                 </div>
                             }
                         }
                         else
                         {
-                            <p class="muted">Không có yêu cầu nào đang chờ duyệt</p>
+                            <p class="muted" style="padding: 1rem;">Không có yêu cầu hỗ trợ nào</p>
                         }
                     </div>
                 </div>
@@ -205,6 +280,21 @@
         </section>
     </main>
 </div>
+
+<style>
+    .text-success { color: #22c55e; }
+    .text-danger { color: #ef4444; }
+    .text-warning { color: #f59e0b; }
+    .tl-dot.warning { background: #f59e0b; }
+    .badge-count {
+        background: #ef4444;
+        color: white;
+        border-radius: 10px;
+        padding: 2px 8px;
+        font-size: 0.75rem;
+        margin-left: auto;
+    }
+</style>
 
 <script>
     document.getElementById('toggleSidebar')?.addEventListener('click', function() {

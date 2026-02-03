@@ -417,3 +417,4 @@ D:\vscodetim\btl\cuoiky\WebApplication2\QuyTinhThuong\WebApplication1\obj\Debug\
 D:\vscodetim\btl\cuoiky\WebApplication2\QuyTinhThuong\WebApplication1\obj\Debug\net8.0\WebApplication1.pdb
 D:\vscodetim\btl\cuoiky\WebApplication2\QuyTinhThuong\WebApplication1\obj\Debug\net8.0\WebApplication1.genruntimeconfig.cache
 D:\vscodetim\btl\cuoiky\WebApplication2\QuyTinhThuong\WebApplication1\obj\Debug\net8.0\ref\WebApplication1.dll
+D:\vscodetim\btl\cuoiky\WebApplication2\QuyTinhThuong\WebApplication1\bin\Debug\net8.0\QRCoder.dll

@@ -1,0 +1,110 @@
+@{
+    ViewData["Title"] = "Quyên góp";
+    var qrCode = ViewBag.QrCode as string ?? "";
+    var fullName = ViewBag.FullName as string ?? "Khách hàng";
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    <!-- Sidebar -->
+    <partial name="_AccountantSidebar" />
+
+    <!-- Main -->
+    <main class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn" type="button" id="toggleSidebar" title="Thu gọn sidebar">☰</button>
+                <div class="page-title">
+                    <div class="title">Quyên góp vào quỹ</div>
+                    <div class="subtitle">Đóng góp vào Quỹ Tình Thương qua chuyển khoản</div>
+                </div>
+            </div>
+        </header>
+
+        <section class="content">
+            <div class="grid two-col">
+                <div class="card panel">
+                    <div class="panel-head">
+                        <div>
+                            <div class="panel-title">Quét mã QR</div>
+                            <div class="panel-sub">Sử dụng ứng dụng ngân hàng để quét</div>
+                        </div>
+                    </div>
+
+                    <div style="padding: 2rem; text-align: center;">
+                        @if (!string.IsNullOrEmpty(qrCode))
+                        {
+                            <img src="@qrCode" alt="QR Code" style="max-width: 300px; border-radius: 12px; background: white; padding: 1rem;" />
+                        }
+                        else
+                        {
+                            <p style="color: #64748b;">Không thể tạo mã QR</p>
+                        }
+
+                        <div style="margin-top: 1.5rem; color: #94a3b8;">
+                            <p><strong style="color: #f8fafc;">Thông tin chuyển khoản:</strong></p>
+                            <p style="margin-top: 0.5rem;">Ngân hàng: <strong>MB Bank</strong></p>
+                            <p>Số tài khoản: <strong>1518893947588</strong></p>
+                            <p>Chủ TK: <strong>PHAN CONG TRI</strong></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card panel">
+                    <div class="panel-head">
+                        <div>
+                            <div class="panel-title">Xác nhận quyên góp</div>
+                            <div class="panel-sub">Sau khi chuyển khoản, vui lòng xác nhận</div>
+                        </div>
+                    </div>
+
+                    <form method="post" asp-action="ConfirmDonation" style="padding: 1.5rem;">
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">Số tiền đã chuyển <span class="text-danger">*</span></label>
+                            <input type="number" name="amount" required min="1000" placeholder="Nhập số tiền (VND)"
+                                   style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #1e293b; color: #f8fafc; border: 1px solid #334155;" />
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">Tên hiển thị</label>
+                            <input type="text" name="donorName" value="@fullName" 
+                                   style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #1e293b; color: #f8fafc; border: 1px solid #334155;" />
+                            <small style="color: #64748b;">Để trống nếu muốn quyên góp ẩn danh</small>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">Ghi chú</label>
+                            <textarea name="note" rows="3" placeholder="Lời nhắn (tùy chọn)..."
+                                      style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #1e293b; color: #f8fafc; border: 1px solid #334155;"></textarea>
+                        </div>
+
+                        <button type="submit" style="width: 100%; padding: 0.75rem; background: #22c55e; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                            ✓ Xác nhận đã chuyển khoản
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card panel" style="margin-top: 1rem;">
+                <div style="padding: 1.5rem; color: #94a3b8;">
+                    <h4 style="color: #f8fafc; margin-bottom: 0.5rem;">❤️ Lưu ý khi quyên góp</h4>
+                    <ul style="list-style: disc; padding-left: 1.5rem; line-height: 1.8;">
+                        <li>Mọi khoản quyên góp đều được quản lý minh bạch</li>
+                        <li>Bạn có thể theo dõi lịch sử quyên góp và các hoạt động hỗ trợ đã hoàn thành</li>
+                        <li>Sau mỗi đợt hỗ trợ hoàn thành, bạn sẽ nhận được thông báo</li>
+                        <li>Bạn có thể gửi góp ý sau 3 ngày kể từ khi hỗ trợ hoàn thành</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    document.getElementById('toggleSidebar')?.addEventListener('click', function() {
+        document.querySelector('.admin-shell')?.classList.toggle('collapsed');
+    });
+</script>

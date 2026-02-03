@@ -1,14 +1,26 @@
+using QLDuLichRBAC_Upgrade.Models.Entities;
+
 namespace QLDuLichRBAC_Upgrade.Models.ViewModels
 {
     public class ManagerDashboardVm
     {
         public string FullName { get; set; } = string.Empty;
-        public int PendingRequests { get; set; }
-        public int ApprovedToday { get; set; }
-        public int RejectedToday { get; set; }
+        public int UnreadNotifications { get; set; }
+
+        // Tài chính
+        public decimal TotalDonations { get; set; }
+        public decimal TotalExpenses { get; set; }
+        public decimal CurrentBalance { get; set; }
+
+        // Công việc
+        public int PendingTasks { get; set; } // Chờ thực hiện
+        public int TasksInProgress { get; set; } // Đang thực hiện
+        public int PendingSupportRequests { get; set; } // Yêu cầu hỗ trợ từ nhân viên
+        public int CompletedToday { get; set; }
         public int TotalBeneficiaries { get; set; }
-        public decimal TotalApprovedAmount { get; set; }
-        public List<SupportRequestVm> RecentRequests { get; set; } = new();
+
+        // Danh sách yêu cầu hỗ trợ từ nhân viên
+        public List<SupportTask> SupportRequests { get; set; } = new();
     }
 
     public class SupportRequestVm

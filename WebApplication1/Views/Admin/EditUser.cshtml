@@ -1,0 +1,451 @@
+@model QLDuLichRBAC_Upgrade.Models.ViewModels.EditUserVm
+@{
+    ViewData["Title"] = "Chỉnh Sửa Tài Khoản";
+    var fullName = ViewData["FullName"]?.ToString() ?? "Admin";
+    var roles = ViewData["Roles"] as List<QLDuLichRBAC_Upgrade.Models.Entities.Role> ?? new();
+    
+    string RoleToVietnamese(string role)
+    {
+        return role?.ToUpper() switch
+        {
+            "ADMIN" => "Quản trị viên",
+            "STAFF" => "Nhân viên",
+            "ACCOUNTANT" => "Khách hàng",
+            "MANAGER" => "Quản lý",
+            _ => role ?? "N/A"
+        };
+    }
+    
+    string GetRoleColor(string role)
+    {
+        return role?.ToUpper() switch
+        {
+            "ADMIN" => "#a78bfa",
+            "STAFF" => "#60a5fa",
+            "ACCOUNTANT" => "#4ade80",
+            "MANAGER" => "#fbbf24",
+            _ => "#6ee7ff"
+        };
+    }
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    @await Html.PartialAsync("_AdminSidebar")
+
+    <main class="main">
+        <header class="topbar">
+            <div class="page-title">
+                <div class="title">Chỉnh Sửa Tài Khoản</div>
+                <div class="subtitle">Cập nhật thông tin người dùng #@Model.UserId</div>
+            </div>
+        </header>
+
+        <section class="content">
+            <div class="edit-layout">
+                <!-- User Profile Card -->
+                <div class="card panel profile-card">
+                    <div class="profile-header" style="background: linear-gradient(135deg, @GetRoleColor(Model.CurrentRole ?? "") 0%, rgba(0,0,0,0.3) 100%);">
+                        <div class="profile-avatar">@Model.FullName.Substring(0, 1).ToUpper()</div>
+                        <h3 class="profile-name">@Model.FullName</h3>
+                        <span class="profile-role">@RoleToVietnamese(Model.CurrentRole ?? "")</span>
+                    </div>
+                    <div class="profile-info">
+                        <div class="info-item">
+                            <span class="info-icon">👤</span>
+                            <div>
+                                <div class="info-label">Username</div>
+                                <div class="info-value">@Model.Username</div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon">✉️</span>
+                            <div>
+                                <div class="info-label">Email</div>
+                                <div class="info-value">@(Model.Email ?? "Chưa cập nhật")</div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon">📱</span>
+                            <div>
+                                <div class="info-label">Điện thoại</div>
+                                <div class="info-value">@(Model.Phone ?? "Chưa cập nhật")</div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon">🕐</span>
+                            <div>
+                                <div class="info-label">Đăng nhập gần nhất</div>
+                                <div class="info-value">
+                                    @if (Model.LastLoginTime.HasValue)
+                                    {
+                                        @Model.LastLoginTime.Value.ToString("dd/MM/yyyy HH:mm")
+                                    }
+                                    else
+                                    {
+                                        <span style="color: #8a8a9a;">Chưa đăng nhập</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon">📊</span>
+                            <div>
+                                <div class="info-label">Trạng thái</div>
+                                <div class="info-value">
+                                    @if (Model.Status == "Active")
+                                    {
+                                        <span class="status-badge active">🟢 Hoạt động</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-badge inactive">🔴 Không hoạt động</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Form -->
+                <div class="card panel form-panel">
+                    <div class="panel-head">
+                        <div>
+                            <div class="panel-title">✏️ Cập nhật thông tin</div>
+                            <div class="panel-sub">Chỉnh sửa các thông tin cần thiết</div>
+                        </div>
+                    </div>
+
+                    <form asp-action="EditUser" method="post" class="form" id="editForm">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="UserId" />
+
+                        <div class="form-section">
+                            <h4 class="section-title">📋 Thông tin cơ bản</h4>
+                            
+                            <div class="form-group">
+                                <label asp-for="FullName" class="form-label">Họ và tên <span class="required">*</span></label>
+                                <input asp-for="FullName" class="form-control" placeholder="Nhập họ tên đầy đủ" />
+                                <span asp-validation-for="FullName" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Username" class="form-label">Tên đăng nhập <span class="required">*</span></label>
+                                <input asp-for="Username" class="form-control" placeholder="Nhập username" />
+                                <span asp-validation-for="Username" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label asp-for="Email" class="form-label">Email</label>
+                                    <input asp-for="Email" type="email" class="form-control" placeholder="example@email.com" />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="Phone" class="form-label">Số điện thoại</label>
+                                    <input asp-for="Phone" class="form-control" placeholder="0901234567" />
+                                    <span asp-validation-for="Phone" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h4 class="section-title">🔐 Bảo mật & Quyền hạn</h4>
+                            
+                            <div class="form-group">
+                                <label asp-for="NewPassword" class="form-label">Mật khẩu mới</label>
+                                <div class="password-wrapper">
+                                    <input asp-for="NewPassword" type="password" class="form-control" placeholder="Để trống nếu không đổi" id="newPassword" />
+                                    <button type="button" class="toggle-password" onclick="togglePassword('newPassword')">👁️</button>
+                                </div>
+                                <span class="hint-text">Để trống nếu không muốn thay đổi mật khẩu</span>
+                                <span asp-validation-for="NewPassword" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label asp-for="RoleId" class="form-label">Vai trò <span class="required">*</span></label>
+                                    <select asp-for="RoleId" class="form-control">
+                                        <option value="">-- Chọn vai trò --</option>
+                                        @foreach (var role in roles)
+                                        {
+                                            <option value="@role.RoleId">@RoleToVietnamese(role.RoleName)</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="RoleId" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="Status" class="form-label">Trạng thái <span class="required">*</span></label>
+                                    <select asp-for="Status" class="form-control">
+                                        <option value="Hoạt động">🟢 Hoạt động</option>
+                                        <option value="Tạm khóa">🔴 Tạm khóa</option>
+                                        <option value="Chưa kích hoạt">🟡 Chưa kích hoạt</option>
+                                    </select>
+                                    <span asp-validation-for="Status" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <a asp-action="Users" class="btn btn-secondary">← Quay lại</a>
+                            <button type="button" class="btn btn-reset" onclick="resetForm()">🔄 Đặt lại</button>
+                            <button type="submit" class="btn btn-primary">💾 Lưu thay đổi</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<style>
+    .edit-layout {
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 24px;
+        max-width: 1000px;
+    }
+    
+    /* Profile Card */
+    .profile-card {
+        height: fit-content;
+        overflow: hidden;
+    }
+    .profile-header {
+        padding: 32px 24px;
+        text-align: center;
+    }
+    .profile-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        font-weight: 700;
+        color: white;
+        margin: 0 auto 16px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+    }
+    .profile-name {
+        color: white;
+        margin: 0 0 8px;
+        font-size: 20px;
+    }
+    .profile-role {
+        display: inline-block;
+        padding: 4px 12px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        font-size: 12px;
+        color: white;
+        font-weight: 600;
+    }
+    .profile-info {
+        padding: 16px 20px;
+    }
+    .info-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid #3a3a4a;
+    }
+    .info-item:last-child {
+        border-bottom: none;
+    }
+    .info-icon {
+        font-size: 18px;
+        width: 24px;
+        text-align: center;
+    }
+    .info-label {
+        font-size: 11px;
+        color: #8a8a9a;
+        text-transform: uppercase;
+        margin-bottom: 2px;
+    }
+    .info-value {
+        color: #ffffff;
+        font-size: 14px;
+    }
+    .status-badge {
+        font-size: 13px;
+        font-weight: 600;
+    }
+    .status-badge.active { color: #4ade80; }
+    .status-badge.inactive { color: #ff6b6b; }
+    
+    /* Form Panel */
+    .form { padding: 0 1.5rem 1.5rem; }
+    .form-section {
+        padding: 1.5rem 0;
+        border-bottom: 1px solid #3a3a4a;
+    }
+    .form-section:last-of-type {
+        border-bottom: none;
+    }
+    .section-title {
+        color: #6ee7ff;
+        font-size: 14px;
+        font-weight: 600;
+        margin: 0 0 1rem;
+    }
+    .form-group { margin-bottom: 1rem; }
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+    .form-label { 
+        display: block; 
+        font-weight: 500; 
+        margin-bottom: 0.5rem; 
+        color: #e0e0e0;
+        font-size: 13px;
+    }
+    .required { color: #ff6b6b; }
+    .form-control { 
+        width: 100%; 
+        padding: 10px 14px; 
+        border: 1px solid #4a4a5a; 
+        border-radius: 8px; 
+        font-size: 14px; 
+        background: #2a2a3a;
+        color: #fff;
+        transition: all 0.2s ease;
+    }
+    .form-control:focus { 
+        outline: none; 
+        border-color: #6ee7ff; 
+        box-shadow: 0 0 0 3px rgba(110, 231, 255, 0.15); 
+    }
+    .form-control::placeholder { color: #8a8a9a; }
+    .form-control option { background: #2a2a3a; color: #fff; }
+    .password-wrapper { position: relative; }
+    .toggle-password {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        padding: 0;
+    }
+    .hint-text {
+        font-size: 12px;
+        color: #8a8a9a;
+        margin-top: 4px;
+        display: block;
+    }
+    .form-actions { 
+        display: flex; 
+        gap: 1rem; 
+        justify-content: flex-end; 
+        margin-top: 1.5rem; 
+        padding-top: 1.5rem;
+        border-top: 1px solid #3a3a4a;
+    }
+    .btn { 
+        padding: 10px 20px; 
+        border-radius: 8px; 
+        font-size: 14px; 
+        font-weight: 600; 
+        cursor: pointer; 
+        text-decoration: none; 
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s ease;
+    }
+    .btn-primary { background: linear-gradient(135deg, #6ee7ff 0%, #4fb3ff 100%); color: #1a1a2e; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(110, 231, 255, 0.3); }
+    .btn-secondary { background: #3a3a4a; color: #e0e0e0; }
+    .btn-secondary:hover { background: #4a4a5a; }
+    .btn-reset { background: #4a4a5a; color: #e0e0e0; }
+    .btn-reset:hover { background: #5a5a6a; }
+    .text-danger { color: #ff6b6b; font-size: 12px; margin-top: 4px; display: block; }
+    
+    /* Validation */
+    .form-control.invalid { 
+        border-color: #ff6b6b !important; 
+        animation: shake 0.4s ease-in-out;
+    }
+    @@keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20%, 60% { transform: translateX(-5px); }
+        40%, 80% { transform: translateX(5px); }
+    }
+    
+    @@media (max-width: 900px) {
+        .edit-layout { grid-template-columns: 1fr; }
+        .form-row { grid-template-columns: 1fr; }
+    }
+</style>
+
+<script>
+    function togglePassword(inputId) {
+        const input = document.getElementById(inputId);
+        input.type = input.type === 'password' ? 'text' : 'password';
+    }
+    
+    function resetForm() {
+        document.getElementById('editForm').reset();
+        document.querySelectorAll('.form-control').forEach(el => el.classList.remove('invalid'));
+    }
+    
+    // Client-side validation
+    document.getElementById('editForm')?.addEventListener('submit', function(e) {
+        let isValid = true;
+        this.querySelectorAll('.form-control').forEach(el => el.classList.remove('invalid'));
+        
+        // Required fields
+        const fullName = this.querySelector('#FullName');
+        const username = this.querySelector('#Username');
+        const roleId = this.querySelector('#RoleId');
+        
+        if (!fullName.value.trim()) { fullName.classList.add('invalid'); isValid = false; }
+        if (!username.value.trim()) { username.classList.add('invalid'); isValid = false; }
+        if (!roleId.value) { roleId.classList.add('invalid'); isValid = false; }
+        
+        // Email format
+        const email = this.querySelector('#Email');
+        if (email.value && !email.value.match(/^[^\s]+[@@][^\s]+\.[^\s]+$/)) {
+            email.classList.add('invalid');
+            isValid = false;
+        }
+        
+        // Phone format
+        const phone = this.querySelector('#Phone');
+        if (phone.value && !/^[0-9]{10,11}$/.test(phone.value)) {
+            phone.classList.add('invalid');
+            isValid = false;
+        }
+        
+        // Password min length (if provided)
+        const newPassword = this.querySelector('#NewPassword');
+        if (newPassword.value && newPassword.value.length < 6) {
+            newPassword.classList.add('invalid');
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+            this.querySelector('.invalid')?.focus();
+        }
+    });
+    
+    document.querySelectorAll('.form-control').forEach(input => {
+        input.addEventListener('input', function() {
+            this.classList.remove('invalid');
+        });
+    });
+</script>

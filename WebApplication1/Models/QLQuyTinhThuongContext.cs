@@ -25,6 +25,11 @@ namespace QLDuLichRBAC_Upgrade.Models
         public DbSet<Expense> Expenses { get; set; }
         public DbSet<Log> Logs { get; set; }
 
+        // Bảng thông báo và workflow
+        public DbSet<SupportTask> SupportTasks { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Complaint> Complaints { get; set; }
+
         // ========================
         // Cấu hình quan hệ
         // ========================
@@ -104,6 +109,72 @@ namespace QLDuLichRBAC_Upgrade.Models
                 .HasOne(l => l.User)
                 .WithMany(u => u.Logs)
                 .HasForeignKey(l => l.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // ========================
+            // Cấu hình SupportTask
+            // ========================
+            modelBuilder.Entity<SupportTask>()
+                .ToTable(tb => tb.UseSqlOutputClause(false));
+
+            modelBuilder.Entity<SupportTask>()
+                .HasOne(st => st.SupportRequest)
+                .WithMany()
+                .HasForeignKey(st => st.RequestId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<SupportTask>()
+                .HasOne(st => st.DonorUser)
+                .WithMany()
+                .HasForeignKey(st => st.DonorUserId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<SupportTask>()
+                .HasOne(st => st.AssignedStaff)
+                .WithMany()
+                .HasForeignKey(st => st.AssignedStaffId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<SupportTask>()
+                .HasOne(st => st.Assigner)
+                .WithMany()
+                .HasForeignKey(st => st.AssignedBy)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // ========================
+            // Cấu hình Notification
+            // ========================
+            modelBuilder.Entity<Notification>()
+                .HasOne(n => n.User)
+                .WithMany()
+                .HasForeignKey(n => n.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Notification>()
+                .HasOne(n => n.RelatedTask)
+                .WithMany(st => st.Notifications)
+                .HasForeignKey(n => n.RelatedTaskId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // ========================
+            // Cấu hình Complaint
+            // ========================
+            modelBuilder.Entity<Complaint>()
+                .HasOne(c => c.Task)
+                .WithMany(st => st.Complaints)
+                .HasForeignKey(c => c.TaskId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Complaint>()
+                .HasOne(c => c.User)
+                .WithMany()
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Complaint>()
+                .HasOne(c => c.Responder)
+                .WithMany()
+                .HasForeignKey(c => c.ResponseBy)
                 .OnDelete(DeleteBehavior.SetNull);
         }
     }

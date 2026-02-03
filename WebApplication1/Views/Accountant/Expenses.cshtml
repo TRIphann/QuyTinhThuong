@@ -1,7 +1,7 @@
 @model List<QLDuLichRBAC_Upgrade.Models.ViewModels.ExpenseVm>
 @{
     ViewData["Title"] = "Danh Sách Chi";
-    var fullName = ViewData["FullName"]?.ToString() ?? "Kế toán";
+    var fullName = ViewData["FullName"]?.ToString() ?? "Khách hàng";
     var totalAmount = ViewData["TotalAmount"] as decimal? ?? 0;
 }
 
@@ -12,7 +12,7 @@
         <div class="brand">
             <div class="brand-logo">K</div>
             <div class="brand-text">
-                <div class="brand-name">Accountant Panel</div>
+                <div class="brand-name">Khách Hàng</div>
                 <div class="brand-sub">QL Quỹ Tình Thương</div>
             </div>
         </div>
@@ -20,11 +20,11 @@
         <nav class="menu">
             <a class="menu-item" asp-controller="Accountant" asp-action="Index">
                 <span class="mi-ico">🏠</span>
-                <span class="mi-text">Dashboard</span>
+                <span class="mi-text">Tổng quan</span>
             </a>
             <a class="menu-item" asp-controller="Accountant" asp-action="Donations">
-                <span class="mi-ico">💵</span>
-                <span class="mi-text">Danh sách quyên góp</span>
+                <span class="mi-ico">�</span>
+                <span class="mi-text">Hỗ trợ người cần</span>
             </a>
             <a class="menu-item active" asp-controller="Accountant" asp-action="Expenses">
                 <span class="mi-ico">💸</span>
@@ -63,7 +63,7 @@
                     <div class="avatar">@fullName.Substring(0, 1).ToUpper()</div>
                     <div class="user-meta">
                         <div class="user-name">@fullName</div>
-                        <div class="user-role">Kế Toán</div>
+                        <div class="user-role">Khách Hàng</div>
                     </div>
                 </div>
             </div>

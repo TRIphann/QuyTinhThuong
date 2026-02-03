@@ -1,8 +1,15 @@
+using QLDuLichRBAC_Upgrade.Models.Entities;
+
 namespace QLDuLichRBAC_Upgrade.Models.ViewModels
 {
     public class StaffDashboardVm
     {
         public string FullName { get; set; } = string.Empty;
+        public int UnreadNotifications { get; set; }
+        public int AssignedTasks { get; set; } // Công việc được giao
+        public int PendingTasks { get; set; } // Chờ thực hiện
+        public int InProgressTasks { get; set; } // Đang thực hiện
+        public int CompletedTasks { get; set; } // Đã hoàn thành
         public int TotalDonors { get; set; }
         public int TotalBeneficiaries { get; set; }
         public int DonationsToday { get; set; }
@@ -10,6 +17,9 @@ namespace QLDuLichRBAC_Upgrade.Models.ViewModels
         public decimal TodayDonationAmount { get; set; }
         public List<DonorVm> RecentDonors { get; set; } = new();
         public List<BeneficiaryVm> RecentBeneficiaries { get; set; } = new();
+        
+        // Công việc của nhân viên
+        public List<SupportTask> MyTasks { get; set; } = new();
     }
 
     public class DonorVm
