@@ -12,6 +12,47 @@
     <!-- Custom Styles -->
     <link rel="stylesheet" href="~/css/style.css" />
     
+    <!-- Override Bootstrap for Auth Forms -->
+    <style>
+        .content .form-control,
+        .content input[type="text"],
+        .content input[type="password"],
+        .content input[type="email"] {
+            background-color: #3a3a4a !important;
+            border: 1px solid #5a5a6a !important;
+            color: #ffffff !important;
+            border-radius: 14px !important;
+        }
+        .content .form-control:focus,
+        .content input[type="text"]:focus,
+        .content input[type="password"]:focus,
+        .content input[type="email"]:focus {
+            background-color: #4a4a5a !important;
+            border-color: #8a5a9a !important;
+            box-shadow: 0 0 0 0.25rem #5a3a6a !important;
+            color: #ffffff !important;
+        }
+        .content .form-control::placeholder,
+        .content input::placeholder {
+            color: #a0a0b0 !important;
+        }
+        .content input:-webkit-autofill,
+        .content input:-webkit-autofill:hover,
+        .content input:-webkit-autofill:focus,
+        .content input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 1000px #3a3a4a inset !important;
+            -webkit-text-fill-color: #ffffff !important;
+            background-color: #3a3a4a !important;
+            caret-color: #ffffff !important;
+            transition: background-color 5000s ease-in-out 0s !important;
+        }
+        .content .btn,
+        .content button[type="submit"] {
+            color: #ffffff !important;
+            font-weight: 600 !important;
+        }
+    </style>
+    
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>

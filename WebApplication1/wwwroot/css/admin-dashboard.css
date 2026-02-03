@@ -624,6 +624,7 @@ body {
     border-radius: 18px
 }
 
+.admin-shell .table,
 .table {
     width: 100%;
     border-collapse: collapse;
@@ -631,37 +632,45 @@ body {
     color: #ffffff !important;
 }
 
-    .table th, .table td {
-        padding: 12px 12px;
-        border-bottom: 1px solid rgba(255,255,255,.10);
-        font-size: 13px;
-        color: #ffffff !important;
-    }
+.admin-shell .table th, 
+.admin-shell .table td,
+.table th, .table td {
+    padding: 12px 12px;
+    border-bottom: 1px solid #3a3a4a;
+    font-size: 13px;
+    color: #ffffff !important;
+}
 
-    .table th {
-        text-align: left;
-        color: rgba(255,255,255,.80) !important;
-        font-weight: 800;
-    }
-    
-    .table td {
-        color: #ffffff !important;
-    }
-    
-    .table td a {
-        color: var(--accent) !important;
-    }
+.admin-shell .table th,
+.table th {
+    text-align: left;
+    color: #e0e0e0 !important;
+    font-weight: 800;
+    background: #2a2a3a;
+    border-top: 2px solid #5a5a6a;
+}
 
-    .table tbody tr:hover {
-        background: rgba(255,255,255,.04);
-    }
+.admin-shell .table td,
+.table td {
+    color: #ffffff !important;
+}
+
+.admin-shell .table td a,
+.table td a {
+    color: var(--accent) !important;
+}
+
+.admin-shell .table tbody tr:hover,
+.table tbody tr:hover {
+    background: #1a1a2a;
+}
 
 .status {
     font-size: 11px;
     padding: 5px 10px;
     border-radius: 999px;
-    border: 1px solid rgba(255,255,255,.12);
-    background: rgba(255,255,255,.05);
+    border: 1px solid #4a4a5a;
+    background: #2a2a3a;
 }
 
     .status.ok {

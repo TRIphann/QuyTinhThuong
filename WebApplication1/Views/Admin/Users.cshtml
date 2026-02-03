@@ -6,6 +6,29 @@
 
 <link rel="stylesheet" href="~/css/admin-dashboard.css" />
 
+<style>
+    .admin-shell .table { width: 100%; border-collapse: collapse; }
+    .admin-shell .table th, 
+    .admin-shell .table td { 
+        padding: 12px; 
+        text-align: left; 
+        border-bottom: 1px solid #3a3a4a; 
+        color: #ffffff !important;
+    }
+    .admin-shell .table th { 
+        background: #2a2a3a; 
+        font-weight: 600; 
+        color: #e0e0e0 !important;
+        border-top: 2px solid #5a5a6a;
+    }
+    .admin-shell .table td {
+        color: #ffffff !important;
+    }
+    .admin-shell .table tbody tr:hover {
+        background: #1a1a2a;
+    }
+</style>
+
 <div class="admin-shell">
     @await Html.PartialAsync("_AdminSidebar")
 

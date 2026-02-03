@@ -6,6 +6,57 @@
 
 <link rel="stylesheet" href="~/css/admin-dashboard.css" />
 
+<style>
+    .admin-shell .table { width: 100%; border-collapse: collapse; }
+    .admin-shell .table th, 
+    .admin-shell .table td { 
+        padding: 12px; 
+        text-align: left; 
+        border-bottom: 1px solid #3a3a4a; 
+        color: #ffffff !important;
+    }
+    .admin-shell .table th { 
+        background: #2a2a3a; 
+        font-weight: 600; 
+        color: #e0e0e0 !important;
+        border-top: 2px solid #5a5a6a;
+    }
+    .admin-shell .table td {
+        color: #ffffff !important;
+    }
+    .admin-shell .table tbody tr:hover {
+        background: #1a1a2a;
+    }
+    .admin-shell .muted {
+        color: #a0a0b0 !important;
+    }
+    .admin-shell .card,
+    .admin-shell .card.panel {
+        background: #1a1a2a !important;
+        border: 1px solid #3a3a4a !important;
+    }
+    .admin-shell .panel-head {
+        border-bottom: 1px solid #3a3a4a;
+        padding-bottom: 12px;
+        margin-bottom: 16px;
+    }
+    .admin-shell .sidebar {
+        z-index: 100 !important;
+        position: fixed !important;
+        left: 0;
+        top: 0;
+    }
+    .admin-shell .main {
+        margin-left: 280px;
+        width: calc(100% - 280px);
+    }
+    /* Xóa hiệu ứng glow màu xanh */
+    .admin-shell .glow:before,
+    .admin-shell .card.glow:before {
+        display: none !important;
+    }
+</style>
+
 <div class="admin-shell">
     <!-- Sidebar -->
     <aside class="sidebar">
@@ -271,11 +322,6 @@
                 </div>
             </div>
 
-            <footer class="footer">
-                <div class="muted">
-                    Gợi ý: Nếu bạn muốn số liệu cập nhật không cần reload, hãy dùng endpoint JSON + fetch định kỳ.
-                </div>
-            </footer>
         </section>
     </main>
 

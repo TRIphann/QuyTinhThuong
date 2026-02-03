@@ -392,8 +392,8 @@ section {
 
 /* ======= LOGIN FORM STYLING ======= */
 .form-control {
-    background: rgba(255, 255, 255, 0.15) !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    background: #3a3a4a !important;
+    border: 1px solid #5a5a6a !important;
     color: #fff !important;
     border-radius: 8px;
     padding: 10px 15px;
@@ -402,13 +402,13 @@ section {
 }
 
 .form-control::placeholder {
-    color: rgba(255, 255, 255, 0.6) !important;
+    color: #a0a0b0 !important;
 }
 
 .form-control:focus {
-    background: rgba(255, 255, 255, 0.2) !important;
-    border-color: rgba(255, 255, 255, 0.5) !important;
-    box-shadow: 0 0 8px rgba(120, 75, 160, 0.4) !important;
+    background: #4a4a5a !important;
+    border-color: #7a7a8a !important;
+    box-shadow: 0 0 8px #784ba0 !important;
     color: #fff !important;
 }
 
@@ -424,13 +424,27 @@ input[type="text"],
 input[type="password"],
 input[type="email"] {
     color: #fff !important;
+    background: #3a3a4a !important;
 }
 
 input[type="text"]:-webkit-autofill,
 input[type="password"]:-webkit-autofill,
-input[type="email"]:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.15) inset !important;
+input[type="email"]:-webkit-autofill,
+input[type="text"]:-webkit-autofill:hover,
+input[type="password"]:-webkit-autofill:hover,
+input[type="email"]:-webkit-autofill:hover,
+input[type="text"]:-webkit-autofill:focus,
+input[type="password"]:-webkit-autofill:focus,
+input[type="email"]:-webkit-autofill:focus,
+input[type="text"]:-webkit-autofill:active,
+input[type="password"]:-webkit-autofill:active,
+input[type="email"]:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #3a3a4a inset !important;
     -webkit-text-fill-color: #fff !important;
+    background-color: #3a3a4a !important;
+    color: #fff !important;
+    caret-color: #fff !important;
+    transition: background-color 5000s ease-in-out 0s;
 }
 
 /* Link styling */
@@ -472,21 +486,21 @@ a:hover {
 /* Login UX polish */
 .content .form-control {
     border-radius: 14px;
-    border: 1px solid rgba(255,255,255,0.18);
-    background: rgba(255,255,255,0.08);
-    color: #fff;
+    border: 1px solid #5a5a6a !important;
+    background: #3a3a4a !important;
+    color: #fff !important;
     transition: 180ms ease;
 }
 
     .content .form-control::placeholder {
-        color: rgba(255,255,255,0.55);
+        color: #a0a0b0 !important;
     }
 
     .content .form-control:focus {
-        box-shadow: 0 0 0 0.25rem rgba(255, 60, 172, 0.18);
-        border-color: rgba(255, 60, 172, 0.55);
-        background: rgba(255,255,255,0.10);
-        color: #fff;
+        box-shadow: 0 0 0 0.25rem #5a3a6a !important;
+        border-color: #8a5a9a !important;
+        background: #4a4a5a !important;
+        color: #fff !important;
     }
 
 .content .btn {
