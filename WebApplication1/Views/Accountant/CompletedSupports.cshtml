@@ -1,6 +1,7 @@
 @model List<QLDuLichRBAC_Upgrade.Models.Entities.SupportTask>
 @{
     ViewData["Title"] = "Hoạt động hỗ trợ";
+    var currentStatus = ViewData["CurrentStatus"]?.ToString() ?? "all";
 }
 
 <link rel="stylesheet" href="~/css/admin-dashboard.css" />
@@ -16,19 +17,56 @@
                 <button class="icon-btn" type="button" id="toggleSidebar" title="Thu gọn sidebar">☰</button>
                 <div class="page-title">
                     <div class="title">Hoạt động hỗ trợ</div>
-                    <div class="subtitle">Các đợt hỗ trợ đã hoàn thành từ quỹ</div>
+                    <div class="subtitle">Các đợt hỗ trợ từ quỹ - Bạn có thể tham gia tình nguyện hoặc quyên góp!</div>
                 </div>
             </div>
         </header>
 
         <section class="content">
+            @if (TempData["Success"] != null)
+            {
+                <div style="background: #22c55e33; color: #22c55e; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    @TempData["Success"]
+                </div>
+            }
+
+            <!-- Filter tabs -->
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                <a href="@Url.Action("CompletedSupports")" 
+                   class="tab-btn @(currentStatus == "all" ? "active" : "")"
+                   style="padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; @(currentStatus == "all" ? "background: #3b82f6; color: white;" : "background: #1e293b; color: #f8fafc; border: 1px solid #334155;")">
+                    Tất cả (@Model.Count)
+                </a>
+                <a href="@Url.Action("CompletedSupports", new { status = "Chờ thực hiện" })"
+                   class="tab-btn @(currentStatus == "Chờ thực hiện" ? "active" : "")"
+                   style="padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; @(currentStatus == "Chờ thực hiện" ? "background: #f59e0b; color: white;" : "background: #1e293b; color: #f8fafc; border: 1px solid #334155;")">
+                    ⏳ Sắp diễn ra (@Model.Count(t => t.Status == "Chờ thực hiện"))
+                </a>
+                <a href="@Url.Action("CompletedSupports", new { status = "Đang thực hiện" })"
+                   class="tab-btn @(currentStatus == "Đang thực hiện" ? "active" : "")"
+                   style="padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; @(currentStatus == "Đang thực hiện" ? "background: #3b82f6; color: white;" : "background: #1e293b; color: #f8fafc; border: 1px solid #334155;")">
+                    🔄 Đang diễn ra (@Model.Count(t => t.Status == "Đang thực hiện"))
+                </a>
+                <a href="@Url.Action("CompletedSupports", new { status = "Hoàn thành" })"
+                   class="tab-btn @(currentStatus == "Hoàn thành" ? "active" : "")"
+                   style="padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; @(currentStatus == "Hoàn thành" ? "background: #22c55e; color: white;" : "background: #1e293b; color: #f8fafc; border: 1px solid #334155;")">
+                    ✅ Hoàn thành (@Model.Count(t => t.Status == "Hoàn thành"))
+                </a>
+            </div>
+
             @if (Model != null && Model.Count > 0)
             {
                 <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1rem;">
                     @foreach (var task in Model)
                     {
-                        var canFeedback = task.StaffCompletedAt.HasValue && 
-                                          (DateTime.Now - task.StaffCompletedAt.Value).TotalDays >= 3;
+                        var statusColor = task.Status switch {
+                            "Chờ thực hiện" => "#f59e0b",
+                            "Đang thực hiện" => "#3b82f6",
+                            "Hoàn thành" => "#22c55e",
+                            _ => "#64748b"
+                        };
+                        var canDonate = task.Status == "Chờ thực hiện" || task.Status == "Đang thực hiện";
+                        var progress = task.Amount > 0 ? Math.Min(100, (task.DonatedAmount / task.Amount) * 100) : 0;
                         
                         <div class="card panel">
                             <div class="panel-head">
@@ -36,41 +74,67 @@
                                     <div class="panel-title">@task.SupportRequest?.Beneficiary?.FullName</div>
                                     <div class="panel-sub">@task.SupportRequest?.Beneficiary?.BeneficiaryType</div>
                                 </div>
-                                <span style="background: #22c55e; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.875rem;">
-                                    Hoàn thành
+                                <span style="background: @statusColor; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.875rem;">
+                                    @task.Status
                                 </span>
                             </div>
 
                             <div style="padding: 1rem; color: #e2e8f0;">
                                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem;">
                                     <div>
-                                        <span style="color: #94a3b8;">Số tiền hỗ trợ:</span><br />
-                                        <strong style="color: #22c55e;">@task.TotalAmount.ToString("N0") VND</strong>
+                                        <span style="color: #94a3b8;">Mục tiêu:</span><br />
+                                        <strong style="color: #22c55e;">@task.Amount.ToString("N0") VND</strong>
                                     </div>
                                     <div>
-                                        <span style="color: #94a3b8;">Ngày hoàn thành:</span><br />
-                                        @task.StaffCompletedAt?.ToString("dd/MM/yyyy")
+                                        <span style="color: #94a3b8;">Đã quyên góp:</span><br />
+                                        <strong style="color: #3b82f6;">@task.DonatedAmount.ToString("N0") VND</strong>
                                     </div>
                                 </div>
 
-                                @if (!string.IsNullOrEmpty(task.StaffNote))
+                                <!-- Progress bar -->
+                                <div style="margin-bottom: 1rem;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                                        <span style="color: #94a3b8; font-size: 0.75rem;">Tiến độ quyên góp</span>
+                                        <span style="color: #94a3b8; font-size: 0.75rem;">@progress.ToString("N0")%</span>
+                                    </div>
+                                    <div style="background: #1e293b; border-radius: 9999px; height: 8px; overflow: hidden;">
+                                        <div style="background: linear-gradient(90deg, #3b82f6, #22c55e); height: 100%; width: @(progress)%; transition: width 0.3s;"></div>
+                                    </div>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem;">
+                                    <div>
+                                        <span style="color: #94a3b8;">Dự kiến bắt đầu:</span><br />
+                                        @(task.ScheduledDate?.ToString("dd/MM/yyyy") ?? "Chưa xác định")
+                                    </div>
+                                    <div>
+                                        <span style="color: #94a3b8;">Nhân viên phụ trách:</span><br />
+                                        @(task.AssignedStaff?.FullName ?? "Chưa phân công")
+                                    </div>
+                                </div>
+
+                                @if (!string.IsNullOrEmpty(task.ManagerNote))
                                 {
                                     <div style="background: #1e293b; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem;">
-                                        <span style="color: #94a3b8; font-size: 0.875rem;">Ghi chú:</span><br />
-                                        @task.StaffNote
+                                        <span style="color: #94a3b8; font-size: 0.875rem;">Mô tả:</span><br />
+                                        @task.ManagerNote
                                     </div>
                                 }
 
-                                <div style="display: flex; gap: 0.5rem;">
+                                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
                                     <a asp-action="SupportDetail" asp-route-id="@task.TaskId"
-                                       style="flex: 1; text-align: center; padding: 0.5rem; background: #3b82f6; color: white; border-radius: 6px; text-decoration: none;">
-                                        Xem chi tiết
+                                       style="flex: 1; min-width: 100px; text-align: center; padding: 0.5rem; background: #3b82f6; color: white; border-radius: 6px; text-decoration: none;">
+                                        👁 Xem chi tiết
                                     </a>
-                                    @if (canFeedback)
+                                    @if (canDonate)
                                     {
-                                        <a asp-action="SubmitFeedback" asp-route-id="@task.TaskId"
-                                           style="flex: 1; text-align: center; padding: 0.5rem; background: #8b5cf6; color: white; border-radius: 6px; text-decoration: none;">
-                                            💬 Góp ý
+                                        <button onclick="registerVolunteer(@task.TaskId)"
+                                           style="flex: 1; min-width: 100px; text-align: center; padding: 0.5rem; background: #8b5cf6; color: white; border-radius: 6px; border: none; cursor: pointer;">
+                                            🙋 Tình nguyện
+                                        </button>
+                                        <a asp-action="DonateToActivity" asp-route-id="@task.TaskId"
+                                           style="flex: 1; min-width: 100px; text-align: center; padding: 0.5rem; background: #22c55e; color: white; border-radius: 6px; text-decoration: none;">
+                                            💰 Quyên góp
                                         </a>
                                     }
                                 </div>
@@ -83,8 +147,8 @@
             {
                 <div class="card panel">
                     <div style="padding: 3rem; text-align: center; color: #64748b;">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
-                        <p>Chưa có hoạt động hỗ trợ nào hoàn thành</p>
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📋</div>
+                        <p>Chưa có hoạt động hỗ trợ nào</p>
                         <a asp-action="Index" style="color: #3b82f6; text-decoration: underline;">← Quay về tổng quan</a>
                     </div>
                 </div>
@@ -97,4 +161,29 @@
     document.getElementById('toggleSidebar')?.addEventListener('click', function() {
         document.querySelector('.admin-shell')?.classList.toggle('collapsed');
     });
+
+    function registerVolunteer(taskId) {
+        if (confirm('Bạn có muốn đăng ký tham gia tình nguyện cho hoạt động này?')) {
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+            fetch('/Accountant/RegisterVolunteer?taskId=' + taskId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': token
+                },
+                body: '__RequestVerificationToken=' + encodeURIComponent(token)
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert(data.message || 'Có lỗi xảy ra');
+                }
+            });
+        }
+    }
 </script>
+
+@Html.AntiForgeryToken()

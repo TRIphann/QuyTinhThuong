@@ -90,7 +90,7 @@
                                 <td>@req.RequestId</td>
                                 <td><strong>@req.BeneficiaryName</strong></td>
                                 <td><span class="chip">@req.BeneficiaryType</span></td>
-                                <td><strong>@req.RequestedAmount.ToString("N0") VND</strong></td>
+                                <td><strong>@(req.RequestedAmount.HasValue ? req.RequestedAmount.Value.ToString("N0") + " VND" : "Chưa xác định")</strong></td>
                                 <td>@req.RequestDate.ToString("dd/MM/yyyy HH:mm")</td>
                                 <td>@(req.Reason ?? "-")</td>
                                 <td>

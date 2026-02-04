@@ -40,6 +40,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudGFudFxEb25hdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/vscodetim/btl/cuoiky/WebApplication2/QuyTinhThuong/WebApplication1/Views/Accountant/DonateToActivity.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudGFudFxEb25hdGVUb0FjdGl2aXR5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/vscodetim/btl/cuoiky/WebApplication2/QuyTinhThuong/WebApplication1/Views/Accountant/Donations.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudGFudFxEb25hdGlvbnMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -76,6 +80,18 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/vscodetim/btl/cuoiky/WebApplication2/QuyTinhThuong/WebApplication1/Views/Admin/Beneficiaries.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQmVuZWZpY2lhcmllcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/vscodetim/btl/cuoiky/WebApplication2/QuyTinhThuong/WebApplication1/Views/Admin/CreateBeneficiary.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ3JlYXRlQmVuZWZpY2lhcnkuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/vscodetim/btl/cuoiky/WebApplication2/QuyTinhThuong/WebApplication1/Views/Admin/CreateRequest.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ3JlYXRlUmVxdWVzdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/vscodetim/btl/cuoiky/WebApplication2/QuyTinhThuong/WebApplication1/Views/Admin/CreateUser.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ3JlYXRlVXNlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -92,8 +108,24 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRWRpdFVzZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/vscodetim/btl/cuoiky/WebApplication2/QuyTinhThuong/WebApplication1/Views/Admin/FinanceApprovals.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRmluYW5jZUFwcHJvdmFscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/vscodetim/btl/cuoiky/WebApplication2/QuyTinhThuong/WebApplication1/Views/Admin/FinanceOverview.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRmluYW5jZU92ZXJ2aWV3LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/vscodetim/btl/cuoiky/WebApplication2/QuyTinhThuong/WebApplication1/Views/Admin/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/vscodetim/btl/cuoiky/WebApplication2/QuyTinhThuong/WebApplication1/Views/Admin/Requests.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cUmVxdWVzdHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/vscodetim/btl/cuoiky/WebApplication2/QuyTinhThuong/WebApplication1/Views/Admin/Support.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cU3VwcG9ydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/vscodetim/btl/cuoiky/WebApplication2/QuyTinhThuong/WebApplication1/Views/Admin/Users.cshtml]
@@ -112,8 +144,24 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFuYWdlclxBcHByb3ZlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/vscodetim/btl/cuoiky/WebApplication2/QuyTinhThuong/WebApplication1/Views/Manager/AssignHelpers.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFuYWdlclxBc3NpZ25IZWxwZXJzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/vscodetim/btl/cuoiky/WebApplication2/QuyTinhThuong/WebApplication1/Views/Manager/Beneficiaries.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFuYWdlclxCZW5lZmljaWFyaWVzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/vscodetim/btl/cuoiky/WebApplication2/QuyTinhThuong/WebApplication1/Views/Manager/Complaints.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFuYWdlclxDb21wbGFpbnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/vscodetim/btl/cuoiky/WebApplication2/QuyTinhThuong/WebApplication1/Views/Manager/CreateBeneficiary.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFuYWdlclxDcmVhdGVCZW5lZmljaWFyeS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/vscodetim/btl/cuoiky/WebApplication2/QuyTinhThuong/WebApplication1/Views/Manager/CreateRequest.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFuYWdlclxDcmVhdGVSZXF1ZXN0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/vscodetim/btl/cuoiky/WebApplication2/QuyTinhThuong/WebApplication1/Views/Manager/CreateTask.cshtml]
@@ -130,6 +178,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/vscodetim/btl/cuoiky/WebApplication2/QuyTinhThuong/WebApplication1/Views/Manager/Requests.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFuYWdlclxSZXF1ZXN0cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/vscodetim/btl/cuoiky/WebApplication2/QuyTinhThuong/WebApplication1/Views/Manager/Support.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFuYWdlclxTdXBwb3J0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/vscodetim/btl/cuoiky/WebApplication2/QuyTinhThuong/WebApplication1/Views/Manager/SupportRequests.cshtml]

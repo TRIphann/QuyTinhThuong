@@ -17,9 +17,19 @@
             <span class="mi-text">Tổng quan</span>
         </a>
 
+        <a class="menu-item @(current == "support" || current == "beneficiaries" || current == "requests" ? "active" : "")" asp-controller="Admin" asp-action="Support">
+            <span class="mi-ico">🤝</span>
+            <span class="mi-text">Quản lý hỗ trợ</span>
+        </a>
+
         <a class="menu-item @(current == "users" ? "active" : "")" asp-controller="Admin" asp-action="Users">
             <span class="mi-ico">👤</span>
             <span class="mi-text">Quản lý người dùng</span>
+        </a>
+
+        <a class="menu-item @(current == "financeoverview" || current == "financeapprovals" ? "active" : "")" asp-controller="Admin" asp-action="FinanceOverview">
+            <span class="mi-ico">💰</span>
+            <span class="mi-text">Quản lý tài chính</span>
         </a>
 
         <a class="menu-item @(current == "data" ? "active" : "")" asp-controller="Admin" asp-action="Data">
@@ -29,10 +39,13 @@
 
         <div class="menu-divider"></div>
 
-        <a class="menu-item danger" asp-controller="Account" asp-action="Logout">
-            <span class="mi-ico">⎋</span>
-            <span class="mi-text">Đăng xuất</span>
-        </a>
+        <form asp-controller="Account" asp-action="Logout" method="post" style="margin:0;">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="menu-item danger" style="width:100%; text-align:left; background: transparent; border: none; cursor: pointer;">
+                <span class="mi-ico">⎋</span>
+                <span class="mi-text">Đăng xuất</span>
+            </button>
+        </form>
     </nav>
 
     <div class="sidebar-footer">

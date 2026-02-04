@@ -23,6 +23,18 @@
         </header>
 
         <section class="content">
+            @if (TempData["Error"] != null)
+            {
+                <div style="padding: 1rem; background: #dc2626; color: white; border-radius: 8px; margin-bottom: 1rem;">
+                    ⚠️ @TempData["Error"]
+                </div>
+            }
+            @if (TempData["Success"] != null)
+            {
+                <div style="padding: 1rem; background: #22c55e; color: white; border-radius: 8px; margin-bottom: 1rem;">
+                    ✓ @TempData["Success"]
+                </div>
+            }
             <div class="card panel">
                 <table style="width: 100%; border-collapse: collapse;">
                     <thead>
@@ -46,12 +58,14 @@
                                     "Đang thực hiện" => "#3b82f6",
                                     "Yêu cầu hỗ trợ" => "#ef4444",
                                     "Hoàn thành" => "#22c55e",
+                                    "Đã gửi lời mời" => "#8b5cf6",
                                     _ => "#64748b"
                                 };
                                 var canStart = task.Status == "Chờ thực hiện";
                                 var canComplete = task.Status == "Đang thực hiện";
                                 var canRequestSupport = task.Status == "Đang thực hiện" && string.IsNullOrEmpty(task.SupportRequestType);
                                 var isWaitingSupport = task.Status == "Yêu cầu hỗ trợ";
+                                var isInvitationSent = task.Status == "Đã gửi lời mời";
 
                                 <tr style="border-bottom: 1px solid #334155; color: #e2e8f0;">
                                     <td style="padding: 1rem;">#@task.TaskId</td>
@@ -72,7 +86,19 @@
                                         </span>
                                         @if (isWaitingSupport)
                                         {
-                                            <br /><small style="color: #94a3b8; margin-top: 0.25rem; display: block;">Đang chờ quản lý duyệt</small>
+                                            <br />
+                                            @if (task.SupportRequestType == "Nhân lực" && task.SupportRequestPeopleCount.HasValue)
+                                            {
+                                                <small style="color: #f59e0b; margin-top: 0.25rem; display: block;">
+                                                    👥 @(task.SupportAssignedPeopleCount ?? 0)/@task.SupportRequestPeopleCount người
+                                                </small>
+                                            }
+                                            <small style="color: #94a3b8; margin-top: 0.25rem; display: block;">Đang chờ quản lý duyệt</small>
+                                        }
+                                        @if (isInvitationSent)
+                                        {
+                                            <br />
+                                            <small style="color: #8b5cf6; margin-top: 0.25rem; display: block;">✉️ Đã gửi yêu cầu chi viện</small>
                                         }
                                     </td>
                                     <td style="padding: 1rem;">@task.CreatedAt.ToString("dd/MM/yyyy")</td>
@@ -104,6 +130,10 @@
                                                         onclick="openSupportModal(@task.TaskId)" title="Yêu cầu hỗ trợ">
                                                     🆘 Hỗ trợ
                                                 </button>
+                                            }
+                                            @if (isInvitationSent)
+                                            {
+                                                <span style="color: #8b5cf6; font-size: 0.875rem;">⏳ Chờ phản hồi...</span>
                                             }
                                             @if (task.Status == "Hoàn thành")
                                             {
@@ -140,16 +170,23 @@
 
             <div style="margin-bottom: 1rem;">
                 <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">Loại hỗ trợ</label>
-                <select name="supportType" required style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #0f172a; color: #f8fafc; border: 1px solid #334155;">
+                <select name="supportType" id="supportTypeSelect" required onchange="toggleSupportFields()" style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #0f172a; color: #f8fafc; border: 1px solid #334155;">
                     <option value="Tiền">Tiền</option>
                     <option value="Nhân lực">Nhân lực</option>
                 </select>
             </div>
 
-            <div style="margin-bottom: 1rem;">
-                <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">Số tiền yêu cầu thêm (nếu cần tiền)</label>
-                <input type="number" name="amount" min="0" placeholder="Nhập số tiền VND..."
+            <div id="amountField" style="margin-bottom: 1rem;">
+                <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">Số tiền yêu cầu thêm</label>
+                <input type="number" name="amount" id="amountInput" min="0" placeholder="Nhập số tiền VND..."
                        style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #0f172a; color: #f8fafc; border: 1px solid #334155;" />
+            </div>
+
+            <div id="peopleField" style="margin-bottom: 1rem; display: none;">
+                <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">Số người cần hỗ trợ <span class="text-danger">*</span></label>
+                <input type="number" name="peopleCount" id="peopleCountInput" min="1" max="10" placeholder="Nhập số người cần..."
+                       style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #0f172a; color: #f8fafc; border: 1px solid #334155;" />
+                <small style="color: #64748b;">Quản lý sẽ điều động nhân viên đến hỗ trợ bạn</small>
             </div>
 
             <div style="margin-bottom: 1rem;">
@@ -194,10 +231,35 @@
     function openSupportModal(taskId) {
         document.getElementById('modalTaskId').value = taskId;
         document.getElementById('supportModal').style.display = 'flex';
+        // Reset form
+        document.getElementById('supportTypeSelect').value = 'Tiền';
+        toggleSupportFields();
     }
 
     function closeSupportModal() {
         document.getElementById('supportModal').style.display = 'none';
+    }
+
+    function toggleSupportFields() {
+        var type = document.getElementById('supportTypeSelect').value;
+        var amountField = document.getElementById('amountField');
+        var peopleField = document.getElementById('peopleField');
+        var amountInput = document.getElementById('amountInput');
+        var peopleInput = document.getElementById('peopleCountInput');
+        
+        if (type === 'Tiền') {
+            amountField.style.display = 'block';
+            peopleField.style.display = 'none';
+            amountInput.required = false;
+            peopleInput.required = false;
+            peopleInput.value = '';
+        } else {
+            amountField.style.display = 'none';
+            peopleField.style.display = 'block';
+            amountInput.required = false;
+            peopleInput.required = true;
+            amountInput.value = '';
+        }
     }
 
     document.getElementById('supportModal')?.addEventListener('click', function (e) {

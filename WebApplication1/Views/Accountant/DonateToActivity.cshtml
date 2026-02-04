@@ -1,0 +1,179 @@
+@model QLDuLichRBAC_Upgrade.Models.Entities.SupportTask
+@{
+    ViewData["Title"] = "Quyên góp cho hoạt động";
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    <!-- Sidebar -->
+    <partial name="_AccountantSidebar" />
+
+    <!-- Main -->
+    <main class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn" type="button" id="toggleSidebar" title="Thu gọn sidebar">☰</button>
+                <div class="page-title">
+                    <div class="title">Quyên góp cho hoạt động</div>
+                    <div class="subtitle">Hỗ trợ cho @Model.SupportRequest?.Beneficiary?.FullName</div>
+                </div>
+            </div>
+        </header>
+
+        <section class="content">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; max-width: 900px;">
+                <!-- Thông tin hoạt động -->
+                <div class="card panel">
+                    <div class="panel-head">
+                        <div class="panel-title">Thông tin hoạt động</div>
+                    </div>
+                    <div style="padding: 1.5rem; color: #e2e8f0;">
+                        <div style="margin-bottom: 1rem;">
+                            <span style="color: #94a3b8;">Đối tượng hỗ trợ:</span><br />
+                            <strong style="font-size: 1.25rem;">@Model.SupportRequest?.Beneficiary?.FullName</strong>
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <span style="color: #94a3b8;">Loại:</span><br />
+                            @Model.SupportRequest?.Beneficiary?.BeneficiaryType
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <span style="color: #94a3b8;">Địa chỉ:</span><br />
+                            @(Model.SupportRequest?.Beneficiary?.Address ?? "Chưa cập nhật")
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <span style="color: #94a3b8;">Hoàn cảnh:</span><br />
+                            @(Model.SupportRequest?.Beneficiary?.Description ?? Model.ManagerNote ?? "Chưa có mô tả")
+                        </div>
+                        
+                        <hr style="border-color: #334155; margin: 1rem 0;" />
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div>
+                                <span style="color: #94a3b8;">Mục tiêu:</span><br />
+                                <strong style="color: #22c55e; font-size: 1.25rem;">@Model.Amount.ToString("N0") VND</strong>
+                            </div>
+                            <div>
+                                <span style="color: #94a3b8;">Đã quyên góp:</span><br />
+                                <strong style="color: #3b82f6; font-size: 1.25rem;">@Model.DonatedAmount.ToString("N0") VND</strong>
+                            </div>
+                        </div>
+
+                        @{
+                            var progress = Model.Amount > 0 ? Math.Min(100, (Model.DonatedAmount / Model.Amount) * 100) : 0;
+                            var remaining = Math.Max(0, Model.Amount - Model.DonatedAmount);
+                        }
+                        <div style="margin-top: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                                <span style="color: #94a3b8; font-size: 0.875rem;">Tiến độ</span>
+                                <span style="color: #94a3b8; font-size: 0.875rem;">@progress.ToString("N0")%</span>
+                            </div>
+                            <div style="background: #1e293b; border-radius: 9999px; height: 12px; overflow: hidden;">
+                                <div style="background: linear-gradient(90deg, #3b82f6, #22c55e); height: 100%; width: @(progress)%;"></div>
+                            </div>
+                            <div style="text-align: center; margin-top: 0.5rem; color: #94a3b8;">
+                                Còn thiếu: <strong style="color: #f59e0b;">@remaining.ToString("N0") VND</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form quyên góp -->
+                <div class="card panel">
+                    <div class="panel-head">
+                        <div class="panel-title">💰 Quyên góp</div>
+                    </div>
+                    <div style="padding: 1.5rem;">
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; color: #f8fafc;">Số tiền quyên góp (VND)</label>
+                            <input type="number" id="donateAmount" min="10000" step="10000" value="100000"
+                                   style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #1e293b; color: #f8fafc; border: 1px solid #334155; font-size: 1.25rem; text-align: center;" />
+                        </div>
+
+                        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                            <button type="button" onclick="setAmount(50000)" style="flex: 1; padding: 0.5rem; background: #334155; color: #f8fafc; border: none; border-radius: 6px; cursor: pointer;">50K</button>
+                            <button type="button" onclick="setAmount(100000)" style="flex: 1; padding: 0.5rem; background: #334155; color: #f8fafc; border: none; border-radius: 6px; cursor: pointer;">100K</button>
+                            <button type="button" onclick="setAmount(200000)" style="flex: 1; padding: 0.5rem; background: #334155; color: #f8fafc; border: none; border-radius: 6px; cursor: pointer;">200K</button>
+                            <button type="button" onclick="setAmount(500000)" style="flex: 1; padding: 0.5rem; background: #334155; color: #f8fafc; border: none; border-radius: 6px; cursor: pointer;">500K</button>
+                        </div>
+
+                        <!-- QR Code -->
+                        <div id="qrContainer" style="text-align: center; margin: 1.5rem 0;">
+                            <img id="qrImage" src="" alt="QR Code" style="max-width: 250px; border-radius: 12px; background: white; padding: 10px;" />
+                            <p style="color: #94a3b8; margin-top: 0.5rem; font-size: 0.875rem;">Quét mã QR để chuyển khoản</p>
+                        </div>
+
+                        <button type="button" onclick="confirmDonation()" 
+                                style="width: 100%; padding: 1rem; background: #22c55e; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: bold;">
+                            ✓ Xác nhận đã quyên góp
+                        </button>
+
+                        <a asp-action="CompletedSupports" style="display: block; text-align: center; margin-top: 1rem; color: #64748b; text-decoration: none;">
+                            ← Quay lại danh sách
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+@Html.AntiForgeryToken()
+
+<script>
+    document.getElementById('toggleSidebar')?.addEventListener('click', function() {
+        document.querySelector('.admin-shell')?.classList.toggle('collapsed');
+    });
+
+    const taskId = @Model.TaskId;
+
+    function setAmount(amount) {
+        document.getElementById('donateAmount').value = amount;
+        loadQR();
+    }
+
+    function loadQR() {
+        const amount = parseInt(document.getElementById('donateAmount').value) || 100000;
+        fetch(`/Accountant/GetActivityDonateQR?taskId=${taskId}&amount=${amount}`)
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('qrImage').src = data.qrUrl;
+                }
+            });
+    }
+
+    function confirmDonation() {
+        const amount = parseInt(document.getElementById('donateAmount').value);
+        if (!amount || amount < 10000) {
+            alert('Vui lòng nhập số tiền hợp lệ (tối thiểu 10,000 VND)');
+            return;
+        }
+
+        if (confirm(`Xác nhận bạn đã quyên góp ${amount.toLocaleString('vi-VN')} VND cho hoạt động này?`)) {
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+            
+            fetch(`/Accountant/ConfirmActivityDonation?taskId=${taskId}&amount=${amount}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': token
+                },
+                body: '__RequestVerificationToken=' + encodeURIComponent(token)
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    window.location.href = '/Accountant/CompletedSupports';
+                } else {
+                    alert(data.message || 'Có lỗi xảy ra');
+                }
+            });
+        }
+    }
+
+    // Load QR on page load
+    document.addEventListener('DOMContentLoaded', loadQR);
+    document.getElementById('donateAmount').addEventListener('change', loadQR);
+</script>

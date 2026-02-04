@@ -1,0 +1,123 @@
+@{
+    ViewData["Title"] = "Chọn nhân viên hỗ trợ";
+    var task = ViewData["Task"] as QLDuLichRBAC_Upgrade.Models.Entities.SupportTask;
+    var availableStaff = ViewData["AvailableStaff"] as List<QLDuLichRBAC_Upgrade.Models.Entities.User> ?? new();
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    <partial name="_ManagerSidebar" />
+
+    <main class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn" type="button" id="toggleSidebar">☰</button>
+                <div class="page-title">
+                    <div class="title">Chọn nhân viên hỗ trợ</div>
+                    <div class="subtitle">Điều động nhân viên đến hỗ trợ công việc</div>
+                </div>
+            </div>
+        </header>
+
+        <section class="content">
+            @if (TempData["Error"] != null)
+            {
+                <div style="padding: 1rem; background: #dc2626; color: white; border-radius: 8px; margin-bottom: 1rem;">
+                    ⚠️ @TempData["Error"]
+                </div>
+            }
+
+            @if (task != null)
+            {
+                <div class="card panel" style="margin-bottom: 1.5rem;">
+                    <div class="panel-head">
+                        <div class="panel-title">Thông tin công việc cần hỗ trợ</div>
+                    </div>
+                    <div style="padding: 1.5rem;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div>
+                                <strong style="color: #94a3b8;">Đối tượng:</strong>
+                                <div style="color: #f8fafc;">@task.SupportRequest?.Beneficiary?.FullName</div>
+                            </div>
+                            <div>
+                                <strong style="color: #94a3b8;">Nhân viên yêu cầu:</strong>
+                                <div style="color: #f8fafc;">@task.AssignedStaff?.FullName</div>
+                            </div>
+                            <div>
+                                <strong style="color: #94a3b8;">Số người yêu cầu:</strong>
+                                <div style="color: #f59e0b; font-size: 1.2rem; font-weight: bold;">@(task.SupportRequestPeopleCount ?? 0) người</div>
+                            </div>
+                            <div>
+                                <strong style="color: #94a3b8;">Lý do:</strong>
+                                <div style="color: #f8fafc;">@task.SupportRequestReason</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card panel">
+                    <div class="panel-head">
+                        <div class="panel-title">Chọn nhân viên (@availableStaff.Count người sẵn sàng)</div>
+                        <div class="panel-sub">Giữ Ctrl để chọn nhiều người. Chỉ hiển thị nhân viên không đang thực hiện công việc khác.</div>
+                    </div>
+
+                    @if (availableStaff.Any())
+                    {
+                        <form method="post" asp-action="SendHelperInvitations" style="padding: 1.5rem;">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="taskId" value="@task.TaskId" />
+
+                            <div style="margin-bottom: 1.5rem;">
+                                <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">
+                                    Chọn nhân viên <span style="color: #f59e0b;">(cần @(task.SupportRequestPeopleCount ?? 0) người)</span>
+                                </label>
+                                <select name="staffIds" id="staffSelect" required multiple 
+                                        style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #0f172a; color: #f8fafc; border: 1px solid #334155; min-height: 200px;">
+                                    @foreach (var staff in availableStaff)
+                                    {
+                                        <option value="@staff.UserId">@staff.FullName (@staff.Email)</option>
+                                    }
+                                </select>
+                                <small style="color: #64748b;">Đã chọn: <span id="selectedCount">0</span> / @(task.SupportRequestPeopleCount ?? 0) người</small>
+                            </div>
+
+                            <div style="display: flex; gap: 1rem;">
+                                <button type="submit" class="btn btn-primary" 
+                                        style="padding: 0.75rem 2rem; background: #22c55e; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                                    ✓ Gửi lời mời
+                                </button>
+                                <a asp-action="SupportRequests" class="btn btn-secondary" 
+                                   style="padding: 0.75rem 2rem; background: #475569; color: white; text-decoration: none; border-radius: 8px;">
+                                    ← Quay lại
+                                </a>
+                            </div>
+                        </form>
+                    }
+                    else
+                    {
+                        <div style="padding: 2rem; text-align: center; color: #64748b;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">😔</div>
+                            <p>Không có nhân viên nào sẵn sàng. Tất cả đang bận với công việc khác.</p>
+                            <a asp-action="SupportRequests" class="btn btn-secondary" 
+                               style="display: inline-block; margin-top: 1rem; padding: 0.75rem 2rem; background: #475569; color: white; text-decoration: none; border-radius: 8px;">
+                                ← Quay lại
+                            </a>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+    </main>
+</div>
+
+<script>
+    document.getElementById('toggleSidebar')?.addEventListener('click', function() {
+        document.querySelector('.admin-shell')?.classList.toggle('collapsed');
+    });
+
+    document.getElementById('staffSelect')?.addEventListener('change', function() {
+        var count = this.selectedOptions.length;
+        document.getElementById('selectedCount').textContent = count;
+    });
+</script>

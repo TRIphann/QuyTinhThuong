@@ -1,7 +1,6 @@
 @{
     ViewData["Title"] = "Quyên góp";
-    var qrCode = ViewBag.QrCode as string ?? "";
-    var fullName = ViewBag.FullName as string ?? "Khách hàng";
+    var fullName = ViewBag.FullName as string ?? "Tình nguyện viên";
 }
 
 <link rel="stylesheet" href="~/css/admin-dashboard.css" />
@@ -23,65 +22,45 @@
         </header>
 
         <section class="content">
-            <div class="grid two-col">
-                <div class="card panel">
-                    <div class="panel-head">
-                        <div>
-                            <div class="panel-title">Quét mã QR</div>
-                            <div class="panel-sub">Sử dụng ứng dụng ngân hàng để quét</div>
-                        </div>
-                    </div>
-
-                    <div style="padding: 2rem; text-align: center;">
-                        @if (!string.IsNullOrEmpty(qrCode))
-                        {
-                            <img src="@qrCode" alt="QR Code" style="max-width: 300px; border-radius: 12px; background: white; padding: 1rem;" />
-                        }
-                        else
-                        {
-                            <p style="color: #64748b;">Không thể tạo mã QR</p>
-                        }
-
-                        <div style="margin-top: 1.5rem; color: #94a3b8;">
-                            <p><strong style="color: #f8fafc;">Thông tin chuyển khoản:</strong></p>
-                            <p style="margin-top: 0.5rem;">Ngân hàng: <strong>MB Bank</strong></p>
-                            <p>Số tài khoản: <strong>1518893947588</strong></p>
-                            <p>Chủ TK: <strong>PHAN CONG TRI</strong></p>
-                        </div>
+            <div class="card panel" style="max-width: 600px; margin: 0 auto;">
+                <div class="panel-head" style="text-align: center;">
+                    <div>
+                        <div class="panel-title">Quét mã QR để quyên góp</div>
+                        <div class="panel-sub">Sử dụng ứng dụng ngân hàng để quét</div>
                     </div>
                 </div>
 
-                <div class="card panel">
-                    <div class="panel-head">
-                        <div>
-                            <div class="panel-title">Xác nhận quyên góp</div>
-                            <div class="panel-sub">Sau khi chuyển khoản, vui lòng xác nhận</div>
-                        </div>
+                <div style="padding: 2rem; text-align: center;">
+                    <!-- Nhập số tiền -->
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem; font-size: 1rem;">Số tiền quyên góp <span style="color: #ef4444;">*</span></label>
+                        <input type="number" name="amount" id="amountInput" required min="1000" value="100000" placeholder="Nhập số tiền (VND)"
+                               style="width: 100%; max-width: 300px; padding: 0.75rem; border-radius: 8px; background: #1e293b; color: #f8fafc; border: 1px solid #334155; text-align: center; font-size: 1.1rem;" />
+                        <small style="color: #64748b; display: block; margin-top: 0.5rem;">Tối thiểu 1,000 VND</small>
                     </div>
 
-                    <form method="post" asp-action="ConfirmDonation" style="padding: 1.5rem;">
+                    <!-- QR Code -->
+                    <div id="qrLoading" style="display: none; color: #64748b; padding: 2rem;">
+                        <p>⏳ Đang tạo mã QR...</p>
+                    </div>
+                    <div style="display: flex; justify-content: center;">
+                        <img id="qrCodeImage" src="" alt="QR Code" style="max-width: 280px; border-radius: 12px; background: white; padding: 1rem; display: none;" />
+                    </div>
+                    <p id="qrError" style="color: #64748b; display: none;">Nhập số tiền để tạo mã QR</p>
+
+                    <div style="margin-top: 1.5rem; color: #94a3b8;">
+                        <p><strong style="color: #f8fafc;">Thông tin chuyển khoản:</strong></p>
+                        <p style="margin-top: 0.5rem;">Ngân hàng: <strong>MB Bank</strong></p>
+                        <p>Số tài khoản: <strong>1518893947588</strong></p>
+                        <p>Chủ TK: <strong>PHAN CONG TRI</strong></p>
+                        <p id="qrAmount" style="margin-top: 1rem; color: #22c55e; font-size: 1.2rem; font-weight: bold; display: none;"></p>
+                    </div>
+
+                    <!-- Nút xác nhận -->
+                    <form method="post" asp-action="ConfirmDonation" style="margin-top: 1.5rem;">
                         @Html.AntiForgeryToken()
-
-                        <div class="form-group" style="margin-bottom: 1rem;">
-                            <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">Số tiền đã chuyển <span class="text-danger">*</span></label>
-                            <input type="number" name="amount" required min="1000" placeholder="Nhập số tiền (VND)"
-                                   style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #1e293b; color: #f8fafc; border: 1px solid #334155;" />
-                        </div>
-
-                        <div class="form-group" style="margin-bottom: 1rem;">
-                            <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">Tên hiển thị</label>
-                            <input type="text" name="donorName" value="@fullName" 
-                                   style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #1e293b; color: #f8fafc; border: 1px solid #334155;" />
-                            <small style="color: #64748b;">Để trống nếu muốn quyên góp ẩn danh</small>
-                        </div>
-
-                        <div class="form-group" style="margin-bottom: 1.5rem;">
-                            <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">Ghi chú</label>
-                            <textarea name="note" rows="3" placeholder="Lời nhắn (tùy chọn)..."
-                                      style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #1e293b; color: #f8fafc; border: 1px solid #334155;"></textarea>
-                        </div>
-
-                        <button type="submit" style="width: 100%; padding: 0.75rem; background: #22c55e; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                        <input type="hidden" name="amount" id="hiddenAmount" value="100000" />
+                        <button type="submit" style="width: 100%; max-width: 300px; padding: 0.75rem; background: #22c55e; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem;">
                             ✓ Xác nhận đã chuyển khoản
                         </button>
                     </form>
@@ -107,4 +86,63 @@
     document.getElementById('toggleSidebar')?.addEventListener('click', function() {
         document.querySelector('.admin-shell')?.classList.toggle('collapsed');
     });
+
+    // Hàm tạo QR Code khi nhập số tiền
+    const amountInput = document.getElementById('amountInput');
+    const hiddenAmount = document.getElementById('hiddenAmount');
+    const qrCodeImage = document.getElementById('qrCodeImage');
+    const qrLoading = document.getElementById('qrLoading');
+    const qrError = document.getElementById('qrError');
+    const qrAmount = document.getElementById('qrAmount');
+    let debounceTimer;
+
+    // Load QR code với số tiền mặc định khi trang load
+    window.addEventListener('load', function() {
+        generateQRCode(100000); // Số tiền mặc định 100,000 VND
+    });
+
+    amountInput?.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        const amount = parseInt(this.value) || 0;
+        
+        // Cập nhật hidden input cho form submit
+        if (hiddenAmount) {
+            hiddenAmount.value = amount;
+        }
+        
+        if (amount >= 1000) {
+            debounceTimer = setTimeout(() => generateQRCode(amount), 500);
+        } else {
+            qrCodeImage.style.display = 'none';
+            qrError.style.display = 'block';
+            qrError.textContent = 'Nhập số tiền (tối thiểu 1,000 VND) để tạo mã QR';
+            qrAmount.style.display = 'none';
+        }
+    });
+
+    function generateQRCode(amount) {
+        qrLoading.style.display = 'block';
+        qrCodeImage.style.display = 'none';
+        qrError.style.display = 'none';
+
+        fetch(`/Accountant/GetDonateQR?amount=${amount}`)
+            .then(response => response.json())
+            .then(data => {
+                qrLoading.style.display = 'none';
+                if (data.success) {
+                    qrCodeImage.src = data.qrCode;
+                    qrCodeImage.style.display = 'block';
+                    qrAmount.textContent = `Số tiền: ${amount.toLocaleString('vi-VN')} VND`;
+                    qrAmount.style.display = 'block';
+                } else {
+                    qrError.textContent = data.message || 'Không thể tạo mã QR';
+                    qrError.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                qrLoading.style.display = 'none';
+                qrError.textContent = 'Lỗi kết nối server';
+                qrError.style.display = 'block';
+            });
+    }
 </script>

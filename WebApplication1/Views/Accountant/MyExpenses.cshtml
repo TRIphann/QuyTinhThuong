@@ -135,7 +135,7 @@
                                     <div class="beneficiary-name">@t.SupportRequest?.Beneficiary?.FullName</div>
                                     <div class="beneficiary-type">@t.SupportRequest?.Beneficiary?.BeneficiaryType</div>
                                 </div>
-                                <div class="expense-amount">@t.SupportRequest?.RequestedAmount.ToString("N0") VND</div>
+                                <div class="expense-amount">@(t.SupportRequest?.RequestedAmount.HasValue == true ? t.SupportRequest.RequestedAmount.Value.ToString("N0") + " VND" : t.TotalAmount.ToString("N0") + " VND")</div>
                             </div>
 
                             <div class="expense-details">

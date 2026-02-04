@@ -81,18 +81,27 @@
                 <div class="notification-list">
                     @foreach (var n in Model)
                     {
-                        <div class="notification-card @(n.IsRead ? "" : "unread")">
-                            <div class="notif-icon">
+                        <div class="notification-card @(n.IsRead ? "" : "unread") @(n.Type.Contains("Từ chối") ? "rejected" : "")">
+                            <div class="notif-icon @(n.Type.Contains("Từ chối") ? "icon-rejected" : n.Type.Contains("Phê duyệt") ? "icon-approved" : "")">
                                 @switch (n.Type)
                                 {
+                                    case "Phê duyệt ngân sách":
+                                        <span>✅</span>
+                                        break;
+                                    case "Từ chối ngân sách":
+                                        <span>❌</span>
+                                        break;
                                     case "Thanh toán mới":
                                         <span>💰</span>
                                         break;
                                     case "Chờ xác minh":
-                                        <span>✅</span>
+                                        <span>⏳</span>
                                         break;
                                     case "Khiếu nại":
                                         <span>⚠️</span>
+                                        break;
+                                    case "Yêu cầu hỗ trợ":
+                                        <span>🆘</span>
                                         break;
                                     default:
                                         <span>🔔</span>
@@ -139,6 +148,11 @@
         background: linear-gradient(145deg, #252538, #2a2a4a);
     }
 
+    .notification-card.rejected {
+        border-left: 4px solid #ef4444;
+        background: linear-gradient(145deg, #2a1a1a, #382020);
+    }
+
     .notif-icon {
         width: 48px;
         height: 48px;
@@ -149,6 +163,14 @@
         justify-content: center;
         font-size: 24px;
         flex-shrink: 0;
+    }
+
+    .notif-icon.icon-approved {
+        background: rgba(34, 197, 94, 0.2);
+    }
+
+    .notif-icon.icon-rejected {
+        background: rgba(239, 68, 68, 0.2);
     }
 
     .notif-content {

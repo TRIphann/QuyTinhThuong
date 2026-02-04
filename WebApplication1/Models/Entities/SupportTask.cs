@@ -17,9 +17,16 @@ namespace QLDuLichRBAC_Upgrade.Models.Entities
         public int? AssignedBy { get; set; }
         public DateTime? AssignedAt { get; set; }
 
-        // Số tiền do quản lý nhập
+        // Ngày dự kiến bắt đầu (do Manager chọn)
+        public DateTime? ScheduledDate { get; set; }
+
+        // Số tiền mục tiêu do quản lý đặt
         [Column(TypeName = "decimal(18,2)")]
         public decimal Amount { get; set; } = 0;
+
+        // Số tiền tình nguyện viên đã quyên góp cho hoạt động này
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal DonatedAmount { get; set; } = 0;
 
         // Số tiền hỗ trợ thêm được duyệt
         [Column(TypeName = "decimal(18,2)")]
@@ -46,9 +53,16 @@ namespace QLDuLichRBAC_Upgrade.Models.Entities
         [Column(TypeName = "decimal(18,2)")]
         public decimal? SupportRequestAmount { get; set; }
 
+        // Số người yêu cầu hỗ trợ (khi type = "Nhân lực")
+        public int? SupportRequestPeopleCount { get; set; }
+
+        // Số người đã được điều đến và chấp nhận
+        public int? SupportAssignedPeopleCount { get; set; }
+
         public DateTime? SupportRequestAt { get; set; }
 
         // Phản hồi từ quản lý
+        public string? SupportResponseStatus { get; set; } // "Đang xử lý", "Đã duyệt", "Từ chối"
         public string? SupportResponseNote { get; set; }
         public DateTime? SupportResponseAt { get; set; }
 
@@ -70,6 +84,10 @@ namespace QLDuLichRBAC_Upgrade.Models.Entities
 
         public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
         public virtual ICollection<Complaint> Complaints { get; set; } = new List<Complaint>();
+
+        // Danh sách tình nguyện viên và quyên góp cho hoạt động này
+        public virtual ICollection<TaskVolunteer> Volunteers { get; set; } = new List<TaskVolunteer>();
+        public virtual ICollection<TaskDonation> TaskDonations { get; set; } = new List<TaskDonation>();
 
         // Tổng tiền = Amount + AdditionalAmount
         [NotMapped]

@@ -1,0 +1,82 @@
+@{
+    ViewData["Title"] = "Thêm Đối Tượng Hỗ Trợ";
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    <partial name="_AdminSidebar" />
+
+    <main class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn" type="button" id="toggleSidebar">☰</button>
+                <div class="page-title">
+                    <div class="title">Thêm Đối Tượng Hỗ Trợ Mới</div>
+                    <div class="subtitle">Nhập thông tin đối tượng cần hỗ trợ</div>
+                </div>
+            </div>
+        </header>
+
+        <section class="content">
+            <div class="card panel" style="max-width: 600px;">
+                <div class="panel-head">
+                    <div class="panel-title">Thông tin đối tượng</div>
+                </div>
+
+                <form method="post" asp-action="CreateBeneficiary" style="padding: 1.5rem;">
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; color: #f8fafc;">Họ tên <span style="color: #ef4444;">*</span></label>
+                        <input type="text" name="fullName" required placeholder="Nhập họ tên đầy đủ"
+                               style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #1e293b; color: #f8fafc; border: 1px solid #334155;" />
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; color: #f8fafc;">Loại đối tượng <span style="color: #ef4444;">*</span></label>
+                        <select name="beneficiaryType" required
+                                style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #1e293b; color: #f8fafc; border: 1px solid #334155;">
+                            <option value="">-- Chọn loại --</option>
+                            <option value="Bệnh nhân hiểm nghèo">Bệnh nhân hiểm nghèo</option>
+                            <option value="Người khuyết tật">Người khuyết tật</option>
+                            <option value="Người già neo đơn">Người già neo đơn</option>
+                            <option value="Học sinh/Sinh viên nghèo">Học sinh/Sinh viên nghèo</option>
+                            <option value="Trẻ em khó khăn">Trẻ em khó khăn</option>
+                            <option value="Nạn nhân thiên tai">Nạn nhân thiên tai</option>
+                            <option value="Người nghèo">Người nghèo</option>
+                            <option value="Khác">Khác</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; color: #f8fafc;">Địa chỉ</label>
+                        <input type="text" name="address" placeholder="Nhập địa chỉ"
+                               style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #1e293b; color: #f8fafc; border: 1px solid #334155;" />
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; color: #f8fafc;">Mô tả hoàn cảnh</label>
+                        <textarea name="description" rows="4" placeholder="Mô tả hoàn cảnh của đối tượng..."
+                                  style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #1e293b; color: #f8fafc; border: 1px solid #334155;"></textarea>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="submit" style="flex: 1; padding: 0.75rem; background: #22c55e; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                            ✓ Thêm đối tượng
+                        </button>
+                        <a asp-action="Beneficiaries" style="flex: 1; padding: 0.75rem; background: #64748b; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; text-align: center; text-decoration: none;">
+                            Hủy
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    document.getElementById('toggleSidebar')?.addEventListener('click', function() {
+        document.querySelector('.admin-shell')?.classList.toggle('collapsed');
+    });
+</script>

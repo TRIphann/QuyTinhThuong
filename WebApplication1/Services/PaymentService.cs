@@ -145,6 +145,25 @@ namespace QLDuLichRBAC_Upgrade.Services
         }
 
         /// <summary>
+        /// Tạo URL VietQR (dùng API VietQR.io)
+        /// </summary>
+        public string GenerateQRCodeUrl(decimal amount, string description)
+        {
+            // Sử dụng VietQR.io API để tạo QR
+            string bankBin = "970422"; // MB Bank (hoặc lấy từ config)
+            string accountNo = SEPAY_ACCOUNT_NUMBER;
+            string template = "compact2";
+            string accountName = "QUY TINH THUONG";
+            
+            // Làm sạch description (bỏ dấu, ký tự đặc biệt)
+            string cleanDescription = System.Text.RegularExpressions.Regex.Replace(description, @"[^a-zA-Z0-9\s]", "");
+            cleanDescription = cleanDescription.Replace(" ", "%20");
+            
+            string url = $"https://img.vietqr.io/image/{SEPAY_BANK_CODE}-{accountNo}-{template}.png?amount={(int)amount}&addInfo={cleanDescription}&accountName={Uri.EscapeDataString(accountName)}";
+            return url;
+        }
+
+        /// <summary>
         /// Ki?m tra l?ch s? giao d?ch t? SePay API
         /// </summary>
         public async Task<bool> CheckTransactionHistory(string memo, int amount)

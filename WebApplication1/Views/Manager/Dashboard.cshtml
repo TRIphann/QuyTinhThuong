@@ -23,6 +23,12 @@
                 <span class="mi-text">Tổng quan</span>
             </a>
 
+            <a class="menu-item" asp-controller="Manager" asp-action="Support">
+                <span class="mi-ico">🤝</span>
+                <span class="mi-text">Quản lý hỗ trợ</span>
+            </a>
+
+            <div class="menu-section">Công việc</div>
             <a class="menu-item" asp-controller="Manager" asp-action="CreateTask">
                 <span class="mi-ico">➕</span>
                 <span class="mi-text">Tạo công việc</span>
@@ -35,7 +41,7 @@
 
             <a class="menu-item" asp-controller="Manager" asp-action="SupportRequests">
                 <span class="mi-ico">🆘</span>
-                <span class="mi-text">Yêu cầu hỗ trợ</span>
+                <span class="mi-text">Yêu cầu từ nhân viên</span>
                 @if (Model.PendingSupportRequests > 0)
                 {
                     <span class="badge-count">@Model.PendingSupportRequests</span>
@@ -44,7 +50,7 @@
 
             <a class="menu-item" asp-controller="Manager" asp-action="Complaints">
                 <span class="mi-ico">💬</span>
-                <span class="mi-text">Góp ý khách hàng</span>
+                <span class="mi-text">Góp ý tình nguyện viên</span>
             </a>
 
             <div class="menu-divider"></div>

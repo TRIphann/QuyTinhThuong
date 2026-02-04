@@ -310,7 +310,7 @@
                                     <tr>
                                         <td>#@r.RequestId</td>
                                         <td>@r.BeneficiaryName</td>
-                                        <td class="amount">@r.RequestedAmount.ToString("N0")</td>
+                                        <td class="amount">@(r.RequestedAmount.HasValue ? r.RequestedAmount.Value.ToString("N0") : "-")</td>
                                         <td>@r.RequestDate.ToString("dd/MM/yyyy")</td>
                                         <td>
                                             @if (r.Status == "Đã duyệt")

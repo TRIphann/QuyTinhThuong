@@ -30,6 +30,16 @@ namespace QLDuLichRBAC_Upgrade.Models
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Complaint> Complaints { get; set; }
 
+        // Bảng tình nguyện viên và quyên góp cho hoạt động
+        public DbSet<TaskVolunteer> TaskVolunteers { get; set; }
+        public DbSet<TaskDonation> TaskDonations { get; set; }
+
+        // Bảng nhân viên hỗ trợ được mời
+        public DbSet<SupportHelper> SupportHelpers { get; set; }
+
+        // Bảng phê duyệt ngân sách
+        public DbSet<BudgetApproval> BudgetApprovals { get; set; }
+
         // ========================
         // Cấu hình quan hệ
         // ========================

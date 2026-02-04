@@ -122,6 +122,18 @@ namespace QLDuLichRBAC_Upgrade.Controllers
                 .OrderByDescending(n => n.CreatedAt)
                 .ToListAsync();
 
+            // Lấy danh sách lời mời hỗ trợ đang chờ
+            var pendingInvitations = await _context.SupportHelpers
+                .Include(h => h.Task)
+                    .ThenInclude(t => t.SupportRequest)
+                        .ThenInclude(r => r.Beneficiary)
+                .Include(h => h.Task)
+                    .ThenInclude(t => t.AssignedStaff)
+                .Where(h => h.StaffId == userId.Value && h.Status == "Đang chờ")
+                .ToListAsync();
+
+            ViewData["PendingInvitations"] = pendingInvitations;
+
             // Đánh dấu đã đọc
             foreach (var n in notifications.Where(x => !x.IsRead))
             {
@@ -182,6 +194,12 @@ namespace QLDuLichRBAC_Upgrade.Controllers
             task.StaffCompletedAt = DateTime.Now;
             task.UpdatedAt = DateTime.Now;
 
+            // Cập nhật trạng thái của SupportRequest thành "Đã hỗ trợ"
+            if (task.SupportRequest != null)
+            {
+                task.SupportRequest.Status = "Đã hỗ trợ";
+            }
+
             // Gửi thông báo cho TẤT CẢ khách hàng (role ACCOUNTANT)
             var customers = await _context.UserRoles
                 .Include(ur => ur.User)
@@ -217,7 +235,8 @@ namespace QLDuLichRBAC_Upgrade.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Json(new { success = true, message = "Đã hoàn thành công việc!" });
+            TempData["Success"] = "Đã hoàn thành công việc!";
+            return RedirectToAction("MyTasks");
         }
 
         // Nhân viên ấn "Thực hiện" - BẮT ĐẦU thực hiện, tiền được trừ
@@ -238,10 +257,16 @@ namespace QLDuLichRBAC_Upgrade.Controllers
                 .FirstOrDefaultAsync(t => t.TaskId == taskId && t.AssignedStaffId == userId.Value);
 
             if (task == null)
-                return Json(new { success = false, message = "Không tìm thấy công việc" });
+            {
+                TempData["Error"] = "Không tìm thấy công việc";
+                return RedirectToAction("MyTasks");
+            }
 
             if (task.Status != "Chờ thực hiện")
-                return Json(new { success = false, message = "Công việc không ở trạng thái chờ thực hiện" });
+            {
+                TempData["Error"] = "Công việc không ở trạng thái chờ thực hiện";
+                return RedirectToAction("MyTasks");
+            }
 
             // Cập nhật task - chuyển sang đang thực hiện
             task.Status = "Đang thực hiện";
@@ -260,13 +285,14 @@ namespace QLDuLichRBAC_Upgrade.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Json(new { success = true, message = "Đã bắt đầu thực hiện công việc!" });
+            TempData["Success"] = "Đã bắt đầu thực hiện công việc!";
+            return RedirectToAction("MyTasks");
         }
 
         // Nhân viên yêu cầu hỗ trợ (tiền hoặc nhân lực)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RequestSupport(int taskId, string supportType, decimal? amount, string reason)
+        public async Task<IActionResult> RequestSupport(int taskId, string supportType, decimal? amount, int? peopleCount, string reason)
         {
             if (!IsStaff())
                 return Unauthorized();
@@ -282,12 +308,18 @@ namespace QLDuLichRBAC_Upgrade.Controllers
                 .FirstOrDefaultAsync(t => t.TaskId == taskId && t.AssignedStaffId == userId.Value);
 
             if (task == null)
-                return Json(new { success = false, message = "Không tìm thấy công việc" });
+            {
+                TempData["Error"] = "Không tìm thấy công việc";
+                return RedirectToAction("MyTasks");
+            }
 
             // Cập nhật task
             task.Status = "Yêu cầu hỗ trợ";
             task.SupportRequestType = supportType;
-            task.SupportRequestAmount = amount;
+            task.SupportRequestAmount = supportType == "Tiền" ? amount : null;
+            task.SupportRequestPeopleCount = supportType == "Nhân lực" ? peopleCount : null;
+            task.SupportAssignedPeopleCount = 0;
+            task.SupportResponseStatus = "Đang chờ";
             task.SupportRequestReason = reason;
             task.SupportRequestAt = DateTime.Now;
             task.UpdatedAt = DateTime.Now;
@@ -296,11 +328,15 @@ namespace QLDuLichRBAC_Upgrade.Controllers
             if (task.AssignedBy.HasValue)
             {
                 var staffName = HttpContext.Session.GetString("FullName") ?? "Nhân viên";
+                var message = supportType == "Tiền" 
+                    ? $"{staffName} yêu cầu hỗ trợ tiền cho công việc hỗ trợ {task.SupportRequest.Beneficiary.FullName}. Số tiền: {amount:N0} VND. Lý do: {reason}"
+                    : $"{staffName} yêu cầu hỗ trợ {peopleCount} người cho công việc hỗ trợ {task.SupportRequest.Beneficiary.FullName}. Lý do: {reason}";
+                
                 var notification = new Notification
                 {
                     UserId = task.AssignedBy.Value,
-                    Title = "Yêu cầu hỗ trợ từ nhân viên",
-                    Message = $"{staffName} yêu cầu hỗ trợ {supportType} cho công việc hỗ trợ {task.SupportRequest.Beneficiary.FullName}. {(supportType == "Tiền" && amount.HasValue ? $"Số tiền: {amount:N0} VND. " : "")}Lý do: {reason}",
+                    Title = supportType == "Tiền" ? "Yêu cầu hỗ trợ tiền" : $"Yêu cầu hỗ trợ {peopleCount} người",
+                    Message = message,
                     Type = "Yêu cầu hỗ trợ",
                     RelatedTaskId = taskId,
                     IsRead = false,
@@ -313,7 +349,9 @@ namespace QLDuLichRBAC_Upgrade.Controllers
             var log = new Log
             {
                 UserId = userId.Value,
-                Action = $"Yêu cầu hỗ trợ {supportType} cho công việc #{taskId}",
+                Action = supportType == "Tiền" 
+                    ? $"Yêu cầu hỗ trợ tiền {amount:N0} VND cho công việc #{taskId}"
+                    : $"Yêu cầu hỗ trợ {peopleCount} người cho công việc #{taskId}",
                 TableName = "SupportTasks",
                 ActionTime = DateTime.Now
             };
@@ -321,7 +359,198 @@ namespace QLDuLichRBAC_Upgrade.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Json(new { success = true, message = "Đã gửi yêu cầu hỗ trợ!" });
+            TempData["Success"] = "Đã gửi yêu cầu hỗ trợ!";
+            return RedirectToAction("MyTasks");
+        }
+
+        // Xem danh sách lời mời hỗ trợ
+        public async Task<IActionResult> HelperInvitations()
+        {
+            if (!IsStaff())
+                return RedirectToAction("Login", "Account");
+
+            var userId = GetUserId();
+            if (!userId.HasValue)
+                return RedirectToAction("Login", "Account");
+
+            var invitations = await _context.SupportHelpers
+                .Include(h => h.Task)
+                    .ThenInclude(t => t.SupportRequest)
+                        .ThenInclude(r => r.Beneficiary)
+                .Include(h => h.Task)
+                    .ThenInclude(t => t.AssignedStaff)
+                .Include(h => h.Inviter)
+                .Where(h => h.StaffId == userId.Value)
+                .OrderByDescending(h => h.InvitedAt)
+                .ToListAsync();
+
+            ViewData["FullName"] = HttpContext.Session.GetString("FullName") ?? "Nhân viên";
+            return View(invitations);
+        }
+
+        // Chấp nhận lời mời hỗ trợ
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AcceptHelperInvitation(int helperId)
+        {
+            if (!IsStaff())
+                return Unauthorized();
+
+            var userId = GetUserId();
+            if (!userId.HasValue)
+                return Unauthorized();
+
+            var helper = await _context.SupportHelpers
+                .Include(h => h.Task)
+                    .ThenInclude(t => t.SupportRequest)
+                        .ThenInclude(r => r.Beneficiary)
+                .Include(h => h.Task)
+                    .ThenInclude(t => t.AssignedStaff)
+                .FirstOrDefaultAsync(h => h.HelperId == helperId && h.StaffId == userId.Value);
+
+            if (helper == null)
+            {
+                TempData["Error"] = "Không tìm thấy lời mời";
+                return RedirectToAction("Notifications");
+            }
+
+            helper.Status = "Chấp nhận";
+            helper.RespondedAt = DateTime.Now;
+
+            // Cập nhật số người đã được điều đến
+            var task = helper.Task;
+            task.SupportAssignedPeopleCount = (task.SupportAssignedPeopleCount ?? 0) + 1;
+
+            // Kiểm tra nếu đủ người thì chuyển status
+            if (task.SupportAssignedPeopleCount >= task.SupportRequestPeopleCount)
+            {
+                task.Status = "Đang thực hiện";
+                task.SupportResponseStatus = "Đã duyệt";
+            }
+
+            // Gửi thông báo cho nhân viên yêu cầu hỗ trợ
+            if (task.AssignedStaffId.HasValue)
+            {
+                var myName = HttpContext.Session.GetString("FullName") ?? "Nhân viên";
+                var notification = new Notification
+                {
+                    UserId = task.AssignedStaffId.Value,
+                    Title = "Có người chấp nhận hỗ trợ",
+                    Message = $"{myName} đã chấp nhận đến hỗ trợ bạn. ({task.SupportAssignedPeopleCount}/{task.SupportRequestPeopleCount} người)",
+                    Type = "Hỗ trợ nhân lực",
+                    RelatedTaskId = task.TaskId,
+                    IsRead = false,
+                    CreatedAt = DateTime.Now
+                };
+                _context.Notifications.Add(notification);
+            }
+
+            // Ghi log
+            var log = new Log
+            {
+                UserId = userId.Value,
+                Action = $"Chấp nhận hỗ trợ công việc #{task.TaskId}",
+                TableName = "SupportHelpers",
+                ActionTime = DateTime.Now
+            };
+            _context.Logs.Add(log);
+
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Đã chấp nhận hỗ trợ! Quản lý sẽ liên hệ bạn với thông tin chi tiết.";
+            return RedirectToAction("Notifications");
+        }
+
+        // Từ chối lời mời hỗ trợ
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeclineHelperInvitation(int helperId, string? note)
+        {
+            if (!IsStaff())
+                return Unauthorized();
+
+            var userId = GetUserId();
+            if (!userId.HasValue)
+                return Unauthorized();
+
+            var helper = await _context.SupportHelpers
+                .Include(h => h.Task)
+                    .ThenInclude(t => t.AssignedStaff)
+                .Include(h => h.Inviter)
+                .FirstOrDefaultAsync(h => h.HelperId == helperId && h.StaffId == userId.Value);
+
+            if (helper == null)
+            {
+                TempData["Error"] = "Không tìm thấy lời mời";
+                return RedirectToAction("Notifications");
+            }
+
+            helper.Status = "Từ chối";
+            helper.RespondedAt = DateTime.Now;
+            helper.StaffNote = note;
+
+            var task = helper.Task;
+            var myName = HttpContext.Session.GetString("FullName") ?? "Nhân viên";
+
+            // Kiểm tra xem có nhân viên nào khác chấp nhận chưa
+            var acceptedHelpers = await _context.SupportHelpers
+                .Where(h => h.TaskId == task.TaskId && h.Status == "Chấp nhận")
+                .CountAsync();
+
+            // Nếu KHÔNG có ai chấp nhận, reset lại status về "Yêu cầu hỗ trợ"
+            if (acceptedHelpers == 0)
+            {
+                task.Status = "Yêu cầu hỗ trợ";
+                task.SupportResponseStatus = "Chờ xử lý";
+                task.UpdatedAt = DateTime.Now;
+            }
+
+            // Gửi thông báo cho nhân viên YÊU CẦU HỖ TRỢ (người gửi yêu cầu ban đầu)
+            if (task.AssignedStaffId.HasValue)
+            {
+                var notificationForRequester = new Notification
+                {
+                    UserId = task.AssignedStaffId.Value,
+                    Title = "Yêu cầu hỗ trợ bị từ chối",
+                    Message = $"{myName} đã từ chối hỗ trợ bạn. {(string.IsNullOrEmpty(note) ? "" : $"Lý do: {note}")}",
+                    Type = "Từ chối hỗ trợ",
+                    RelatedTaskId = helper.TaskId,
+                    IsRead = false,
+                    CreatedAt = DateTime.Now
+                };
+                _context.Notifications.Add(notificationForRequester);
+            }
+
+            // Gửi thông báo cho Manager
+            if (helper.InvitedBy.HasValue)
+            {
+                var notificationForManager = new Notification
+                {
+                    UserId = helper.InvitedBy.Value,
+                    Title = "Nhân viên từ chối hỗ trợ",
+                    Message = $"{myName} từ chối hỗ trợ công việc #{helper.TaskId}. {(string.IsNullOrEmpty(note) ? "" : $"Lý do: {note}")}",
+                    Type = "Từ chối hỗ trợ",
+                    RelatedTaskId = helper.TaskId,
+                    IsRead = false,
+                    CreatedAt = DateTime.Now
+                };
+                _context.Notifications.Add(notificationForManager);
+            }
+
+            // Ghi log
+            var log = new Log
+            {
+                UserId = userId.Value,
+                Action = $"Từ chối hỗ trợ công việc #{helper.TaskId}",
+                TableName = "SupportHelpers",
+                ActionTime = DateTime.Now
+            };
+            _context.Logs.Add(log);
+
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Đã từ chối lời mời hỗ trợ.";
+            return RedirectToAction("Notifications");
         }
 
         #region Donors Management
@@ -402,7 +631,12 @@ namespace QLDuLichRBAC_Upgrade.Controllers
             if (!IsStaff())
                 return RedirectToAction("Login", "Account");
 
+            var userId = GetUserId();
+            
+            // Staff chỉ thấy đối tượng đã duyệt + đối tượng mình tạo (dù chờ duyệt)
             var beneficiaries = await _context.Beneficiaries
+                .Include(b => b.Creator)
+                .Where(b => b.Status == "Đã duyệt" || b.CreatedBy == userId)
                 .OrderByDescending(b => b.BeneficiaryId)
                 .Select(b => new BeneficiaryVm
                 {
@@ -410,7 +644,8 @@ namespace QLDuLichRBAC_Upgrade.Controllers
                     FullName = b.FullName,
                     BeneficiaryType = b.BeneficiaryType,
                     Address = b.Address,
-                    TotalRequests = b.SupportRequests.Count
+                    TotalRequests = b.SupportRequests.Count,
+                    Status = b.Status
                 })
                 .ToListAsync();
 
@@ -444,7 +679,10 @@ namespace QLDuLichRBAC_Upgrade.Controllers
                 FullName = model.FullName,
                 BeneficiaryType = model.BeneficiaryType,
                 Address = model.Address,
-                Description = model.Description
+                Description = model.Description,
+                Status = "Chờ duyệt", // Staff thêm thì cần Admin/Manager duyệt
+                CreatedBy = userId,
+                CreatedAt = DateTime.Now
             };
 
             _context.Beneficiaries.Add(beneficiary);
@@ -453,7 +691,7 @@ namespace QLDuLichRBAC_Upgrade.Controllers
             var log = new Log
             {
                 UserId = userId.Value,
-                Action = $"Thêm đối tượng hỗ trợ: {model.FullName}",
+                Action = $"Thêm đối tượng hỗ trợ (chờ duyệt): {model.FullName}",
                 TableName = "Beneficiaries",
                 ActionTime = DateTime.Now
             };
@@ -461,7 +699,7 @@ namespace QLDuLichRBAC_Upgrade.Controllers
 
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Đã thêm đối tượng hỗ trợ: {model.FullName}";
+            TempData["Success"] = $"Đã thêm đối tượng hỗ trợ: {model.FullName}. Đang chờ Admin/Quản lý duyệt.";
             return RedirectToAction("Beneficiaries");
         }
         #endregion
@@ -558,48 +796,20 @@ namespace QLDuLichRBAC_Upgrade.Controllers
         #endregion
 
         #region Support Requests Management
-        public async Task<IActionResult> Requests()
-        {
-            if (!IsStaff())
-                return RedirectToAction("Login", "Account");
-
-            var requests = await _context.SupportRequests
-                .Include(r => r.Beneficiary)
-                .OrderByDescending(r => r.RequestDate)
-                .Select(r => new SupportRequestVm
-                {
-                    RequestId = r.RequestId,
-                    BeneficiaryName = r.Beneficiary.FullName,
-                    BeneficiaryType = r.Beneficiary.BeneficiaryType,
-                    RequestedAmount = r.RequestedAmount,
-                    RequestDate = r.RequestDate,
-                    Reason = r.Reason,
-                    Status = r.Status
-                })
-                .ToListAsync();
-
-            ViewData["FullName"] = HttpContext.Session.GetString("FullName") ?? "Nhân viên";
-            return View(requests);
-        }
-
+        
         [HttpGet]
-        public async Task<IActionResult> CreateRequest()
+        public IActionResult CreateRequest()
         {
             if (!IsStaff())
                 return RedirectToAction("Login", "Account");
 
             ViewData["FullName"] = HttpContext.Session.GetString("FullName") ?? "Nhân viên";
-            ViewData["Beneficiaries"] = await _context.Beneficiaries
-                .OrderBy(b => b.FullName)
-                .Select(b => new { b.BeneficiaryId, b.FullName, b.BeneficiaryType })
-                .ToListAsync();
-
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateRequest(SupportRequestCreateVm model)
+        public async Task<IActionResult> CreateRequest(string fullName, string beneficiaryType, string? address, string supportIssue, string? reason)
         {
             if (!IsStaff())
                 return RedirectToAction("Login", "Account");
@@ -608,26 +818,38 @@ namespace QLDuLichRBAC_Upgrade.Controllers
             if (userId == null)
                 return RedirectToAction("Login", "Account");
 
-            var beneficiary = await _context.Beneficiaries.FindAsync(model.BeneficiaryId);
-            if (beneficiary == null)
-                return NotFound();
+            // Tạo Beneficiary mới
+            var beneficiary = new Beneficiary
+            {
+                FullName = fullName,
+                BeneficiaryType = beneficiaryType,
+                Address = address,
+                Description = supportIssue,
+                Status = "Chờ duyệt",
+                CreatedBy = userId.Value,
+                CreatedAt = DateTime.Now
+            };
+            _context.Beneficiaries.Add(beneficiary);
+            await _context.SaveChangesAsync();
 
+            // Tạo SupportRequest
             var request = new SupportRequest
             {
-                BeneficiaryId = model.BeneficiaryId,
+                BeneficiaryId = beneficiary.BeneficiaryId,
                 RequestDate = DateTime.Now,
-                RequestedAmount = model.RequestedAmount,
-                Reason = model.Reason,
-                Status = "Chờ xét duyệt"
+                RequestedAmount = null,  // Không yêu cầu số tiền
+                SupportIssue = supportIssue,
+                Reason = reason,
+                Status = "Chờ xét duyệt",
+                CreatedBy = userId.Value
             };
-
             _context.SupportRequests.Add(request);
 
             // Log action
             var log = new Log
             {
                 UserId = userId.Value,
-                Action = $"Tạo yêu cầu hỗ trợ cho {beneficiary.FullName}: {model.RequestedAmount:N0} VND",
+                Action = $"Tạo yêu cầu hỗ trợ cho {fullName} - {beneficiaryType}",
                 TableName = "SupportRequests",
                 ActionTime = DateTime.Now
             };
@@ -635,8 +857,8 @@ namespace QLDuLichRBAC_Upgrade.Controllers
 
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Đã tạo yêu cầu hỗ trợ cho {beneficiary.FullName}";
-            return RedirectToAction("Requests");
+            TempData["Success"] = $"Đã tạo yêu cầu hỗ trợ cho {fullName}. Yêu cầu đang chờ quản lý xét duyệt.";
+            return RedirectToAction("Index");
         }
         #endregion
     }

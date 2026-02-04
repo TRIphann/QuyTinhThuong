@@ -1,0 +1,367 @@
+@{
+    ViewData["Title"] = "Quản lý tài chính";
+    var fullName = ViewData["FullName"]?.ToString() ?? "Admin";
+    var totalDonations = (decimal)(ViewData["TotalDonations"] ?? 0);
+    var totalExpenses = (decimal)(ViewData["TotalExpenses"] ?? 0);
+    var currentBalance = (decimal)(ViewData["CurrentBalance"] ?? 0);
+    var transactions = (List<dynamic>)(ViewData["Transactions"] ?? new List<dynamic>());
+    var monthlyStats = (List<dynamic>)(ViewData["MonthlyStats"] ?? new List<dynamic>());
+    var pendingApprovals = (int)(ViewData["PendingApprovals"] ?? 0);
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<style>
+    .admin-shell .table { width: 100%; border-collapse: collapse; }
+    .admin-shell .table th, 
+    .admin-shell .table td { 
+        padding: 12px; 
+        text-align: left; 
+        border-bottom: 1px solid #3a3a4a; 
+        color: #ffffff !important;
+    }
+    .admin-shell .table th { 
+        background: #2a2a3a; 
+        font-weight: 600; 
+        color: #e0e0e0 !important;
+        border-top: 2px solid #5a5a6a;
+    }
+    .admin-shell .table td {
+        color: #ffffff !important;
+    }
+    .admin-shell .table tbody tr:hover {
+        background: #1a1a2a;
+    }
+    .admin-shell .muted {
+        color: #a0a0b0 !important;
+    }
+    .admin-shell .card,
+    .admin-shell .card.panel {
+        background: #1a1a2a !important;
+        border: 1px solid #3a3a4a !important;
+    }
+    .admin-shell .panel-head {
+        border-bottom: 1px solid #3a3a4a;
+        padding-bottom: 12px;
+        margin-bottom: 16px;
+    }
+    .admin-shell .sidebar {
+        z-index: 100 !important;
+        position: fixed !important;
+        left: 0;
+        top: 0;
+    }
+    .admin-shell .main {
+        margin-left: 280px;
+        width: calc(100% - 280px);
+    }
+    .admin-shell .glow:before,
+    .admin-shell .card.glow:before {
+        display: none !important;
+    }
+    
+    /* Tabs */
+    .finance-tabs {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    .finance-tab {
+        padding: 0.75rem 1.5rem;
+        background: #1a1a2a;
+        border: 1px solid #3a3a4a;
+        border-radius: 8px;
+        color: #a0a0b0;
+        text-decoration: none;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .finance-tab:hover {
+        background: #2a2a3a;
+        color: #ffffff;
+    }
+    .finance-tab.active {
+        background: linear-gradient(135deg, #ff6b35, #f7931e);
+        color: white;
+        border-color: transparent;
+    }
+    .tab-badge {
+        background: #ef4444;
+        color: white;
+        padding: 0.125rem 0.5rem;
+        border-radius: 10px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    /* Badge */
+    .badge-in {
+        background: #22c55e20;
+        color: #22c55e;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+    .badge-out {
+        background: #ef444420;
+        color: #ef4444;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+    
+    /* Stats Grid - Finance Overview */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    @@media (max-width: 1200px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    @@media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    .stat-card {
+        background: linear-gradient(145deg, #1e293b, #0f172a);
+        border-radius: 16px;
+        padding: 1.5rem;
+        border: 1px solid #334155;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        border-color: #475569;
+    }
+    
+    .stat-ico {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        flex-shrink: 0;
+    }
+    
+    .stat-body {
+        flex: 1;
+    }
+    
+    .stat-label {
+        font-size: 0.875rem;
+        color: #94a3b8;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+    
+    .stat-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 0.25rem;
+    }
+    
+    .stat-unit {
+        font-size: 0.75rem;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+</style>
+
+<div class="admin-shell">
+    <!-- Sidebar -->
+    @await Html.PartialAsync("_AdminSidebar")
+
+    <!-- Main Content -->
+    <main class="main">
+        <header class="topbar">
+            <div class="page-title">
+                <div class="title">💰 Quản lý tài chính</div>
+                <div class="subtitle">Xin chào <strong>@fullName</strong>, Chúc bạn một ngày làm việc hiệu quả!</div>
+            </div>
+            <div class="topbar-actions">
+                <button class="icon-btn" type="button">🔍</button>
+                <button class="icon-btn notif" type="button">
+                    🔔
+                    @if (pendingApprovals > 0)
+                    {
+                        <span class="notif-dot"></span>
+                    }
+                </button>
+                <div class="user-menu">
+                    <div class="user-avatar">@fullName.Substring(0, 1)</div>
+                    <div class="user-info">
+                        <div class="user-name">@fullName</div>
+                        <div class="user-role">Quản trị viên</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="content">
+            <!-- Tabs -->
+            <div class="finance-tabs">
+                <a href="@Url.Action("FinanceOverview")" class="finance-tab active">
+                    📊 Tổng quan
+                </a>
+                <a href="@Url.Action("FinanceApprovals")" class="finance-tab">
+                    📝 Xử lý yêu cầu
+                    @if (pendingApprovals > 0)
+                    {
+                        <span class="tab-badge">@pendingApprovals</span>
+                    }
+                </a>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-ico">💵</div>
+                    <div class="stat-body">
+                        <div class="stat-label">Tổng tiền vào</div>
+                        <div class="stat-value" style="color: #22c55e;">@totalDonations.ToString("N0")</div>
+                        <div class="stat-unit">VND</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-ico">💸</div>
+                    <div class="stat-body">
+                        <div class="stat-label">Tổng tiền ra</div>
+                        <div class="stat-value" style="color: #ef4444;">@totalExpenses.ToString("N0")</div>
+                        <div class="stat-unit">VND</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-ico">💰</div>
+                    <div class="stat-body">
+                        <div class="stat-label">Số dư hiện tại</div>
+                        <div class="stat-value" style="color: #3b82f6;">@currentBalance.ToString("N0")</div>
+                        <div class="stat-unit">VND</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-ico">⏳</div>
+                    <div class="stat-body">
+                        <div class="stat-label">Yêu cầu chờ duyệt</div>
+                        <div class="stat-value" style="color: #f59e0b;">@pendingApprovals</div>
+                        <div class="stat-unit">yêu cầu</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lịch sử giao dịch -->
+            <div class="card panel">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-title">📋 Lịch sử giao dịch (30 ngày gần đây)</div>
+                        <div class="panel-sub">Theo dõi mọi giao dịch tiền vào và tiền ra</div>
+                    </div>
+                    <div class="chip">Giao dịch</div>
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Loại</th>
+                            <th>Ngày</th>
+                            <th>Mô tả</th>
+                            <th>Phương thức</th>
+                            <th>Người xử lý</th>
+                            <th style="text-align: right;">Số tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (transactions.Any())
+                        {
+                            foreach (var trans in transactions.Take(50))
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="@(trans.Type == "Tiền vào" ? "badge-in" : "badge-out")">
+                                            @trans.Type
+                                        </span>
+                                    </td>
+                                    <td>@((DateTime)trans.Date).ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>@trans.Description</td>
+                                    <td>@trans.Method</td>
+                                    <td>@trans.Handler</td>
+                                    <td style="text-align: right; font-weight: 600; color: @(trans.Type == "Tiền vào" ? "#22c55e" : "#ef4444");">
+                                        @(trans.Type == "Tiền vào" ? "+" : "-")@((decimal)trans.Amount).ToString("N0") VND
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 2rem;" class="muted">
+                                    Chưa có giao dịch nào
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Thống kê theo tháng -->
+            <div class="card panel">
+                <div class="panel-head">
+                    <div>
+                        <div class="panel-title">📈 Thống kê 6 tháng gần đây</div>
+                        <div class="panel-sub">Phân tích xu hướng tiền vào và tiền ra</div>
+                    </div>
+                    <div class="chip">Thống kê</div>
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Tháng</th>
+                            <th style="text-align: right;">Tiền vào</th>
+                            <th style="text-align: right;">Tiền ra</th>
+                            <th style="text-align: right;">Chênh lệch</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var stat in monthlyStats)
+                        {
+                            var balance = (decimal)stat.Balance;
+                            <tr>
+                                <td>@stat.Month</td>
+                                <td style="text-align: right; color: #22c55e;">+@((decimal)stat.Donations).ToString("N0") VND</td>
+                                <td style="text-align: right; color: #ef4444;">-@((decimal)stat.Expenses).ToString("N0") VND</td>
+                                <td style="text-align: right; font-weight: 600; color: @(balance >= 0 ? "#22c55e" : "#ef4444");">
+                                    @(balance >= 0 ? "+" : "")@balance.ToString("N0") VND
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>

@@ -11,7 +11,7 @@
         {
             "ADMIN" => "Quản trị viên",
             "STAFF" => "Nhân viên",
-            "ACCOUNTANT" => "Khách hàng",
+            "ACCOUNTANT" => "Tình nguyện viên",
             "MANAGER" => "Quản lý",
             _ => role ?? "N/A"
         };
@@ -96,7 +96,7 @@
                     👷 Nhân viên (@Model.Count(u => u.Role == "STAFF"))
                 </a>
                 <a href="@Url.Action("Users", "Admin", new { role = "ACCOUNTANT" })" class="role-tab @(currentRole == "ACCOUNTANT" ? "active" : "")">
-                    💼 Khách hàng (@Model.Count(u => u.Role == "ACCOUNTANT"))
+                    💼 Tình nguyện viên (@Model.Count(u => u.Role == "ACCOUNTANT"))
                 </a>
                 <a href="@Url.Action("Users", "Admin", new { role = "MANAGER" })" class="role-tab @(currentRole == "MANAGER" ? "active" : "")">
                     👔 Quản lý (@Model.Count(u => u.Role == "MANAGER"))

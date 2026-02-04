@@ -91,7 +91,7 @@
                         </div>
                         <div class="info-row">
                             <span class="info-label">Số tiền đề nghị:</span>
-                            <span class="info-value"><strong>@request?.RequestedAmount.ToString("N0") VND</strong></span>
+                            <span class="info-value"><strong>@(request?.RequestedAmount.HasValue == true ? request.RequestedAmount.Value.ToString("N0") + " VND" : "Chưa xác định")</strong></span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">Ngày tạo:</span>

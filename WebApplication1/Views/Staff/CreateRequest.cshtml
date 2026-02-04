@@ -1,54 +1,12 @@
 @{
     ViewData["Title"] = "Tạo Yêu Cầu Hỗ Trợ";
     var fullName = ViewData["FullName"]?.ToString() ?? "Nhân viên";
-    var beneficiaries = ViewData["Beneficiaries"] as IEnumerable<dynamic>;
 }
 
 <link rel="stylesheet" href="~/css/admin-dashboard.css" />
 
 <div class="admin-shell">
-    <aside class="sidebar">
-        <div class="brand">
-            <div class="brand-logo">S</div>
-            <div class="brand-text">
-                <div class="brand-name">Nhân Viên</div>
-                <div class="brand-sub">QL Quỹ Tình Thương</div>
-            </div>
-        </div>
-
-        <nav class="menu">
-            <a class="menu-item" asp-controller="Staff" asp-action="Index">
-                <span class="mi-ico">🏠</span>
-                <span class="mi-text">Tổng quan</span>
-            </a>
-            <div class="menu-section">Quyên góp</div>
-            <a class="menu-item" asp-controller="Staff" asp-action="Donors">
-                <span class="mi-ico">👥</span>
-                <span class="mi-text">Nhà hảo tâm</span>
-            </a>
-            <a class="menu-item" asp-controller="Staff" asp-action="Donations">
-                <span class="mi-ico">💵</span>
-                <span class="mi-text">Tiếp nhận quyên góp</span>
-            </a>
-            <div class="menu-section">Hỗ trợ</div>
-            <a class="menu-item" asp-controller="Staff" asp-action="Beneficiaries">
-                <span class="mi-ico">🧑‍🤝‍🧑</span>
-                <span class="mi-text">Đối tượng hỗ trợ</span>
-            </a>
-            <a class="menu-item active" asp-controller="Staff" asp-action="Requests">
-                <span class="mi-ico">📋</span>
-                <span class="mi-text">Yêu cầu hỗ trợ</span>
-            </a>
-            <div class="menu-divider"></div>
-            <form asp-controller="Account" asp-action="Logout" method="post" style="margin:0;">
-                @Html.AntiForgeryToken()
-                <button type="submit" class="menu-item danger" style="width:100%; text-align:left;">
-                    <span class="mi-ico">⎋</span>
-                    <span class="mi-text">Đăng xuất</span>
-                </button>
-            </form>
-        </nav>
-    </aside>
+    <partial name="_StaffSidebar" />
 
     <main class="main">
         <header class="topbar">
@@ -56,51 +14,122 @@
                 <button class="icon-btn" type="button" id="toggleSidebar">☰</button>
                 <div class="page-title">
                     <div class="title">Tạo Yêu Cầu Hỗ Trợ</div>
-                    <div class="subtitle">Lập hồ sơ đề nghị hỗ trợ cho đối tượng</div>
+                    <div class="subtitle">Tạo hồ sơ cho người cần hỗ trợ</div>
                 </div>
+            </div>
+            <div class="topbar-right">
+                <a asp-action="Index" class="btn btn-secondary">← Quay lại</a>
             </div>
         </header>
 
         <section class="content">
-            <div class="card panel" style="max-width: 600px;">
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger" style="background: #ef444420; color: #ef4444; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    @TempData["Error"]
+                </div>
+            }
+
+            <div class="card panel" style="max-width: 800px;">
                 <div class="panel-head">
                     <div>
-                        <div class="panel-title">Thông tin yêu cầu</div>
-                        <div class="panel-sub">Điền đầy đủ thông tin bên dưới</div>
+                        <div class="panel-title">📝 Thông tin yêu cầu hỗ trợ</div>
+                        <div class="panel-sub">Điền đầy đủ thông tin người cần hỗ trợ</div>
                     </div>
                 </div>
 
-                <form asp-action="CreateRequest" method="post" class="form">
+                <form method="post" asp-action="CreateRequest" style="padding: 1.5rem;">
                     @Html.AntiForgeryToken()
 
-                    <div class="form-group">
-                        <label class="form-label">Đối tượng hỗ trợ <span class="required">*</span></label>
-                        <select name="BeneficiaryId" class="form-control" required>
-                            <option value="">-- Chọn đối tượng --</option>
-                            @if (beneficiaries != null)
-                            {
-                                foreach (var b in beneficiaries)
-                                {
-                                    <option value="@b.BeneficiaryId">@b.FullName (@b.BeneficiaryType)</option>
-                                }
-                            }
-                        </select>
-                        <small class="form-hint">Chưa có? <a asp-action="CreateBeneficiary">Thêm đối tượng mới</a></small>
+                    <!-- Thông tin người cần hỗ trợ -->
+                    <div style="background: #1e293b; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                        <h4 style="color: #f8fafc; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <span>👤</span> Thông tin người cần hỗ trợ
+                        </h4>
+                        
+                        <div style="margin-bottom: 1rem;">
+                            <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">
+                                Họ và tên <span style="color: #ef4444;">*</span>
+                            </label>
+                            <input type="text" name="fullName" required placeholder="Nhập họ tên người cần hỗ trợ..."
+                                   style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #0f172a; color: #f8fafc; border: 1px solid #334155;" />
+                        </div>
+
+                        <div style="margin-bottom: 1rem;">
+                            <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">
+                                Loại đối tượng <span style="color: #ef4444;">*</span>
+                            </label>
+                            <select name="beneficiaryType" required 
+                                    style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #0f172a; color: #f8fafc; border: 1px solid #334155;">
+                                <option value="">-- Chọn loại đối tượng --</option>
+                                <option value="Trẻ em mồ côi">Trẻ em mồ côi</option>
+                                <option value="Trẻ em khó khăn">Trẻ em khó khăn</option>
+                                <option value="Người già neo đơn">Người già neo đơn</option>
+                                <option value="Người khuyết tật">Người khuyết tật</option>
+                                <option value="Hộ nghèo">Hộ nghèo</option>
+                                <option value="Hộ cận nghèo">Hộ cận nghèo</option>
+                                <option value="Bệnh nhân hiểm nghèo">Bệnh nhân hiểm nghèo</option>
+                                <option value="Nạn nhân thiên tai">Nạn nhân thiên tai</option>
+                                <option value="Học sinh sinh viên nghèo">Học sinh sinh viên nghèo</option>
+                                <option value="Khác">Khác</option>
+                            </select>
+                        </div>
+
+                        <div style="margin-bottom: 1rem;">
+                            <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">
+                                Địa chỉ
+                            </label>
+                            <input type="text" name="address" placeholder="Nhập địa chỉ..."
+                                   style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #0f172a; color: #f8fafc; border: 1px solid #334155;" />
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Số tiền đề nghị <span class="required">*</span></label>
-                        <input type="number" name="RequestedAmount" class="form-control" required min="1000" placeholder="Nhập số tiền (VND)" />
+                    <!-- Vấn đề cần hỗ trợ -->
+                    <div style="background: #1e293b; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                        <h4 style="color: #f8fafc; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <span>📋</span> Chi tiết yêu cầu hỗ trợ
+                        </h4>
+
+                        <div style="margin-bottom: 1rem;">
+                            <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">
+                                Vấn đề cần hỗ trợ <span style="color: #ef4444;">*</span>
+                            </label>
+                            <textarea name="supportIssue" required rows="3" 
+                                      placeholder="Mô tả chi tiết vấn đề mà người này đang gặp phải cần được hỗ trợ..."
+                                      style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #0f172a; color: #f8fafc; border: 1px solid #334155;"></textarea>
+                        </div>
+
+                        <div style="margin-bottom: 1rem;">
+                            <label style="color: #f8fafc; display: block; margin-bottom: 0.5rem;">
+                                Lý do hỗ trợ
+                            </label>
+                            <textarea name="reason" rows="2" 
+                                      placeholder="Lý do cần được hỗ trợ (nếu có)..."
+                                      style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #0f172a; color: #f8fafc; border: 1px solid #334155;"></textarea>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Lý do hỗ trợ</label>
-                        <textarea name="Reason" class="form-control" rows="4" placeholder="Mô tả lý do cần hỗ trợ..."></textarea>
+                    <!-- Lưu ý -->
+                    <div style="background: #3b82f620; border: 1px solid #3b82f6; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                        <div style="display: flex; gap: 0.5rem; color: #60a5fa;">
+                            <span>ℹ️</span>
+                            <div>
+                                <strong>Lưu ý:</strong> Yêu cầu hỗ trợ sau khi tạo sẽ được gửi đến quản lý để xét duyệt. 
+                                Số tiền hỗ trợ sẽ được quản lý quyết định dựa trên tình hình thực tế và nguồn quỹ hiện có.
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="form-actions">
-                        <a asp-action="Requests" class="btn btn-secondary">← Quay lại</a>
-                        <button type="submit" class="btn btn-primary">Tạo yêu cầu</button>
+                    <!-- Buttons -->
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="submit" 
+                                style="flex: 1; padding: 0.875rem; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 1rem;">
+                            📤 Gửi yêu cầu hỗ trợ
+                        </button>
+                        <a asp-action="Index" 
+                           style="padding: 0.875rem 1.5rem; background: #475569; color: white; border: none; border-radius: 8px; text-decoration: none; text-align: center;">
+                            Hủy
+                        </a>
                     </div>
                 </form>
             </div>
@@ -108,61 +137,8 @@
     </main>
 </div>
 
-<style>
-    .menu-section { padding: 8px 16px; font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; margin-top: 8px; }
-    .form { padding: 1.5rem; }
-    .form-group { margin-bottom: 1.25rem; }
-    .form-label { display: block; font-weight: 500; margin-bottom: 0.5rem; color: #e5e7eb; }
-    .required { color: #ff5c7a; }
-    .form-control { width: 100%; padding: 10px 14px; border: 1px solid #4a4a5a; border-radius: 6px; font-size: 14px; background: #2a2a3a; color: #fff; }
-    .form-control:focus { outline: none; border-color: #6ee7ff; box-shadow: 0 0 0 3px rgba(110, 231, 255, 0.15); }
-    .form-control::placeholder { color: #9ca3af; }
-    .form-hint { display: block; margin-top: 6px; font-size: 12px; color: #9ca3af; }
-    .form-hint a { color: #6ee7ff; }
-    .form-actions { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem; }
-    .btn { padding: 10px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: none; border: none; }
-    .btn-primary { background: linear-gradient(135deg, #6ee7ff, #a78bfa); color: #0b1020; }
-    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
-    .btn-secondary { background: rgba(255,255,255,0.1); color: #e5e7eb; }
-    .btn-secondary:hover { background: rgba(255,255,255,0.15); }
-    .form-control.invalid { border-color: #ff5c7a !important; animation: shake 0.4s ease-in-out; }
-    @@keyframes shake { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); } 20%, 40%, 60%, 80% { transform: translateX(4px); } }
-</style>
-
 <script>
     document.getElementById('toggleSidebar')?.addEventListener('click', function() {
         document.querySelector('.admin-shell')?.classList.toggle('collapsed');
-    });
-
-    // Form validation
-    document.querySelector('form.form')?.addEventListener('submit', function(e) {
-        let isValid = true;
-        const requiredFields = this.querySelectorAll('[required]');
-        
-        requiredFields.forEach(field => {
-            field.classList.remove('invalid');
-            if (!field.value.trim() || (field.tagName === 'SELECT' && !field.value)) {
-                field.classList.add('invalid');
-                isValid = false;
-            }
-        });
-
-        // Validate amount > 0
-        const amountField = this.querySelector('input[name="RequestedAmount"]');
-        if (amountField && (isNaN(amountField.value) || parseFloat(amountField.value) < 1000)) {
-            amountField.classList.add('invalid');
-            isValid = false;
-        }
-
-        if (!isValid) {
-            e.preventDefault();
-            const firstInvalid = this.querySelector('.invalid');
-            firstInvalid?.focus();
-        }
-    });
-
-    document.querySelectorAll('.form-control').forEach(input => {
-        input.addEventListener('input', function() { this.classList.remove('invalid'); });
-        input.addEventListener('change', function() { this.classList.remove('invalid'); });
     });
 </script>

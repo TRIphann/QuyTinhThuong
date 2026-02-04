@@ -1,0 +1,356 @@
+@model List<QLDuLichRBAC_Upgrade.Models.Entities.BudgetApproval>
+@{
+    ViewData["Title"] = "Xử lý yêu cầu ngân sách";
+    var fullName = ViewData["FullName"]?.ToString() ?? "Admin";
+    var pendingCount = (int)(ViewData["PendingCount"] ?? 0);
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<style>
+    .admin-shell .table { width: 100%; border-collapse: collapse; }
+    .admin-shell .table th, 
+    .admin-shell .table td { 
+        padding: 12px; 
+        text-align: left; 
+        border-bottom: 1px solid #3a3a4a; 
+        color: #ffffff !important;
+    }
+    .admin-shell .table th { 
+        background: #2a2a3a; 
+        font-weight: 600; 
+        color: #e0e0e0 !important;
+        border-top: 2px solid #5a5a6a;
+    }
+    .admin-shell .muted {
+        color: #a0a0b0 !important;
+    }
+    .admin-shell .card,
+    .admin-shell .card.panel {
+        background: #1a1a2a !important;
+        border: 1px solid #3a3a4a !important;
+    }
+    
+    /* Tabs */
+    .finance-tabs {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    .finance-tab {
+        padding: 0.75rem 1.5rem;
+        background: #1a1a2a;
+        border: 1px solid #3a3a4a;
+        border-radius: 8px;
+        color: #a0a0b0;
+        text-decoration: none;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .finance-tab:hover {
+        background: #2a2a3a;
+        color: #ffffff;
+    }
+    .finance-tab.active {
+        background: linear-gradient(135deg, #ff6b35, #f7931e);
+        color: white;
+        border-color: transparent;
+    }
+    .tab-badge {
+        background: #ef4444;
+        color: white;
+        padding: 0.125rem 0.5rem;
+        border-radius: 10px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    /* Request cards */
+    .request-card { 
+        background: #1e293b; 
+        border-radius: 12px; 
+        padding: 1.5rem; 
+        margin-bottom: 1.5rem; 
+        border: 1px solid #334155; 
+    }
+    .request-header { 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: start; 
+        margin-bottom: 1rem; 
+    }
+    .request-type { 
+        font-size: 1.125rem; 
+        font-weight: 600; 
+        color: #f8fafc; 
+    }
+    .request-status { 
+        padding: 0.25rem 0.75rem; 
+        border-radius: 20px; 
+        font-size: 0.875rem; 
+        font-weight: 500; 
+    }
+    .status-pending { background: #f59e0b20; color: #f59e0b; }
+    .status-approved { background: #22c55e20; color: #22c55e; }
+    .status-rejected { background: #ef444420; color: #ef4444; }
+    
+    .request-info { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+        gap: 1rem; 
+        margin-bottom: 1rem; 
+    }
+    .info-label { color: #94a3b8; font-size: 0.875rem; margin-bottom: 0.25rem; }
+    .info-value { color: #f8fafc; font-weight: 500; }
+    
+    .request-amount { 
+        font-size: 1.5rem; 
+        font-weight: 700; 
+        color: #3b82f6; 
+        margin: 1rem 0; 
+    }
+    
+    .request-actions { display: flex; gap: 1rem; margin-top: 1rem; }
+    .btn-approve { 
+        padding: 0.75rem 1.5rem; 
+        border-radius: 8px; 
+        border: none; 
+        cursor: pointer; 
+        font-weight: 500; 
+        background: linear-gradient(135deg, #22c55e, #16a34a); 
+        color: white; 
+        transition: all 0.2s; 
+    }
+    .btn-reject { 
+        padding: 0.75rem 1.5rem; 
+        border-radius: 8px; 
+        border: none; 
+        cursor: pointer; 
+        font-weight: 500; 
+        background: linear-gradient(135deg, #ef4444, #dc2626); 
+        color: white; 
+        transition: all 0.2s; 
+    }
+    .btn-approve:hover, .btn-reject:hover { transform: translateY(-2px); }
+    
+    .alert { padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; }
+    .alert-success { background: #22c55e20; color: #22c55e; border: 1px solid #22c55e40; }
+    .alert-error { background: #ef444420; color: #ef4444; border: 1px solid #ef444440; }
+    
+    /* Modal */
+    .modal { 
+        display: none; 
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        right: 0; 
+        bottom: 0; 
+        background: rgba(0,0,0,0.7); 
+        z-index: 1000; 
+        justify-content: center; 
+        align-items: center; 
+    }
+    .modal-content { 
+        background: #1e293b; 
+        border-radius: 12px; 
+        padding: 2rem; 
+        max-width: 500px; 
+        width: 90%; 
+    }
+    .modal-title { 
+        font-size: 1.25rem; 
+        font-weight: 600; 
+        color: #f8fafc; 
+        margin-bottom: 1rem; 
+    }
+    .form-group { margin-bottom: 1rem; }
+    .form-label { display: block; color: #cbd5e1; margin-bottom: 0.5rem; }
+    .form-control { 
+        width: 100%; 
+        padding: 0.75rem; 
+        background: #0f172a; 
+        border: 1px solid #334155; 
+        border-radius: 8px; 
+        color: #e2e8f0; 
+    }
+    .form-control:focus { outline: none; border-color: #3b82f6; }
+</style>
+
+<div class="admin-shell">
+    @await Html.PartialAsync("_AdminSidebar")
+
+    <main class="main">
+        <header class="topbar">
+            <div class="page-title">
+                <div class="title">💰 Quản lý tài chính</div>
+                <div class="subtitle">Xin chào <strong>@fullName</strong>, xử lý yêu cầu ngân sách từ Manager</div>
+            </div>
+        </header>
+
+        <section class="content">
+            <!-- Tabs -->
+            <div class="finance-tabs">
+                <a href="@Url.Action("FinanceOverview")" class="finance-tab">
+                    📊 Tổng quan
+                </a>
+                <a href="@Url.Action("FinanceApprovals")" class="finance-tab active">
+                    📝 Xử lý yêu cầu
+                    @if (pendingCount > 0)
+                    {
+                        <span class="tab-badge">@pendingCount</span>
+                    }
+                </a>
+            </div>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">
+                    ✓ @TempData["Success"]
+                </div>
+            }
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-error">
+                    ✗ @TempData["Error"]
+                </div>
+            }
+
+            <!-- Request Cards -->
+            @if (Model.Any())
+            {
+                foreach (var approval in Model)
+                {
+                    var statusClass = approval.Status == "Chờ duyệt" ? "status-pending" : 
+                                     approval.Status == "Đã duyệt" ? "status-approved" : "status-rejected";
+                    var typeText = approval.RequestType == "CreateTask" ? "Tạo công việc mới" : "Hỗ trợ tiền bổ sung";
+                    
+                    <div class="request-card">
+                        <div class="request-header">
+                            <div>
+                                <div class="request-type">@typeText</div>
+                                <div style="color: #94a3b8; font-size: 0.875rem; margin-top: 0.25rem;">
+                                    Yêu cầu #@approval.ApprovalId
+                                </div>
+                            </div>
+                            <span class="request-status @statusClass">@approval.Status</span>
+                        </div>
+
+                        <div class="request-info">
+                            <div class="info-item">
+                                <div class="info-label">Người yêu cầu</div>
+                                <div class="info-value">@approval.Requester?.FullName</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Thời gian</div>
+                                <div class="info-value">@approval.RequestedAt.ToString("dd/MM/yyyy HH:mm")</div>
+                            </div>
+                            @if (approval.RequestType == "CreateTask")
+                            {
+                                <div class="info-item">
+                                    <div class="info-label">Đối tượng hỗ trợ</div>
+                                    <div class="info-value">@approval.RelatedRequest?.Beneficiary?.FullName</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Ngày dự kiến</div>
+                                    <div class="info-value">@approval.ScheduledDate?.ToString("dd/MM/yyyy")</div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="info-item">
+                                    <div class="info-label">Công việc</div>
+                                    <div class="info-value">Task #@approval.RelatedTaskId</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Nhân viên</div>
+                                    <div class="info-value">@approval.RelatedTask?.AssignedStaff?.FullName</div>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="request-amount">💰 @approval.Amount.ToString("N0") VND</div>
+
+                        @if (!string.IsNullOrEmpty(approval.Description))
+                        {
+                            <div style="background: #0f172a; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                                <div style="color: #94a3b8; font-size: 0.875rem; margin-bottom: 0.5rem;">Mô tả:</div>
+                                <div style="color: #e2e8f0;">@approval.Description</div>
+                            </div>
+                        }
+
+                        @if (approval.Status == "Từ chối" && !string.IsNullOrEmpty(approval.RejectionReason))
+                        {
+                            <div style="background: #ef444420; padding: 1rem; border-radius: 8px; border: 1px solid #ef444440;">
+                                <div style="color: #ef4444; font-size: 0.875rem; margin-bottom: 0.5rem;">Lý do từ chối:</div>
+                                <div style="color: #ef4444;">@approval.RejectionReason</div>
+                            </div>
+                        }
+
+                        @if (approval.Status == "Chờ duyệt")
+                        {
+                            <div class="request-actions">
+                                <form method="post" asp-action="ApproveBudgetRequest" style="display: inline;">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="approvalId" value="@approval.ApprovalId" />
+                                    <button type="submit" class="btn-approve" onclick="return confirm('Xác nhận phê duyệt yêu cầu này? Tiền sẽ được trừ trực tiếp từ quỹ.')">
+                                        ✓ Phê duyệt & Trừ tiền
+                                    </button>
+                                </form>
+                                <button type="button" class="btn-reject" onclick="openRejectModal(@approval.ApprovalId)">
+                                    ✗ Từ chối
+                                </button>
+                            </div>
+                        }
+                    </div>
+                }
+            }
+            else
+            {
+                <div style="text-align: center; padding: 4rem; color: #64748b;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">📋</div>
+                    <p>Không có yêu cầu nào</p>
+                </div>
+            }
+        </section>
+    </main>
+</div>
+
+<!-- Modal từ chối -->
+<div id="rejectModal" class="modal">
+    <div class="modal-content">
+        <h3 class="modal-title">Từ chối yêu cầu ngân sách</h3>
+        <form method="post" asp-action="RejectBudgetRequest">
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="rejectApprovalId" name="approvalId" />
+            <div class="form-group">
+                <label class="form-label">Lý do từ chối *</label>
+                <textarea name="rejectionReason" class="form-control" rows="4" required placeholder="Nhập lý do từ chối..."></textarea>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <button type="submit" class="btn-reject" style="flex: 1;">Xác nhận từ chối</button>
+                <button type="button" style="flex: 1; background: #334155; color: white; padding: 0.75rem 1.5rem; border-radius: 8px; border: none; cursor: pointer;" onclick="closeRejectModal()">Hủy</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openRejectModal(approvalId) {
+        document.getElementById('rejectApprovalId').value = approvalId;
+        document.getElementById('rejectModal').style.display = 'flex';
+    }
+
+    function closeRejectModal() {
+        document.getElementById('rejectModal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('rejectModal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeRejectModal();
+        }
+    });
+</script>

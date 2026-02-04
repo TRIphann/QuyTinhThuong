@@ -230,24 +230,33 @@ namespace QLDuLichRBAC_Upgrade.Controllers
         }
 
         // =====================================================
-        // XEM CÁC HỖ TRỢ ĐÃ HOÀN THÀNH - từ thông báo
+        // XEM CÁC HOẠT ĐỘNG HỖ TRỢ (tất cả, không chỉ hoàn thành)
         // =====================================================
-        public async Task<IActionResult> CompletedSupports()
+        public async Task<IActionResult> CompletedSupports(string? status)
         {
             if (!IsAccountant())
                 return RedirectToAction("Login", "Account");
 
             await SetUnreadNotificationsCount();
 
-            var supports = await _context.SupportTasks
+            var query = _context.SupportTasks
                 .Include(t => t.SupportRequest)
                     .ThenInclude(r => r.Beneficiary)
                 .Include(t => t.AssignedStaff)
-                .Where(t => t.Status == "Hoàn thành")
-                .OrderByDescending(t => t.StaffCompletedAt)
+                .AsQueryable();
+
+            // Lọc theo status nếu có
+            if (!string.IsNullOrEmpty(status) && status != "all")
+            {
+                query = query.Where(t => t.Status == status);
+            }
+
+            var supports = await query
+                .OrderByDescending(t => t.CreatedAt)
                 .ToListAsync();
 
-            ViewData["FullName"] = HttpContext.Session.GetString("FullName") ?? "Khách hàng";
+            ViewData["FullName"] = HttpContext.Session.GetString("FullName") ?? "Tình nguyện viên";
+            ViewData["CurrentStatus"] = status ?? "all";
             return View(supports);
         }
 
@@ -265,12 +274,16 @@ namespace QLDuLichRBAC_Upgrade.Controllers
                 .Include(t => t.AssignedStaff)
                 .Include(t => t.Assigner)
                 .Include(t => t.Complaints)
+                .Include(t => t.Volunteers)
+                    .ThenInclude(v => v.User)
+                .Include(t => t.TaskDonations)
+                    .ThenInclude(d => d.User)
                 .FirstOrDefaultAsync(t => t.TaskId == id);
 
             if (support == null)
                 return NotFound();
 
-            ViewData["FullName"] = HttpContext.Session.GetString("FullName") ?? "Khách hàng";
+            ViewData["FullName"] = HttpContext.Session.GetString("FullName") ?? "Tình nguyện viên";
             return View(support);
         }
 
@@ -437,6 +450,202 @@ namespace QLDuLichRBAC_Upgrade.Controllers
 
             TempData["Success"] = "Đã gửi phản ánh thành công!";
             return RedirectToAction("CompletedSupports");
+        }
+
+        // =====================================================
+        // QUYÊN GÓP CHO HOẠT ĐỘNG CỤ THỂ
+        // =====================================================
+        public async Task<IActionResult> DonateToActivity(int id)
+        {
+            if (!IsAccountant())
+                return RedirectToAction("Login", "Account");
+
+            await SetUnreadNotificationsCount();
+
+            var task = await _context.SupportTasks
+                .Include(t => t.SupportRequest)
+                    .ThenInclude(r => r.Beneficiary)
+                .Include(t => t.AssignedStaff)
+                .FirstOrDefaultAsync(t => t.TaskId == id);
+
+            if (task == null)
+                return NotFound();
+
+            ViewData["FullName"] = HttpContext.Session.GetString("FullName") ?? "Tình nguyện viên";
+            return View(task);
+        }
+
+        // API trả về QR code cho quyên góp hoạt động
+        public async Task<IActionResult> GetActivityDonateQR(int taskId, decimal amount)
+        {
+            if (!IsAccountant())
+                return Unauthorized();
+
+            var task = await _context.SupportTasks
+                .Include(t => t.SupportRequest)
+                    .ThenInclude(r => r.Beneficiary)
+                .FirstOrDefaultAsync(t => t.TaskId == taskId);
+
+            if (task == null)
+                return NotFound();
+
+            var description = $"HOTRO{taskId} {task.SupportRequest?.Beneficiary?.FullName}";
+            var qrUrl = _paymentService.GenerateQRCodeUrl(amount, description);
+            return Json(new { success = true, qrUrl });
+        }
+
+        // Xác nhận quyên góp cho hoạt động
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ConfirmActivityDonation(int taskId, decimal amount)
+        {
+            if (!IsAccountant())
+                return Unauthorized();
+
+            var userId = GetUserId();
+            if (!userId.HasValue)
+                return Unauthorized();
+
+            var task = await _context.SupportTasks
+                .Include(t => t.SupportRequest)
+                    .ThenInclude(r => r.Beneficiary)
+                .FirstOrDefaultAsync(t => t.TaskId == taskId);
+
+            if (task == null)
+                return Json(new { success = false, message = "Không tìm thấy hoạt động" });
+
+            // Cộng tiền vào hoạt động (không vào quỹ chung)
+            task.DonatedAmount += amount;
+            task.UpdatedAt = DateTime.Now;
+
+            // Lưu vào bảng Task_Donations
+            var taskDonation = new TaskDonation
+            {
+                TaskId = taskId,
+                UserId = userId.Value,
+                Amount = amount,
+                DonatedAt = DateTime.Now,
+                IsConfirmed = true
+            };
+            _context.TaskDonations.Add(taskDonation);
+
+            // Ghi log
+            var log = new Log
+            {
+                UserId = userId.Value,
+                Action = $"Quyên góp {amount:N0} VND cho hoạt động #{taskId} - {task.SupportRequest?.Beneficiary?.FullName}",
+                TableName = "TaskDonations",
+                ActionTime = DateTime.Now
+            };
+            _context.Logs.Add(log);
+
+            // Gửi thông báo cho Manager
+            var managers = await _context.UserRoles
+                .Include(ur => ur.User)
+                .Include(ur => ur.Role)
+                .Where(ur => ur.Role.RoleName.ToUpper() == "MANAGER")
+                .Select(ur => ur.User)
+                .ToListAsync();
+
+            var userName = HttpContext.Session.GetString("FullName") ?? "Tình nguyện viên";
+            foreach (var mgr in managers)
+            {
+                var notif = new Notification
+                {
+                    UserId = mgr.UserId,
+                    Title = "Có quyên góp mới cho hoạt động",
+                    Message = $"{userName} đã quyên góp {amount:N0} VND cho hoạt động hỗ trợ {task.SupportRequest?.Beneficiary?.FullName}",
+                    Type = "Quyên góp hoạt động",
+                    RelatedTaskId = taskId,
+                    IsRead = false,
+                    CreatedAt = DateTime.Now
+                };
+                _context.Notifications.Add(notif);
+            }
+
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = $"Đã quyên góp {amount:N0} VND cho hoạt động thành công!";
+            return Json(new { success = true, message = $"Đã quyên góp {amount:N0} VND cho hoạt động!" });
+        }
+
+        // Đăng ký tham gia tình nguyện
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RegisterVolunteer(int taskId)
+        {
+            if (!IsAccountant())
+                return Unauthorized();
+
+            var userId = GetUserId();
+            if (!userId.HasValue)
+                return Unauthorized();
+
+            var task = await _context.SupportTasks
+                .Include(t => t.SupportRequest)
+                    .ThenInclude(r => r.Beneficiary)
+                .FirstOrDefaultAsync(t => t.TaskId == taskId);
+
+            if (task == null)
+                return Json(new { success = false, message = "Không tìm thấy hoạt động" });
+
+            // Kiểm tra đã đăng ký chưa
+            var existingRegistration = await _context.TaskVolunteers
+                .FirstOrDefaultAsync(v => v.TaskId == taskId && v.UserId == userId.Value);
+            
+            if (existingRegistration != null)
+            {
+                return Json(new { success = false, message = "Bạn đã đăng ký tham gia hoạt động này rồi!" });
+            }
+
+            // Lưu vào bảng Task_Volunteers
+            var volunteer = new TaskVolunteer
+            {
+                TaskId = taskId,
+                UserId = userId.Value,
+                RegisteredAt = DateTime.Now,
+                Status = "Đăng ký"
+            };
+            _context.TaskVolunteers.Add(volunteer);
+
+            // Gửi thông báo cho Manager về việc đăng ký tình nguyện
+            var managers = await _context.UserRoles
+                .Include(ur => ur.User)
+                .Include(ur => ur.Role)
+                .Where(ur => ur.Role.RoleName.ToUpper() == "MANAGER")
+                .Select(ur => ur.User)
+                .ToListAsync();
+
+            var userName = HttpContext.Session.GetString("FullName") ?? "Tình nguyện viên";
+            foreach (var mgr in managers)
+            {
+                var notif = new Notification
+                {
+                    UserId = mgr.UserId,
+                    Title = "Đăng ký tình nguyện mới",
+                    Message = $"{userName} đăng ký tham gia tình nguyện cho hoạt động hỗ trợ {task.SupportRequest?.Beneficiary?.FullName}",
+                    Type = "Đăng ký tình nguyện",
+                    RelatedTaskId = taskId,
+                    IsRead = false,
+                    CreatedAt = DateTime.Now
+                };
+                _context.Notifications.Add(notif);
+            }
+
+            // Ghi log
+            var log = new Log
+            {
+                UserId = userId.Value,
+                Action = $"Đăng ký tình nguyện cho hoạt động #{taskId}",
+                TableName = "TaskVolunteers",
+                ActionTime = DateTime.Now
+            };
+            _context.Logs.Add(log);
+
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Đã đăng ký tham gia tình nguyện! Quản lý sẽ liên hệ bạn sớm.";
+            return Json(new { success = true, message = "Đã đăng ký tham gia tình nguyện!" });
         }
 
         // =====================================================

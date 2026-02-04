@@ -39,6 +39,7 @@ namespace QLDuLichRBAC_Upgrade.Models.ViewModels
         public string BeneficiaryType { get; set; } = string.Empty;
         public string? Address { get; set; }
         public int TotalRequests { get; set; }
+        public string Status { get; set; } = "Đã duyệt";
     }
 
     public class DonorCreateVm

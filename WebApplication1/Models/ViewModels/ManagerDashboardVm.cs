@@ -28,7 +28,8 @@ namespace QLDuLichRBAC_Upgrade.Models.ViewModels
         public int RequestId { get; set; }
         public string BeneficiaryName { get; set; } = string.Empty;
         public string BeneficiaryType { get; set; } = string.Empty;
-        public decimal RequestedAmount { get; set; }
+        public decimal? RequestedAmount { get; set; }
+        public string? SupportIssue { get; set; }
         public DateTime RequestDate { get; set; }
         public string? Reason { get; set; }
         public string Status { get; set; } = string.Empty;

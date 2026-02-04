@@ -32,22 +32,7 @@
                 }
             </a>
 
-            <div class="menu-section">Quyên góp</div>
-            <a class="menu-item" asp-controller="Staff" asp-action="Donors">
-                <span class="mi-ico">👥</span>
-                <span class="mi-text">Nhà hảo tâm</span>
-            </a>
-            <a class="menu-item" asp-controller="Staff" asp-action="Donations">
-                <span class="mi-ico">💵</span>
-                <span class="mi-text">Tiếp nhận quyên góp</span>
-            </a>
-
-            <div class="menu-section">Hỗ trợ</div>
-            <a class="menu-item" asp-controller="Staff" asp-action="Beneficiaries">
-                <span class="mi-ico">🧑‍🤝‍🧑</span>
-                <span class="mi-text">Đối tượng hỗ trợ</span>
-            </a>
-            <a class="menu-item" asp-controller="Staff" asp-action="Requests">
+            <a class="menu-item" asp-controller="Staff" asp-action="CreateRequest">
                 <span class="mi-ico">📝</span>
                 <span class="mi-text">Tạo yêu cầu hỗ trợ</span>
             </a>
@@ -143,14 +128,14 @@
 
                 <div class="card stat">
                     <div class="stat-head">
-                        <div class="stat-ico">💵</div>
+                        <div class="stat-ico">�</div>
                         <div class="stat-kpi">
-                            <div class="kpi-label">Thu hôm nay</div>
-                            <div class="kpi-value">@Model.TodayDonationAmount.ToString("N0")</div>
+                            <div class="kpi-label">Yêu cầu hôm nay</div>
+                            <div class="kpi-value">@Model.RequestsCreatedToday</div>
                         </div>
                     </div>
                     <div class="stat-foot">
-                        <span class="muted">VND</span>
+                        <span class="muted">Yêu cầu mới</span>
                     </div>
                 </div>
             </div>
@@ -264,16 +249,7 @@
                             <div class="action-go">→</div>
                         </a>
 
-                        <a class="action-card" asp-controller="Staff" asp-action="Donations">
-                            <div class="action-ico">💵</div>
-                            <div class="action-body">
-                                <div class="action-title">Tiếp nhận quyên góp</div>
-                                <div class="action-desc">Ghi nhận quyên góp bằng tiền mặt</div>
-                            </div>
-                            <div class="action-go">→</div>
-                        </a>
-
-                        <a class="action-card" asp-controller="Staff" asp-action="Requests">
+                        <a class="action-card" asp-controller="Staff" asp-action="CreateRequest">
                             <div class="action-ico">📝</div>
                             <div class="action-body">
                                 <div class="action-title">Tạo yêu cầu hỗ trợ</div>
@@ -295,16 +271,16 @@
                     <div style="padding: 1rem;">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                             <div style="background: #1e293b; padding: 1rem; border-radius: 8px; text-align: center;">
-                                <div style="color: #94a3b8;">Nhà hảo tâm</div>
-                                <div style="font-size: 1.5rem; font-weight: bold; color: #f8fafc;">@Model.TotalDonors</div>
+                                <div style="color: #94a3b8;">Công việc đang làm</div>
+                                <div style="font-size: 1.5rem; font-weight: bold; color: #3b82f6;">@Model.InProgressTasks</div>
                             </div>
                             <div style="background: #1e293b; padding: 1rem; border-radius: 8px; text-align: center;">
-                                <div style="color: #94a3b8;">Đối tượng hỗ trợ</div>
-                                <div style="font-size: 1.5rem; font-weight: bold; color: #f8fafc;">@Model.TotalBeneficiaries</div>
+                                <div style="color: #94a3b8;">Đã hoàn thành</div>
+                                <div style="font-size: 1.5rem; font-weight: bold; color: #22c55e;">@Model.CompletedTasks</div>
                             </div>
                             <div style="background: #1e293b; padding: 1rem; border-radius: 8px; text-align: center;">
-                                <div style="color: #94a3b8;">Quyên góp hôm nay</div>
-                                <div style="font-size: 1.5rem; font-weight: bold; color: #22c55e;">@Model.DonationsToday</div>
+                                <div style="color: #94a3b8;">Chờ thực hiện</div>
+                                <div style="font-size: 1.5rem; font-weight: bold; color: #f59e0b;">@Model.PendingTasks</div>
                             </div>
                             <div style="background: #1e293b; padding: 1rem; border-radius: 8px; text-align: center;">
                                 <div style="color: #94a3b8;">Yêu cầu hôm nay</div>

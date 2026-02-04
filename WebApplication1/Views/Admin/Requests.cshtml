@@ -1,0 +1,167 @@
+@model List<QLDuLichRBAC_Upgrade.Models.Entities.SupportRequest>
+@{
+    ViewData["Title"] = "Yêu Cầu Hỗ Trợ";
+    var currentStatus = ViewData["CurrentStatus"]?.ToString() ?? "all";
+    var pendingCount = ViewData["PendingCount"] as int? ?? 0;
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    <partial name="_AdminSidebar" />
+
+    <main class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn" type="button" id="toggleSidebar">☰</button>
+                <div class="page-title">
+                    <div class="title">Quản Lý Yêu Cầu Hỗ Trợ</div>
+                    <div class="subtitle">Tổng: @Model.Count yêu cầu @(pendingCount > 0 ? $"({pendingCount} chờ duyệt)" : "")</div>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <a asp-action="CreateRequest" class="btn btn-primary">+ Tạo yêu cầu</a>
+            </div>
+        </header>
+
+        <section class="content">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success" style="background: #22c55e20; color: #22c55e; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    @TempData["Success"]
+                </div>
+            }
+
+            <!-- Status Tabs -->
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                <a href="@Url.Action("Requests")" class="btn @(currentStatus == "all" ? "btn-primary" : "btn-secondary")">
+                    Tất cả (@Model.Count)
+                </a>
+                <a href="@Url.Action("Requests", new { status = "Chờ xét duyệt" })" class="btn @(currentStatus == "Chờ xét duyệt" ? "btn-primary" : "btn-secondary")" style="@(pendingCount > 0 ? "background: #f59e0b; color: white;" : "")">
+                    ⏳ Chờ duyệt (@Model.Count(r => r.Status == "Chờ xét duyệt"))
+                </a>
+                <a href="@Url.Action("Requests", new { status = "Đã phê duyệt" })" class="btn @(currentStatus == "Đã phê duyệt" ? "btn-primary" : "btn-secondary")">
+                    ✅ Đã duyệt (@Model.Count(r => r.Status == "Đã phê duyệt"))
+                </a>
+                <a href="@Url.Action("Requests", new { status = "Từ chối" })" class="btn @(currentStatus == "Từ chối" ? "btn-primary" : "btn-secondary")">
+                    ❌ Từ chối (@Model.Count(r => r.Status == "Từ chối"))
+                </a>
+            </div>
+
+            <div class="card panel">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Đối tượng</th>
+                            <th>Số tiền yêu cầu</th>
+                            <th>Lý do</th>
+                            <th>Ngày tạo</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var r in Model)
+                        {
+                            <tr>
+                                <td>@r.RequestId</td>
+                                <td>
+                                    <strong>@r.Beneficiary.FullName</strong>
+                                    <div style="font-size: 0.8rem; color: #64748b;">@r.Beneficiary.BeneficiaryType</div>
+                                </td>
+                                <td style="color: #22c55e; font-weight: bold;">@(r.RequestedAmount.HasValue ? r.RequestedAmount.Value.ToString("N0") + " VND" : "Chưa xác định")</td>
+                                <td>@(r.SupportIssue ?? r.Reason ?? "—")</td>
+                                <td>@r.RequestDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>
+                                    @if (r.Status == "Chờ xét duyệt")
+                                    {
+                                        <span class="badge" style="background: #f59e0b20; color: #f59e0b; padding: 4px 8px; border-radius: 4px;">⏳ Chờ duyệt</span>
+                                    }
+                                    else if (r.Status == "Đã phê duyệt")
+                                    {
+                                        <span class="badge" style="background: #22c55e20; color: #22c55e; padding: 4px 8px; border-radius: 4px;">✅ Đã duyệt</span>
+                                    }
+                                    else if (r.Status == "Từ chối")
+                                    {
+                                        <span class="badge" style="background: #ef444420; color: #ef4444; padding: 4px 8px; border-radius: 4px;">❌ Từ chối</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge" style="background: #6366f120; color: #818cf8; padding: 4px 8px; border-radius: 4px;">@r.Status</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (r.Status == "Chờ xét duyệt")
+                                    {
+                                        <button class="btn btn-sm" style="background: #22c55e; color: white; padding: 4px 12px; border: none; border-radius: 4px; cursor: pointer; margin-right: 4px;" 
+                                                onclick="approveRequest(@r.RequestId)">✓ Duyệt</button>
+                                        <button class="btn btn-sm" style="background: #ef4444; color: white; padding: 4px 12px; border: none; border-radius: 4px; cursor: pointer;" 
+                                                onclick="rejectRequest(@r.RequestId)">✗ Từ chối</button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                @if (!Model.Any())
+                {
+                    <div style="text-align: center; padding: 2rem; color: #64748b;">
+                        Không có yêu cầu nào
+                    </div>
+                }
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    document.getElementById('toggleSidebar')?.addEventListener('click', function() {
+        document.querySelector('.admin-shell')?.classList.toggle('collapsed');
+    });
+
+    function approveRequest(id) {
+        if (!confirm('Xác nhận phê duyệt yêu cầu này? Yêu cầu sẽ xuất hiện trong phần giao việc.')) return;
+        
+        fetch('/Admin/ApproveRequest', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+            },
+            body: `id=${id}`
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert(data.message || 'Lỗi');
+            }
+        });
+    }
+
+    function rejectRequest(id) {
+        var note = prompt('Nhập lý do từ chối (tùy chọn):');
+        
+        fetch('/Admin/RejectRequest', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+            },
+            body: `id=${id}&note=${encodeURIComponent(note || '')}`
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert(data.message || 'Lỗi');
+            }
+        });
+    }
+</script>
+
+@Html.AntiForgeryToken()

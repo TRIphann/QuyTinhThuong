@@ -111,7 +111,11 @@ CREATE TABLE Beneficiaries (
     FullName NVARCHAR(200) NOT NULL,
     BeneficiaryType NVARCHAR(100) NOT NULL, -- Loại đối tượng
     Address NVARCHAR(500) NULL,
-    Description NVARCHAR(MAX) NULL
+    Description NVARCHAR(MAX) NULL,
+    Status NVARCHAR(50) DEFAULT N'Đã duyệt', -- Chờ duyệt, Đã duyệt, Từ chối
+    CreatedBy INT NULL, -- Ai đã thêm
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (CreatedBy) REFERENCES Users(UserId)
 );
 PRINT N'✓ Đã tạo bảng Beneficiaries';
 
@@ -122,10 +126,13 @@ CREATE TABLE Support_Requests (
     RequestId INT IDENTITY(1,1) PRIMARY KEY,
     BeneficiaryId INT NOT NULL,
     RequestDate DATETIME DEFAULT GETDATE(),
-    RequestedAmount DECIMAL(18,2) NOT NULL,
-    Reason NVARCHAR(MAX) NULL,
+    RequestedAmount DECIMAL(18,2) NULL,       -- Có thể NULL, quản lý quyết định sau
+    SupportIssue NVARCHAR(MAX) NULL,          -- Vấn đề cần hỗ trợ
+    Reason NVARCHAR(MAX) NULL,                -- Lý do hỗ trợ
     Status NVARCHAR(50) DEFAULT N'Chờ xét duyệt',
-    FOREIGN KEY (BeneficiaryId) REFERENCES Beneficiaries(BeneficiaryId)
+    CreatedBy INT NULL,                        -- Nhân viên tạo yêu cầu
+    FOREIGN KEY (BeneficiaryId) REFERENCES Beneficiaries(BeneficiaryId),
+    FOREIGN KEY (CreatedBy) REFERENCES Users(UserId)
 );
 PRINT N'✓ Đã tạo bảng Support_Requests';
 
@@ -185,7 +192,9 @@ CREATE TABLE Support_Tasks (
     DonorUserId INT NULL,
     AssignedBy INT NULL,
     AssignedAt DATETIME NULL,
-    Amount DECIMAL(18,2) NOT NULL DEFAULT 0,
+    ScheduledDate DATETIME NULL, -- Ngày dự kiến bắt đầu
+    Amount DECIMAL(18,2) NOT NULL DEFAULT 0, -- Số tiền mục tiêu
+    DonatedAmount DECIMAL(18,2) DEFAULT 0, -- Số tiền tình nguyện viên đã góp
     AdditionalAmount DECIMAL(18,2) DEFAULT 0,
     Status NVARCHAR(50) DEFAULT N'Chờ thực hiện',
     StartedAt DATETIME NULL,
@@ -193,12 +202,15 @@ CREATE TABLE Support_Tasks (
     StaffCompletedAt DATETIME NULL,
     ManagerNote NVARCHAR(MAX) NULL,
     ManagerVerifiedAt DATETIME NULL,
-    SupportRequestType NVARCHAR(50) NULL,
+    SupportRequestType NVARCHAR(50) NULL, -- Tiền, Nhân lực
     SupportRequestReason NVARCHAR(MAX) NULL,
     SupportRequestAmount DECIMAL(18,2) NULL,
+    SupportRequestPeopleCount INT NULL, -- Số người yêu cầu hỗ trợ (cho loại Nhân lực)
     SupportRequestAt DATETIME NULL,
     SupportResponseNote NVARCHAR(MAX) NULL,
     SupportResponseAt DATETIME NULL,
+    SupportResponseStatus NVARCHAR(50) NULL, -- Đã duyệt, Từ chối
+    SupportAssignedPeopleCount INT DEFAULT 0, -- Số người đã được giao (cho loại Nhân lực)
     CreatedAt DATETIME DEFAULT GETDATE(),
     UpdatedAt DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (RequestId) REFERENCES Support_Requests(RequestId),
@@ -245,6 +257,84 @@ CREATE TABLE Complaints (
 PRINT N'✓ Đã tạo bảng Complaints';
 
 -- =====================================================
+-- BẢNG TÌNH NGUYỆN VIÊN THAM GIA HOẠT ĐỘNG (TASK_VOLUNTEERS)
+-- =====================================================
+CREATE TABLE Task_Volunteers (
+    VolunteerId INT IDENTITY(1,1) PRIMARY KEY,
+    TaskId INT NOT NULL,
+    UserId INT NOT NULL,
+    RegisteredAt DATETIME DEFAULT GETDATE(),
+    Status NVARCHAR(50) DEFAULT N'Đăng ký', -- Đăng ký, Đã xác nhận, Đã tham gia, Hủy
+    Note NVARCHAR(MAX) NULL,
+    FOREIGN KEY (TaskId) REFERENCES Support_Tasks(TaskId),
+    FOREIGN KEY (UserId) REFERENCES Users(UserId)
+);
+PRINT N'✓ Đã tạo bảng Task_Volunteers';
+
+-- =====================================================
+-- BẢNG QUYÊN GÓP CHO HOẠT ĐỘNG CỤ THỂ (TASK_DONATIONS)
+-- =====================================================
+CREATE TABLE Task_Donations (
+    TaskDonationId INT IDENTITY(1,1) PRIMARY KEY,
+    TaskId INT NOT NULL,
+    UserId INT NOT NULL,
+    Amount DECIMAL(18,2) NOT NULL,
+    DonatedAt DATETIME DEFAULT GETDATE(),
+    Note NVARCHAR(MAX) NULL,
+    IsConfirmed BIT DEFAULT 1,
+    FOREIGN KEY (TaskId) REFERENCES Support_Tasks(TaskId),
+    FOREIGN KEY (UserId) REFERENCES Users(UserId)
+);
+PRINT N'✓ Đã tạo bảng Task_Donations';
+
+-- =====================================================
+-- BẢNG NGƯỜI HỖ TRỢ (SUPPORT_HELPERS)
+-- Lưu danh sách staff được mời hỗ trợ công việc (loại Nhân lực)
+-- =====================================================
+CREATE TABLE Support_Helpers (
+    HelperId INT IDENTITY(1,1) PRIMARY KEY,
+    TaskId INT NOT NULL, -- Công việc cần hỗ trợ
+    StaffId INT NOT NULL, -- Staff được mời hỗ trợ
+    InvitedBy INT NULL, -- Manager gửi lời mời
+    InvitedAt DATETIME DEFAULT GETDATE(), -- Thời gian mời
+    Status NVARCHAR(50) DEFAULT N'Đang chờ', -- Đang chờ, Chấp nhận, Từ chối
+    RespondedAt DATETIME NULL, -- Thời gian phản hồi
+    StaffNote NVARCHAR(MAX) NULL, -- Ghi chú khi từ chối
+    FOREIGN KEY (TaskId) REFERENCES Support_Tasks(TaskId),
+    FOREIGN KEY (StaffId) REFERENCES Users(UserId),
+    FOREIGN KEY (InvitedBy) REFERENCES Users(UserId)
+);
+PRINT N'✓ Đã tạo bảng Support_Helpers';
+
+-- =====================================================
+-- BẢNG YÊU CẦU PHÊ DUYỆT NGÂN SÁCH (BUDGET_APPROVALS)
+-- Admin phê duyệt các yêu cầu chi tiền từ Manager
+-- =====================================================
+CREATE TABLE Budget_Approvals (
+    ApprovalId INT IDENTITY(1,1) PRIMARY KEY,
+    RequestType NVARCHAR(50) NOT NULL, -- 'CreateTask', 'AdditionalSupport'
+    RequestedBy INT NOT NULL, -- Manager yêu cầu
+    RequestedAt DATETIME DEFAULT GETDATE(),
+    Amount DECIMAL(18,2) NOT NULL, -- Số tiền yêu cầu
+    Description NVARCHAR(MAX) NULL, -- Mô tả yêu cầu
+    RelatedTaskId INT NULL, -- Liên kết với task (nếu có)
+    RelatedRequestId INT NULL, -- Liên kết với support request (nếu có)
+    Status NVARCHAR(50) DEFAULT N'Chờ duyệt', -- Chờ duyệt, Đã duyệt, Từ chối
+    ApprovedBy INT NULL, -- Admin phê duyệt
+    ApprovedAt DATETIME NULL,
+    RejectionReason NVARCHAR(MAX) NULL, -- Lý do từ chối
+    -- Dữ liệu bổ sung cho CreateTask
+    StaffIds NVARCHAR(MAX) NULL, -- JSON array của staff IDs
+    ScheduledDate DATETIME NULL,
+    ManagerNote NVARCHAR(MAX) NULL,
+    FOREIGN KEY (RequestedBy) REFERENCES Users(UserId),
+    FOREIGN KEY (ApprovedBy) REFERENCES Users(UserId),
+    FOREIGN KEY (RelatedTaskId) REFERENCES Support_Tasks(TaskId),
+    FOREIGN KEY (RelatedRequestId) REFERENCES Support_Requests(RequestId)
+);
+PRINT N'✓ Đã tạo bảng Budget_Approvals';
+
+-- =====================================================
 -- TẠO INDEX ĐỂ TỐI ƯU TRUY VẤN
 -- =====================================================
 CREATE INDEX IX_Donations_DonorUserId ON Donations(DonorUserId);
@@ -253,6 +343,13 @@ CREATE INDEX IX_SupportTasks_Status ON Support_Tasks(Status);
 CREATE INDEX IX_SupportTasks_AssignedStaffId ON Support_Tasks(AssignedStaffId);
 CREATE INDEX IX_Notifications_UserId_IsRead ON Notifications(UserId, IsRead);
 CREATE INDEX IX_Complaints_Status ON Complaints(Status);
+CREATE INDEX IX_TaskVolunteers_TaskId ON Task_Volunteers(TaskId);
+CREATE INDEX IX_TaskDonations_TaskId ON Task_Donations(TaskId);
+CREATE INDEX IX_SupportHelpers_TaskId ON Support_Helpers(TaskId);
+CREATE INDEX IX_SupportHelpers_StaffId ON Support_Helpers(StaffId);
+CREATE INDEX IX_SupportHelpers_Status ON Support_Helpers(Status);
+CREATE INDEX IX_BudgetApprovals_Status ON Budget_Approvals(Status);
+CREATE INDEX IX_BudgetApprovals_RequestedBy ON Budget_Approvals(RequestedBy);
 
 PRINT N'✓ Đã tạo các index';
 

@@ -1,0 +1,88 @@
+@model List<QLDuLichRBAC_Upgrade.Models.Entities.Beneficiary>
+@{
+    ViewData["Title"] = "Tạo Yêu Cầu Hỗ Trợ";
+}
+
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+
+<div class="admin-shell">
+    <partial name="_ManagerSidebar" />
+
+    <main class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn" type="button" id="toggleSidebar">☰</button>
+                <div class="page-title">
+                    <div class="title">Tạo Yêu Cầu Hỗ Trợ Mới</div>
+                    <div class="subtitle">Nhập thông tin yêu cầu hỗ trợ</div>
+                </div>
+            </div>
+        </header>
+
+        <section class="content">
+            <div class="card panel" style="max-width: 600px;">
+                <div class="panel-head">
+                    <div class="panel-title">Thông tin yêu cầu</div>
+                </div>
+
+                <form method="post" asp-action="CreateRequest" style="padding: 1.5rem;">
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; color: #f8fafc;">Đối tượng hỗ trợ <span style="color: #ef4444;">*</span></label>
+                        <select name="beneficiaryId" required
+                                style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #1e293b; color: #f8fafc; border: 1px solid #334155;">
+                            <option value="">-- Chọn đối tượng --</option>
+                            @foreach (var ben in Model)
+                            {
+                                <option value="@ben.BeneficiaryId">@ben.FullName - @ben.BeneficiaryType</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; color: #f8fafc;">Loại hỗ trợ <span style="color: #ef4444;">*</span></label>
+                        <select name="supportType" required
+                                style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #1e293b; color: #f8fafc; border: 1px solid #334155;">
+                            <option value="">-- Chọn loại hỗ trợ --</option>
+                            <option value="Tiền mặt">Tiền mặt</option>
+                            <option value="Quà tặng">Quà tặng</option>
+                            <option value="Học bổng">Học bổng</option>
+                            <option value="Y tế">Y tế</option>
+                            <option value="Xây dựng nhà">Xây dựng nhà</option>
+                            <option value="Sinh kế">Sinh kế</option>
+                            <option value="Khác">Khác</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; color: #f8fafc;">Số tiền hỗ trợ (VNĐ) <span style="color: #ef4444;">*</span></label>
+                        <input type="number" name="amount" required min="10000" step="1000" placeholder="Nhập số tiền"
+                               style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #1e293b; color: #f8fafc; border: 1px solid #334155;" />
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; color: #f8fafc;">Lý do / Ghi chú</label>
+                        <textarea name="reason" rows="4" placeholder="Mô tả lý do cần hỗ trợ..."
+                                  style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #1e293b; color: #f8fafc; border: 1px solid #334155;"></textarea>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="submit" style="flex: 1; padding: 0.75rem; background: #22c55e; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem;">
+                            ✓ Tạo yêu cầu
+                        </button>
+                        <a asp-action="Requests" style="flex: 1; padding: 0.75rem; background: #64748b; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; text-align: center; text-decoration: none;">
+                            Hủy
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    document.getElementById('toggleSidebar')?.addEventListener('click', function() {
+        document.querySelector('.admin-shell')?.classList.toggle('collapsed');
+    });
+</script>

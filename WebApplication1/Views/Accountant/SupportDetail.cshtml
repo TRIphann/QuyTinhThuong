@@ -1,6 +1,13 @@
 @model QLDuLichRBAC_Upgrade.Models.Entities.SupportTask
 @{
     ViewData["Title"] = "Chi tiết hỗ trợ";
+    var statusColor = Model.Status switch {
+        "Chờ thực hiện" => "#f59e0b",
+        "Đang thực hiện" => "#3b82f6",
+        "Hoàn thành" => "#22c55e",
+        _ => "#64748b"
+    };
+    var progress = Model.Amount > 0 ? Math.Min(100, (Model.DonatedAmount / Model.Amount) * 100) : 0;
 }
 
 <link rel="stylesheet" href="~/css/admin-dashboard.css" />
@@ -28,7 +35,7 @@
                         <div class="panel-title">@Model.SupportRequest?.Beneficiary?.FullName</div>
                         <div class="panel-sub">@Model.SupportRequest?.Beneficiary?.BeneficiaryType</div>
                     </div>
-                    <span style="background: #22c55e; color: white; padding: 0.25rem 0.75rem; border-radius: 20px;">
+                    <span style="background: @statusColor; color: white; padding: 0.25rem 0.75rem; border-radius: 20px;">
                         @Model.Status
                     </span>
                 </div>
@@ -44,17 +51,33 @@
 
                         <div>
                             <h4 style="color: #94a3b8; margin-bottom: 0.5rem;">Thông tin hỗ trợ</h4>
-                            <p><strong>Số tiền:</strong> <span style="color: #22c55e;">@Model.TotalAmount.ToString("N0") VND</span></p>
-                            <p><strong>Nhân viên thực hiện:</strong> @Model.AssignedStaff?.FullName</p>
-                            <p><strong>Ngày hoàn thành:</strong> @Model.StaffCompletedAt?.ToString("dd/MM/yyyy HH:mm")</p>
+                            <p><strong>Mục tiêu:</strong> <span style="color: #22c55e;">@Model.Amount.ToString("N0") VND</span></p>
+                            <p><strong>Đã quyên góp:</strong> <span style="color: #3b82f6;">@Model.DonatedAmount.ToString("N0") VND</span></p>
+                            <p><strong>Nhân viên thực hiện:</strong> @(Model.AssignedStaff?.FullName ?? "Chưa phân công")</p>
+                            <p><strong>Dự kiến bắt đầu:</strong> @(Model.ScheduledDate?.ToString("dd/MM/yyyy") ?? "Chưa xác định")</p>
+                            @if (Model.StaffCompletedAt.HasValue)
+                            {
+                                <p><strong>Ngày hoàn thành:</strong> @Model.StaffCompletedAt?.ToString("dd/MM/yyyy HH:mm")</p>
+                            }
                         </div>
                     </div>
 
-                    @if (!string.IsNullOrEmpty(Model.SupportRequest?.Reason))
+                    <!-- Progress bar -->
+                    <div style="margin-top: 1.5rem; padding: 1rem; background: #1e293b; border-radius: 8px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span style="color: #94a3b8;">Tiến độ quyên góp</span>
+                            <span style="color: #f8fafc;">@progress.ToString("N0")%</span>
+                        </div>
+                        <div style="background: #334155; border-radius: 9999px; height: 12px; overflow: hidden;">
+                            <div style="background: linear-gradient(90deg, #3b82f6, #22c55e); height: 100%; width: @(progress)%;"></div>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.SupportRequest?.Reason) || !string.IsNullOrEmpty(Model.ManagerNote))
                     {
-                        <div style="margin-top: 1.5rem; padding: 1rem; background: #1e293b; border-radius: 8px;">
-                            <h4 style="color: #94a3b8; margin-bottom: 0.5rem;">Lý do hỗ trợ</h4>
-                            <p>@Model.SupportRequest.Reason</p>
+                        <div style="margin-top: 1rem; padding: 1rem; background: #1e293b; border-radius: 8px;">
+                            <h4 style="color: #94a3b8; margin-bottom: 0.5rem;">Lý do / Mô tả</h4>
+                            <p>@(Model.SupportRequest?.Reason ?? Model.ManagerNote)</p>
                         </div>
                     }
 
@@ -65,25 +88,114 @@
                             <p>@Model.StaffNote</p>
                         </div>
                     }
-
-                    <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
-                        <a asp-action="CompletedSupports" style="padding: 0.75rem 1.5rem; background: #475569; color: white; border-radius: 8px; text-decoration: none;">
-                            ← Quay lại danh sách
-                        </a>
-
-                        @{
-                            var canFeedback = Model.StaffCompletedAt.HasValue && 
-                                              (DateTime.Now - Model.StaffCompletedAt.Value).TotalDays >= 3;
-                        }
-                        @if (canFeedback)
-                        {
-                            <a asp-action="SubmitFeedback" asp-route-id="@Model.TaskId"
-                               style="padding: 0.75rem 1.5rem; background: #8b5cf6; color: white; border-radius: 8px; text-decoration: none;">
-                                💬 Gửi góp ý
-                            </a>
-                        }
-                    </div>
                 </div>
+            </div>
+
+            <!-- Danh sách tình nguyện viên -->
+            <div class="card panel" style="margin-top: 1.5rem;">
+                <div class="panel-head">
+                    <div class="panel-title">🙋 Danh sách tình nguyện viên (@Model.Volunteers.Count người)</div>
+                </div>
+                <div style="padding: 1rem;">
+                    @if (Model.Volunteers.Any())
+                    {
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr>
+                                    <th style="padding: 0.75rem; text-align: left; border-bottom: 1px solid #334155; color: #94a3b8;">Họ tên</th>
+                                    <th style="padding: 0.75rem; text-align: left; border-bottom: 1px solid #334155; color: #94a3b8;">Email</th>
+                                    <th style="padding: 0.75rem; text-align: left; border-bottom: 1px solid #334155; color: #94a3b8;">Ngày đăng ký</th>
+                                    <th style="padding: 0.75rem; text-align: center; border-bottom: 1px solid #334155; color: #94a3b8;">Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var v in Model.Volunteers.OrderByDescending(x => x.RegisteredAt))
+                                {
+                                    <tr style="color: #e2e8f0;">
+                                        <td style="padding: 0.75rem; border-bottom: 1px solid #1e293b;">@v.User.FullName</td>
+                                        <td style="padding: 0.75rem; border-bottom: 1px solid #1e293b;">@v.User.Email</td>
+                                        <td style="padding: 0.75rem; border-bottom: 1px solid #1e293b;">@v.RegisteredAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td style="padding: 0.75rem; border-bottom: 1px solid #1e293b; text-align: center;">
+                                            <span style="background: #8b5cf633; color: #a78bfa; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem;">
+                                                @v.Status
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <div style="text-align: center; padding: 2rem; color: #64748b;">
+                            Chưa có tình nguyện viên đăng ký
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Danh sách quyên góp -->
+            <div class="card panel" style="margin-top: 1.5rem;">
+                <div class="panel-head">
+                    <div class="panel-title">💰 Danh sách quyên góp (@Model.TaskDonations.Count lượt - Tổng: @Model.TaskDonations.Sum(d => d.Amount).ToString("N0") VND)</div>
+                </div>
+                <div style="padding: 1rem;">
+                    @if (Model.TaskDonations.Any())
+                    {
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr>
+                                    <th style="padding: 0.75rem; text-align: left; border-bottom: 1px solid #334155; color: #94a3b8;">Người quyên góp</th>
+                                    <th style="padding: 0.75rem; text-align: right; border-bottom: 1px solid #334155; color: #94a3b8;">Số tiền</th>
+                                    <th style="padding: 0.75rem; text-align: left; border-bottom: 1px solid #334155; color: #94a3b8;">Thời gian</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var d in Model.TaskDonations.OrderByDescending(x => x.DonatedAt))
+                                {
+                                    <tr style="color: #e2e8f0;">
+                                        <td style="padding: 0.75rem; border-bottom: 1px solid #1e293b;">@d.User.FullName</td>
+                                        <td style="padding: 0.75rem; border-bottom: 1px solid #1e293b; text-align: right; color: #22c55e; font-weight: bold;">@d.Amount.ToString("N0") VND</td>
+                                        <td style="padding: 0.75rem; border-bottom: 1px solid #1e293b;">@d.DonatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <div style="text-align: center; padding: 2rem; color: #64748b;">
+                            Chưa có quyên góp nào
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div style="margin-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                <a asp-action="CompletedSupports" style="padding: 0.75rem 1.5rem; background: #475569; color: white; border-radius: 8px; text-decoration: none;">
+                    ← Quay lại danh sách
+                </a>
+
+                @if (Model.Status == "Chờ thực hiện" || Model.Status == "Đang thực hiện")
+                {
+                    <a asp-action="DonateToActivity" asp-route-id="@Model.TaskId"
+                       style="padding: 0.75rem 1.5rem; background: #22c55e; color: white; border-radius: 8px; text-decoration: none;">
+                        💰 Quyên góp cho hoạt động
+                    </a>
+                }
+
+                @{
+                    var canFeedback = Model.StaffCompletedAt.HasValue && 
+                                      (DateTime.Now - Model.StaffCompletedAt.Value).TotalDays >= 3;
+                }
+                @if (canFeedback)
+                {
+                    <a asp-action="SubmitFeedback" asp-route-id="@Model.TaskId"
+                       style="padding: 0.75rem 1.5rem; background: #8b5cf6; color: white; border-radius: 8px; text-decoration: none;">
+                        💬 Gửi góp ý
+                    </a>
+                }
             </div>
         </section>
     </main>

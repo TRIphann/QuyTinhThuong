@@ -42,10 +42,12 @@ INSERT INTO Users (UserId, FullName, Username, Password, Email, Phone, Status) V
 (5, N'Võ Văn Dũng', 'manager1', '15E2B0D3C33891EBB0F1EF609EC419420C20E320CE94C65FBC8C3312448EB225', 'dung.vo@quytt.vn', '0901234571', 'Active'),
 (6, N'Hoàng Thị Mai', 'staff3', '15E2B0D3C33891EBB0F1EF609EC419420C20E320CE94C65FBC8C3312448EB225', 'mai.hoang@quytt.vn', '0901234572', 'Active'),
 (7, N'Đặng Văn Hùng', 'accountant2', '15E2B0D3C33891EBB0F1EF609EC419420C20E320CE94C65FBC8C3312448EB225', 'hung.dang@quytt.vn', '0901234573', 'Active'),
-(8, N'Bùi Thị Ngọc', 'manager2', '15E2B0D3C33891EBB0F1EF609EC419420C20E320CE94C65FBC8C3312448EB225', 'ngoc.bui@quytt.vn', '0901234574', 'Active');
+(8, N'Bùi Thị Ngọc', 'manager2', '15E2B0D3C33891EBB0F1EF609EC419420C20E320CE94C65FBC8C3312448EB225', 'ngoc.bui@quytt.vn', '0901234574', 'Active'),
+(9, N'Nguyễn Văn Tuấn', 'staff4', '15E2B0D3C33891EBB0F1EF609EC419420C20E320CE94C65FBC8C3312448EB225', 'tuan.nguyen@quytt.vn', '0901234575', 'Active'),
+(10, N'Phan Thị Linh', 'staff5', '15E2B0D3C33891EBB0F1EF609EC419420C20E320CE94C65FBC8C3312448EB225', 'linh.phan@quytt.vn', '0901234576', 'Active');
 SET IDENTITY_INSERT Users OFF;
 
-PRINT N'✓ Đã thêm 8 người dùng';
+PRINT N'✓ Đã thêm 10 người dùng';
 
 -- =====================================================
 -- INSERT USER_ROLES (PHÂN QUYỀN)
@@ -60,9 +62,11 @@ INSERT INTO User_Roles (UserId, RoleId) VALUES
 (5, 4),  -- manager1 -> MANAGER
 (6, 2),  -- staff3 -> STAFF
 (7, 3),  -- accountant2 -> ACCOUNTANT (Khách hàng)
-(8, 4);  -- manager2 -> MANAGER
+(8, 4),  -- manager2 -> MANAGER
+(9, 2),  -- staff4 -> STAFF
+(10, 2); -- staff5 -> STAFF
 
-PRINT N'✓ Đã phân quyền cho 8 người dùng';
+PRINT N'✓ Đã phân quyền cho 10 người dùng';
 
 -- =====================================================
 -- INSERT DONORS (NGƯỜI ĐÓNG GÓP)
@@ -117,10 +121,25 @@ INSERT INTO Donations (DonationId, DonorId, DonorUserId, Amount, DonationDate, M
 (15, 11, 4, 2000000, '2025-02-03 10:00:00', N'Chuyển khoản', NULL, 1),
 -- Donations từ user accountant2 (UserId=7, DonorId=12)
 (16, 12, 7, 750000, '2025-02-01 09:00:00', N'Chuyển khoản', NULL, 1),
-(17, 12, 7, 1500000, '2025-02-03 16:30:00', N'Chuyển khoản', NULL, 1);
+(17, 12, 7, 1500000, '2025-02-03 16:30:00', N'Chuyển khoản', NULL, 1),
+-- ===== DONATIONS 7 NGÀY GẦN ĐÂY (29/01/2026 - 04/02/2026) =====
+(18, 1, NULL, 8000000, '2026-01-29 09:00:00', N'Chuyển khoản', 2, 1),
+(19, 2, NULL, 25000000, '2026-01-29 14:30:00', N'Chuyển khoản', 2, 1),
+(20, 3, NULL, 3500000, '2026-01-30 10:15:00', N'Tiền mặt', 3, 1),
+(21, 5, NULL, 5000000, '2026-01-30 16:00:00', N'QR Code', 6, 1),
+(22, 11, 4, 2000000, '2026-01-31 08:30:00', N'Chuyển khoản', NULL, 1),
+(23, 6, NULL, 15000000, '2026-01-31 11:00:00', N'Chuyển khoản', 2, 1),
+(24, 7, NULL, 4500000, '2026-02-01 09:45:00', N'Tiền mặt', 3, 1),
+(25, 12, 7, 3000000, '2026-02-01 15:00:00', N'Chuyển khoản', NULL, 1),
+(26, 8, NULL, 7500000, '2026-02-02 10:30:00', N'QR Code', 6, 1),
+(27, 9, NULL, 50000000, '2026-02-02 14:00:00', N'Chuyển khoản', 2, 1),
+(28, 10, NULL, 2500000, '2026-02-03 09:00:00', N'Tiền mặt', 3, 1),
+(29, 4, NULL, 30000000, '2026-02-03 13:30:00', N'Chuyển khoản', 2, 1),
+(30, 11, 4, 5000000, '2026-02-04 08:00:00', N'Chuyển khoản', NULL, 1),
+(31, 1, NULL, 10000000, '2026-02-04 11:30:00', N'QR Code', 6, 1);
 SET IDENTITY_INSERT Donations OFF;
 
-PRINT N'✓ Đã thêm 17 khoản quyên góp';
+PRINT N'✓ Đã thêm 31 khoản quyên góp';
 
 -- =====================================================
 -- INSERT FUNDS (QUỸ TIỀN)
@@ -141,18 +160,22 @@ PRINT N'✓ Đã khởi tạo quỹ với số dư: 462,250,000 VNĐ';
 PRINT N'Đang thêm đối tượng thụ hưởng...';
 
 SET IDENTITY_INSERT Beneficiaries ON;
-INSERT INTO Beneficiaries (BeneficiaryId, FullName, BeneficiaryType, Address, Description) VALUES
-(1, N'Nguyễn Thị Mai', N'Bệnh nhân hiểm nghèo', N'123 Xã Tân Lập, Huyện Bình Chánh, TP.HCM', N'Bệnh nhân ung thư giai đoạn cuối, gia đình khó khăn'),
-(2, N'Trần Văn Bình', N'Người khuyết tật', N'456 Xã Phước Kiển, Huyện Nhà Bè, TP.HCM', N'Khuyết tật bẩm sinh, không có khả năng lao động'),
-(3, N'Lê Thị Hoa', N'Người già neo đơn', N'789 Xã Long Trường, Quận 9, TP.HCM', N'Cụ bà 78 tuổi sống một mình, không con cái'),
-(4, N'Phạm Văn Tùng', N'Học sinh/Sinh viên nghèo', N'321 Xã Bình Hưng, Huyện Bình Chánh, TP.HCM', N'Sinh viên mồ côi, học giỏi nhưng hoàn cảnh khó khăn'),
-(5, N'Hoàng Thị Lan', N'Trẻ em khó khăn', N'654 Xã Phú Xuân, Huyện Nhà Bè, TP.HCM', N'Trẻ mồ côi cha, mẹ bệnh nặng không có khả năng nuôi con'),
-(6, N'Võ Văn Đức', N'Nạn nhân thiên tai', N'147 Xã Tân Nhựt, Huyện Bình Chánh, TP.HCM', N'Gia đình bị thiệt hại nặng do lũ lụt'),
-(7, N'Đặng Thị Ngọc', N'Người nghèo', N'258 Xã Phước Lộc, Huyện Nhà Bè, TP.HCM', N'Gia đình nghèo 5 người, thu nhập thấp'),
-(8, N'Bùi Văn Hải', N'Bệnh nhân hiểm nghèo', N'369 Xã Long Phước, Quận 9, TP.HCM', N'Bệnh thận mãn tính, cần lọc máu thường xuyên');
+INSERT INTO Beneficiaries (BeneficiaryId, FullName, BeneficiaryType, Address, Description, Status, CreatedBy, CreatedAt) VALUES
+(1, N'Nguyễn Thị Mai', N'Bệnh nhân hiểm nghèo', N'123 Xã Tân Lập, Huyện Bình Chánh, TP.HCM', N'Bệnh nhân ung thư giai đoạn cuối, gia đình khó khăn', N'Đã duyệt', 1, '2025-01-15 09:00:00'),
+(2, N'Trần Văn Bình', N'Người khuyết tật', N'456 Xã Phước Kiển, Huyện Nhà Bè, TP.HCM', N'Khuyết tật bẩm sinh, không có khả năng lao động', N'Đã duyệt', 1, '2025-01-16 10:00:00'),
+(3, N'Lê Thị Hoa', N'Người già neo đơn', N'789 Xã Long Trường, Quận 9, TP.HCM', N'Cụ bà 78 tuổi sống một mình, không con cái', N'Đã duyệt', 5, '2025-01-20 11:00:00'),
+(4, N'Phạm Văn Tùng', N'Học sinh/Sinh viên nghèo', N'321 Xã Bình Hưng, Huyện Bình Chánh, TP.HCM', N'Sinh viên mồ côi, học giỏi nhưng hoàn cảnh khó khăn', N'Đã duyệt', 5, '2025-01-25 14:00:00'),
+(5, N'Hoàng Thị Lan', N'Trẻ em khó khăn', N'654 Xã Phú Xuân, Huyện Nhà Bè, TP.HCM', N'Trẻ mồ côi cha, mẹ bệnh nặng không có khả năng nuôi con', N'Đã duyệt', 8, '2025-02-01 09:00:00'),
+(6, N'Võ Văn Đức', N'Nạn nhân thiên tai', N'147 Xã Tân Nhựt, Huyện Bình Chánh, TP.HCM', N'Gia đình bị thiệt hại nặng do lũ lụt', N'Đã duyệt', 8, '2025-02-10 10:00:00'),
+(7, N'Đặng Thị Ngọc', N'Người nghèo', N'258 Xã Phước Lộc, Huyện Nhà Bè, TP.HCM', N'Gia đình nghèo 5 người, thu nhập thấp', N'Đã duyệt', 1, '2025-03-01 11:00:00'),
+(8, N'Bùi Văn Hải', N'Bệnh nhân hiểm nghèo', N'369 Xã Long Phước, Quận 9, TP.HCM', N'Bệnh thận mãn tính, cần lọc máu thường xuyên', N'Đã duyệt', 5, '2025-03-15 14:00:00'),
+-- Đối tượng do Staff thêm (chờ duyệt)
+(9, N'Trần Thị Hương', N'Người nghèo', N'111 Xã Tân Kiên, Huyện Bình Chánh, TP.HCM', N'Mẹ đơn thân nuôi 3 con nhỏ, không có việc làm ổn định', N'Chờ duyệt', 2, '2026-02-01 08:30:00'),
+(10, N'Lý Văn Phú', N'Bệnh nhân hiểm nghèo', N'222 Xã An Phú Tây, Huyện Bình Chánh, TP.HCM', N'Bệnh tim bẩm sinh, cần phẫu thuật gấp', N'Chờ duyệt', 3, '2026-02-02 09:00:00'),
+(11, N'Ngô Thị Thanh', N'Người khuyết tật', N'333 Xã Quy Đức, Huyện Bình Chánh, TP.HCM', N'Mù bẩm sinh, sống một mình', N'Chờ duyệt', 6, '2026-02-03 10:00:00');
 SET IDENTITY_INSERT Beneficiaries OFF;
 
-PRINT N'✓ Đã thêm 8 đối tượng thụ hưởng';
+PRINT N'✓ Đã thêm 11 đối tượng thụ hưởng';
 
 -- =====================================================
 -- INSERT SUPPORT_REQUESTS (HỒ SƠ ĐỀ NGHỊ HỖ TRỢ)
@@ -160,18 +183,27 @@ PRINT N'✓ Đã thêm 8 đối tượng thụ hưởng';
 PRINT N'Đang thêm hồ sơ đề nghị hỗ trợ...';
 
 SET IDENTITY_INSERT Support_Requests ON;
-INSERT INTO Support_Requests (RequestId, BeneficiaryId, RequestDate, RequestedAmount, Reason, Status) VALUES
-(1, 1, '2025-02-01 09:00:00', 20000000, N'Chi phí điều trị ung thư', N'Đã chi trả'),
-(2, 2, '2025-02-15 10:30:00', 15000000, N'Mua xe lăn và thiết bị hỗ trợ', N'Đã chi trả'),
-(3, 3, '2025-03-01 14:00:00', 5000000, N'Hỗ trợ sinh hoạt phí 6 tháng', N'Đã phê duyệt'),
-(4, 4, '2025-03-10 11:00:00', 10000000, N'Học phí năm học 2025', N'Đã phê duyệt'),
-(5, 5, '2025-03-20 15:30:00', 8000000, N'Chi phí chữa bệnh cho mẹ', N'Chờ xét duyệt'),
-(6, 6, '2025-04-01 09:00:00', 12000000, N'Sửa chữa nhà cửa sau lũ lụt', N'Chờ xét duyệt'),
-(7, 7, '2025-04-15 13:00:00', 6000000, N'Hỗ trợ sinh hoạt và học phí con', N'Chờ xét duyệt'),
-(8, 8, '2025-05-01 10:00:00', 18000000, N'Chi phí lọc máu 1 năm', N'Chờ xét duyệt');
+INSERT INTO Support_Requests (RequestId, BeneficiaryId, RequestDate, RequestedAmount, SupportIssue, Reason, Status, CreatedBy) VALUES
+(1, 1, '2025-02-01 09:00:00', 20000000, N'Cần chi phí điều trị ung thư', N'Chi phí điều trị ung thư', N'Đã chi trả', 2),
+(2, 2, '2025-02-15 10:30:00', 15000000, N'Cần xe lăn và thiết bị hỗ trợ', N'Mua xe lăn và thiết bị hỗ trợ', N'Đã chi trả', 2),
+(3, 3, '2025-03-01 14:00:00', 5000000, N'Không có tiền sinh hoạt', N'Hỗ trợ sinh hoạt phí 6 tháng', N'Đã phê duyệt', 3),
+(4, 4, '2025-03-10 11:00:00', 10000000, N'Không đủ tiền đóng học phí', N'Học phí năm học 2025', N'Đã phê duyệt', 3),
+(5, 5, '2025-03-20 15:30:00', NULL, N'Mẹ bị bệnh nặng cần chữa trị', N'Chi phí chữa bệnh cho mẹ', N'Chờ xét duyệt', 2),
+(6, 6, '2025-04-01 09:00:00', NULL, N'Nhà bị hư hỏng nặng sau lũ lụt', N'Sửa chữa nhà cửa sau lũ lụt', N'Chờ xét duyệt', 6),
+(7, 7, '2025-04-15 13:00:00', NULL, N'Gia đình khó khăn, con cần đi học', N'Hỗ trợ sinh hoạt và học phí con', N'Chờ xét duyệt', 2),
+(8, 8, '2025-05-01 10:00:00', NULL, N'Cần lọc máu thường xuyên', N'Chi phí lọc máu 1 năm', N'Chờ xét duyệt', 3),
+-- ===== SUPPORT REQUESTS MỚI (Đa dạng trạng thái) =====
+(9, 1, '2026-01-20 09:00:00', 15000000, N'Cần thuốc điều trị tiếp theo', N'Chi phí thuốc điều trị tiếp theo', N'Đã phê duyệt', 2),
+(10, 2, '2026-01-22 10:00:00', 8000000, N'Cần thêm thiết bị phục hồi chức năng', N'Mua thêm thiết bị phục hồi chức năng', N'Đã phê duyệt', 3),
+(11, 3, '2026-01-25 11:00:00', NULL, N'Cần hỗ trợ tiền điện nước', N'Hỗ trợ tiền điện nước 3 tháng', N'Từ chối', 6),
+(12, 4, '2026-01-28 14:00:00', NULL, N'Cần sách vở và đồ dùng học tập', N'Mua sách vở và đồ dùng học tập', N'Chờ xét duyệt', 2),
+(13, 5, '2026-01-30 09:30:00', 10000000, N'Mẹ cần phẫu thuật khẩn cấp', N'Phẫu thuật cho mẹ', N'Đã phê duyệt', 3),
+(14, 6, '2026-02-01 10:00:00', NULL, N'Cần vật liệu xây dựng sửa nhà', N'Mua vật liệu xây dựng', N'Chờ xét duyệt', 6),
+(15, 7, '2026-02-02 11:00:00', NULL, N'Cần hỗ trợ học phí học kỳ 2', N'Học phí học kỳ 2 cho con', N'Từ chối', 2),
+(16, 8, '2026-02-03 09:00:00', NULL, N'Cần xét nghiệm và mua thuốc', N'Chi phí xét nghiệm và thuốc', N'Chờ xét duyệt', 3);
 SET IDENTITY_INSERT Support_Requests OFF;
 
-PRINT N'✓ Đã thêm 8 hồ sơ đề nghị hỗ trợ';
+PRINT N'✓ Đã thêm 16 hồ sơ đề nghị hỗ trợ';
 
 -- =====================================================
 -- INSERT APPROVALS (PHÊ DUYỆT HỒ SƠ)
@@ -183,10 +215,16 @@ INSERT INTO Approvals (ApprovalId, RequestId, ApprovedBy, ApprovalDate, Result, 
 (1, 1, 5, '2025-02-02 10:00:00', N'Phê duyệt', N'Trường hợp khẩn cấp, cần hỗ trợ ngay'),
 (2, 2, 5, '2025-02-16 14:00:00', N'Phê duyệt', N'Đã xác minh hoàn cảnh, chấp thuận'),
 (3, 3, 8, '2025-03-02 11:00:00', N'Phê duyệt', N'Hỗ trợ người già neo đơn'),
-(4, 4, 8, '2025-03-11 09:30:00', N'Phê duyệt', N'Sinh viên có thành tích học tập tốt');
+(4, 4, 8, '2025-03-11 09:30:00', N'Phê duyệt', N'Sinh viên có thành tích học tập tốt'),
+-- ===== APPROVALS MỚI =====
+(5, 9, 5, '2026-01-21 10:00:00', N'Phê duyệt', N'Tiếp tục hỗ trợ điều trị bệnh nhân'),
+(6, 10, 5, '2026-01-23 14:00:00', N'Phê duyệt', N'Đã xác minh nhu cầu thiết bị'),
+(7, 11, 8, '2026-01-26 11:00:00', N'Từ chối', N'Không đủ điều kiện, hồ sơ chưa đầy đủ'),
+(8, 13, 5, '2026-01-31 09:00:00', N'Phê duyệt', N'Trường hợp khẩn cấp, cần phẫu thuật'),
+(9, 15, 8, '2026-02-03 10:00:00', N'Từ chối', N'Đã hỗ trợ trong đợt trước, chờ đợt tiếp theo');
 SET IDENTITY_INSERT Approvals OFF;
 
-PRINT N'✓ Đã thêm 4 phê duyệt hồ sơ';
+PRINT N'✓ Đã thêm 9 phê duyệt hồ sơ';
 
 -- =====================================================
 -- INSERT EXPENSES (KHOẢN CHI HỖ TRỢ)
@@ -196,10 +234,16 @@ PRINT N'Đang thêm khoản chi hỗ trợ...';
 SET IDENTITY_INSERT Expenses ON;
 INSERT INTO Expenses (ExpenseId, RequestId, Amount, ExpenseDate, PaymentMethod, PaidBy) VALUES
 (1, 1, 20000000, '2025-02-05 14:00:00', N'Chuyển khoản', 4),
-(2, 2, 15000000, '2025-02-20 15:30:00', N'Tiền mặt', 4);
+(2, 2, 15000000, '2025-02-20 15:30:00', N'Tiền mặt', 4),
+-- ===== EXPENSES 7 NGÀY GẦN ĐÂY (29/01/2026 - 04/02/2026) =====
+(3, 3, 5000000, '2026-01-29 10:00:00', N'Tiền mặt', 4),
+(4, 4, 12000000, '2026-01-30 14:30:00', N'Chuyển khoản', 4),
+(5, 5, 8000000, '2026-01-31 09:00:00', N'Chuyển khoản', 7),
+(6, 6, 6000000, '2026-02-01 11:00:00', N'Tiền mặt', 4),
+(7, 7, 4000000, '2026-02-02 15:00:00', N'Chuyển khoản', 7);
 SET IDENTITY_INSERT Expenses OFF;
 
-PRINT N'✓ Đã thêm 2 khoản chi hỗ trợ';
+PRINT N'✓ Đã thêm 7 khoản chi hỗ trợ';
 
 -- =====================================================
 -- INSERT SUPPORT_TASKS (CÔNG VIỆC HỖ TRỢ)
@@ -306,6 +350,13 @@ INSERT INTO Logs (LogId, UserId, Action, TableName, ActionTime, OldData, NewData
 SET IDENTITY_INSERT Logs OFF;
 
 PRINT N'✓ Đã thêm 15 nhật ký hệ thống';
+
+-- =====================================================
+-- BẢNG SUPPORT_HELPERS (NGƯỜI HỖ TRỢ)
+-- Không có dữ liệu mẫu, bảng này sẽ được điền khi 
+-- Manager gửi lời mời hỗ trợ cho Staff
+-- =====================================================
+PRINT N'✓ Bảng Support_Helpers trống (sẽ được điền khi sử dụng)';
 
 PRINT N'=====================================================';
 PRINT N'HOÀN TẤT THÊM DỮ LIỆU MẪU';
